@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EuroEast Club - Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="main-container">
+  <div id="capture">
+    <div class="top-logo">
+      <img src="https://raw.githubusercontent.com/Marcin870119/masterzamowienia/main/euroeast%20club.png" alt="EuroEast Club">
+    </div>
+
+    <div class="excel-import">
+      <label>Importuj Excel:</label>
+      <input type="file" id="excelFile" accept=".xlsx,.xls" />
+      <select id="clientSelect" disabled>
+        <option value="">Wybierz klienta...</option>
+      </select>
+      <label style="margin-left: 20px; font-weight: 500;">
+        <input type="checkbox" id="end-of-period">
+        Koniec okresu programu
+      </label>
+    </div>
+
+    <div class="map-container">
+      <img
+        src="https://raw.githubusercontent.com/Marcin870119/masterzamowienia/main/mapa%20europy.png"
+        alt="Mapa Europy"
+        class="europe-map"
+      >
+
+      <div class="flags-column">
+        <div class="flag-item">
+          <img src="https://flagcdn.com/ro.svg" alt="Rumunia">
+          <span>Rumunia</span>
+        </div>
+        <div class="flag-item">
+          <img src="https://flagcdn.com/bg.svg" alt="Bułgaria">
+          <span>Bułgaria</span>
+        </div>
+        <div class="flag-item">
+          <img src="https://flagcdn.com/ua.svg" alt="Ukraina">
+          <span>Ukraina</span>
+        </div>
+        <div class="flag-item">
+          <img src="https://flagcdn.com/lt.svg" alt="Litwa">
+          <span>Litwa</span>
+        </div>
+      </div>
+
+      <div class="world-food-center">
+        <div class="world-food-box">
+          <div class="logo-circle">
+            <img src="https://raw.githubusercontent.com/Marcin870119/masterzamowienia/main/euroeast%20club.png" alt="Logo EuroEast Club">
+          </div>
+
+          <div class="wf-title">World Food</div>
+          <div id="selected-client-name" class="selected-client"></div>
+
+          <div class="values">
+            <div class="value-row">
+              <span class="label">Target:</span>
+              <span class="amount" id="target-display">£0</span>
+            </div>
+            <div class="value-row">
+              <span class="label">Sprzedaż:</span>
+              <span class="amount" id="sales-display">£0</span>
+            </div>
+            <div class="value-row">
+              <span class="label">Pozostało:</span>
+              <span class="amount" id="remain-display">£0</span>
+            </div>
+          </div>
+
+          <!-- Sekcja punktów i gratulacji -->
+          <div class="points-summary" id="points-summary">
+            <div class="congrats" id="congrats-text" data-type="success">
+              Brawo! Osiągnąłeś swój cel 🎉
+            </div>
+
+            <div class="point-row">
+              <span class="label">Ilość otrzymanych punktów:</span>
+              <span class="value"><span id="points-h">0</span></span>
+            </div>
+            <div class="point-row">
+              <span class="label">Ilość punktów za ilość unikalnych indeksów grudzień:</span>
+              <span class="value"><span id="points-i">0</span></span>
+            </div>
+            <div class="point-row">
+              <span class="label">Suma punktów:</span>
+              <span class="value highlight"><span id="points-j">0</span></span>
+            </div>
+            <div class="point-row total">
+              <span class="label">Łącznie zebrane punkty:</span>
+              <span class="value"><span id="points-n">0</span></span>
+            </div>
+          </div>
+
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div id="progress-fill" style="width: 0%;"></div>
+            </div>
+            <div class="progress-label" id="progress-pct">0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      BETTER TOGETHER<br>
+      <span>EASTERN EUROPEAN food</span>
+    </div>
+  </div>
+
+  <!-- Panel edycyjny -->
+  <div class="editor">
+    <div class="input-group">
+      <label>Target World Food (£)</label>
+      <input type="number" id="target-world" value="0">
+    </div>
+    <div class="input-group">
+      <label>Sprzedaż World Food (£)</label>
+      <input type="number" id="sales-world" value="0">
+    </div>
+    <div class="actions">
+      <button id="reset">Wyczyść sprzedaż</button>
+      <button id="pdf">Pobierz PDF</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
