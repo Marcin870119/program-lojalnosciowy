@@ -1,7 +1,8 @@
 // =======================================================
-// script.js – FINALNA WERSJA (poprawiony PDF – bez ucinania dołu)
-// PDF: bez „Koniec okresu programu” + widoczny pasek postępu
+// script.js – FINALNA WERSJA
+// PDF: bez ucinania + bez „skoku” layoutu + równe marginesy
 // =======================================================
+
 // FORMAT WALUTY
 const fmt = new Intl.NumberFormat('en-GB', {
   style: 'currency',
@@ -92,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       pointRows.forEach(r => r.style.display = 'none');
       congratsEl.textContent =
         endOfPeriodEl && endOfPeriodEl.checked
-          ? 'Niestety, tym razem się nie udało. Popracuj ze swoim przedstawicielem w kolejnym etapie i razem osiągniecie cel.'
+          ? 'Niestety, tym razem się nie udało. Popracuj ze swoim przedstawicielem w kolejnym etapie i razem osiągniesz cel.'
           : 'Jesteś już bardzo blisko! Jeszcze chwila i osiągniesz swój cel 💪';
       congratsEl.className =
         endOfPeriodEl && endOfPeriodEl.checked
@@ -168,66 +169,142 @@ function update() {
 }
 
 // =======================================================
-// PDF – poprawiona wersja – pełna wysokość + margines bezpieczeństwa
+// PDF – wersja z przesunięciem mapy w prawo + mniejsza rozdzielczość (scale 1.4)
 // =======================================================
 function generatePDF() {
-  const capture = document.getElementById('capture');
+  const source = document.getElementById('capture');
+  if (!source) return;
 
-  // Ukrywamy elementy, które nie mają być w PDF
-  const hiddenEls = [
-    ...capture.querySelectorAll(
-      'select, input[type="file"], #end-of-period, label[for="end-of-period"], #excelFile'
-    ),
-    ...Array.from(capture.querySelectorAll('*')).filter(el => {
-      const t = el.textContent ? el.textContent.trim() : '';
-      return t === 'Importuj Excel:' || t === 'Koniec okresu programu';
-    })
-  ];
+  const clone = source.cloneNode(true);
 
-  hiddenEls.forEach(el => (el.style.visibility = 'hidden'));
+  // Przygotowanie klonu – staramy się zachować naturalny układ
+  clone.style.position = 'absolute';
+  clone.style.left = '-9999px';
+  clone.style.top = '0';
+  clone.style.width = 'auto';
+  clone.style.minWidth = 'unset';
+  clone.style.maxWidth = 'unset';
+  clone.style.height = 'auto';
+  clone.style.margin = '0';
+  clone.style.padding = '0';
+  clone.style.overflow = 'visible';
+  clone.style.boxSizing = 'border-box';
+  clone.style.backgroundColor = '#ffffff';
+  document.body.appendChild(clone);
 
-  // Dajemy przeglądarce chwilę na przeliczenie layoutu
+  // Usuwamy interaktywne elementy i niepotrzebne etykiety
+  clone.querySelectorAll(
+    'select, input, button, label[for="end-of-period"], #excelFile, .actions, #clear-data, #reset'
+  ).forEach(el => el.remove());
+
+  Array.from(clone.querySelectorAll('*')).forEach(el => {
+    const txt = (el.textContent || '').trim();
+    if (txt === 'Importuj Excel:' || txt === 'Koniec okresu programu') {
+      el.remove();
+    }
+  });
+
+  // Główny kontener – usuwamy ograniczenia szerokości
+  const main = clone.querySelector('#main-container');
+  if (main) {
+    main.style.maxWidth = 'none';
+    main.style.width = '100%';
+    main.style.margin = '0';
+    main.style.padding = '0';
+    main.style.boxShadow = 'none';
+  }
+
+  // Karta – bez sztucznego skalowania
+  const card = clone.querySelector('.world-food-card');
+  if (card) {
+    card.style.transform = 'none';
+    card.style.width = 'auto';
+    card.style.maxWidth = 'none';
+    card.style.margin = '0 auto';
+    card.style.padding = '15px'; // możesz zmienić na 0 jeśli chcesz mniej odstępu
+  }
+
+  // Mapa – wypełnia przestrzeń + przesunięcie w prawo
+  const map = clone.querySelector('.europe-map');
+  if (map) {
+    map.style.width = '100%';
+    map.style.maxWidth = 'none';
+    map.style.height = 'auto';
+    map.style.margin = '0';
+    map.style.padding = '0';
+    map.style.display = 'block';
+    map.style.objectFit = 'contain';
+    map.style.position = 'relative';
+    map.style.left = '80px';           // przesunięcie mapy w prawo
+  }
+
+  // Kontener mapy + flag – minimalne boczne marginesy
+  const mapCont = clone.querySelector('.map-container');
+  if (mapCont) {
+    mapCont.style.width = '100%';
+    mapCont.style.maxWidth = 'none';
+    mapCont.style.margin = '0';
+    mapCont.style.padding = '30px 10px 50px 10px';
+    mapCont.style.position = 'relative';
+    mapCont.style.overflow = 'visible';
+  }
+
+  const flagsColumn = clone.querySelector('.flags-column');
+  if (flagsColumn) {
+    flagsColumn.style.marginLeft = '0';
+    flagsColumn.style.paddingLeft = '8px';
+    flagsColumn.style.left = '0';
+  }
+
+  // Czekamy aż przeglądarka przeliczy rzeczywiste wymiary
   setTimeout(() => {
-    // Pobieramy rzeczywistą wysokość zawartości + spory zapas
-    const contentHeight = capture.scrollHeight + 120;
+    const rect = clone.getBoundingClientRect();
+    const w = Math.ceil(rect.width);
+    const h = Math.ceil(rect.height);
 
-    html2canvas(capture, {
-      scale: 2,
+    html2canvas(clone, {
+      scale: 1.4,                    // <--- ZMIENIONE – mniejsza rozdzielczość → PDF otwiera się w czytelniejszej skali
       useCORS: true,
       backgroundColor: '#ffffff',
-      width: capture.scrollWidth,
-      height: contentHeight,
-      windowWidth: capture.scrollWidth,
-      windowHeight: contentHeight,
-      logging: false
+      width: w,
+      height: h,
+      windowWidth: w,
+      windowHeight: h,
+      x: 0,
+      y: 0,
+      scrollX: 0,
+      scrollY: 0,
+      logging: false,
+      allowTaint: true
     }).then(canvas => {
       const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('landscape', 'pt', 'a4');
 
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+      let orientation = 'landscape';
+      if (h > w * 1.2) orientation = 'portrait';
 
-      const margin = 40;
-      const maxWidth = pageWidth - margin * 2;
-      const ratio = maxWidth / canvas.width;
+      const pdf = new jsPDF({
+        orientation: orientation,
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+        compress: true
+      });
 
-      const imgWidth = canvas.width * ratio;
-      const imgHeight = canvas.height * ratio;
+      pdf.addImage(
+        canvas.toDataURL('image/jpeg', 0.92),
+        'JPEG',
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
 
-      // Centrujemy pionowo i poziomo
-      const x = (pageWidth - imgWidth) / 2;
-      let y = (pageHeight - imgHeight) / 2;
+      pdf.save('Euroeast_World_Food.pdf');
 
-      // Jeśli obraz jest wyższy niż strona → dopasowujemy do wysokości
-      if (imgHeight > pageHeight - margin * 2) {
-        y = margin;
-      }
-
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', x, y, imgWidth, imgHeight);
-      pdf.save('EuroEast_Dashboard.pdf');
-
-      // Przywracamy widoczność
-      hiddenEls.forEach(el => (el.style.visibility = 'visible'));
+      document.body.removeChild(clone);
+    }).catch(err => {
+      console.error('PDF error:', err);
+      alert('Błąd generowania PDF – sprawdź konsolę');
+      document.body.removeChild(clone);
     });
-  }, 600);
+  }, 1200);
 }
