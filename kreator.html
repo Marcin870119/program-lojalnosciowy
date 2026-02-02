@@ -5,6 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EuroEast Club - Dashboard</title>
   <link rel="stylesheet" href="kreator.css">
+  <style>
+    /* Dodatkowy styl tylko dla nowego logo po prawej */
+    .maspo-logo-container {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      z-index: 8;
+      width: 180px;
+      height: auto;
+      opacity: 0.92;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18));
+    }
+
+    .maspo-logo-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    @media (max-width: 1100px) {
+      .maspo-logo-container {
+        right: 20px;
+        top: 30px;
+        width: 140px;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .maspo-logo-container {
+        display: none;   /* chowamy na bardzo małych ekranach, bo przeszkadza */
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -27,6 +60,15 @@
     </div>
 
     <div class="map-container">
+      <!-- NOWE LOGO PO PRAWEJ STRONIE -->
+      <div class="maspo-logo-container">
+        <img src="https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/logo-Maspo.png"
+     alt="Maspo Logo"
+     crossorigin="anonymous">
+
+
+      </div>
+
       <img
         src="https://raw.githubusercontent.com/Marcin870119/masterzamowienia/main/mapa%20europy.png"
         alt="Mapa Europy"
