@@ -1,0 +1,946 @@
+[
+  {
+    "INDEKS": "46744",
+    "NAZWA": "GERULA OK 1KG KAPUSTA KISZONA GLOWKA - VARZA MURATA CAPATANA RUMUNIA",
+    "Ranking": "1",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAAL MODE",
+    "Kod Ean": "8606100"
+  },
+  {
+    "INDEKS": "26878",
+    "NAZWA": "OLYMPIA 750ML BORS PRZYPRAWA DO ZUP PASTERYZOWANA CONTEC FOOD MODERN RUMUNIA",
+    "Ranking": "2",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466014765"
+  },
+  {
+    "INDEKS": "27057",
+    "NAZWA": "OLYMPIA 1L OCET - OTET RUMUNIA",
+    "Ranking": "3",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466003578"
+  },
+  {
+    "INDEKS": "26873",
+    "NAZWA": "OLYMPIA 300G MUSZTARDA KLASYCZNA - MUSTAR DIN TECUCI CLASIC MODERN RUMUNIA",
+    "Ranking": "4",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466002571"
+  },
+  {
+    "INDEKS": "26874",
+    "NAZWA": "CONTEC OLYMPIA MUSZTARDA 300G SLODKA-CONTEC OLYMPIA MUSTAR DIN TECUCI 300G DULCE RUMUNIA",
+    "Ranking": "5",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466014673"
+  },
+  {
+    "INDEKS": "26877",
+    "NAZWA": "OLYMPIA 680G GROSZEK ZIELONY - MAZARE VERDE RUMUNIA",
+    "Ranking": "6",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466002106"
+  },
+  {
+    "INDEKS": "27010",
+    "NAZWA": "BUCEGI 120G PASZTET WIEPRZOWY - PATE DE PORC RUMUNIA",
+    "Ranking": "7",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341022526"
+  },
+  {
+    "INDEKS": "52344",
+    "NAZWA": "CONTEC FOOD OLYMPIA 500G SOL-SARE TUB 500G RUMUNIA",
+    "Ranking": "8",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466000973"
+  },
+  {
+    "INDEKS": "26938",
+    "NAZWA": "CONTEC FOOD OLYMPIA 300G ZACUSCA PASTA Z BAKLAZANA-ZACUSCA VINETE COAPTE RUMUNIA",
+    "Ranking": "9",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466001130"
+  },
+  {
+    "INDEKS": "26939",
+    "NAZWA": "OLYMPIA 310G BULION POMIDOROWY 18% - BROTH RUMUNIA",
+    "Ranking": "10",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466000492"
+  },
+  {
+    "INDEKS": "26940",
+    "NAZWA": "OLYMPIA 300G MUSZTARDA OSTRA - MUSTAR DIN TECUCI IUTE RUMUNIA",
+    "Ranking": "11",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466002595"
+  },
+  {
+    "INDEKS": "26875",
+    "NAZWA": "OLYMPIA 300G GULASZ WARZYWNY PIKANTNY - ZACUSCA PICANTA RUMUNIA",
+    "Ranking": "12",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466002892"
+  },
+  {
+    "INDEKS": "26876",
+    "NAZWA": "OLYMPIA 680G FASOLKA SZPARAGOWA KONSERWOWA ZOLTA - FASOLE GALBENA RUMUNIA",
+    "Ranking": "13",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466002403"
+  },
+  {
+    "INDEKS": "52357",
+    "NAZWA": "CONTEC FOOD OLYMPIA 720ML PAPRYKA W OCCIE -GOGOSARI SFERTURI 720ML RUMUNIA",
+    "Ranking": "14",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466001352"
+  },
+  {
+    "INDEKS": "27011",
+    "NAZWA": "BUCEGI 200G PASZTET WIEPRZOWY - PATE DE PORC MODERN RUMUNIA",
+    "Ranking": "15",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341000043"
+  },
+  {
+    "INDEKS": "26880",
+    "NAZWA": "CONTEC FOOD OLYMPIA 300G ZACUSCA PASTA Z GRZYBAMI-ZACUSCA CIUPERCI RUMUNIA",
+    "Ranking": "16",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466008191"
+  },
+  {
+    "INDEKS": "28899",
+    "NAZWA": "OLYMPIA 680G OGORKI W OCCIE - CASTRAVETI 6-9CM IN OTET RUMUNIA",
+    "Ranking": "17",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466000195"
+  },
+  {
+    "INDEKS": "28901",
+    "NAZWA": "OLYMPIA 314ML KONCENTRAT POMIDOROWY - PASTA DE TOMATE 28% RUMUNIA",
+    "Ranking": "18",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466008160"
+  },
+  {
+    "INDEKS": "34091",
+    "NAZWA": "OLYMPIA 270G PAPRYKA OSTRA W OCCIE - ARDEI IUTI IN OTET RUMUNIA",
+    "Ranking": "19",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466025853"
+  },
+  {
+    "INDEKS": "26881",
+    "NAZWA": "CONTEC FOOD OLYMPIA 300G PASTA Z FASOLI-FASOLE BATUTA RUMUNIA",
+    "Ranking": "20",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466009242"
+  },
+  {
+    "INDEKS": "26936",
+    "NAZWA": "ARDEALUL 200G PASZTET WIEPRZOWY - PATE DE PORC RUMUNIA",
+    "Ranking": "21",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294000831"
+  },
+  {
+    "INDEKS": "34284",
+    "NAZWA": "OLYMPIA 750ML BULION POMIDOROWY Z KONCENTRATU - BULION DIN CONCENTRAT 18% MODERN RUMUNIA",
+    "Ranking": "22",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466019753"
+  },
+  {
+    "INDEKS": "26886",
+    "NAZWA": "CONTEC FOOD OLYMPIA 750G PASSATA POMIDOROWA -ROSII PASATE RUMUNIA",
+    "Ranking": "23",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466019746"
+  },
+  {
+    "INDEKS": "26935",
+    "NAZWA": "ARDEALUL 200G PASZTET WARZYWNY - PATE VEGETAL RUMUNIA",
+    "Ranking": "24",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294000688"
+  },
+  {
+    "INDEKS": "34107",
+    "NAZWA": "OLYMPIA 300G MUSZTARDA FRANCUSKA - MUSTAR CU BOABE RUMUNIA",
+    "Ranking": "25",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466017650"
+  },
+  {
+    "INDEKS": "27008",
+    "NAZWA": "BUCEGI 120G PASZTET DROBIOWY - PATE DE PUI RUMUNIA",
+    "Ranking": "26",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341032525"
+  },
+  {
+    "INDEKS": "27051",
+    "NAZWA": "CONTEC FOOD OLYMPIA 300G ZACUSCA Z FASOLA-ZACUSCA FASOLE RUMUNIA",
+    "Ranking": "27",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466013201"
+  },
+  {
+    "INDEKS": "34922",
+    "NAZWA": "RAURENI 690G OGORKI W ZALEWIE- CASTRAVETI IN SARAMURA RUMUNIA",
+    "Ranking": "28",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028005002"
+  },
+  {
+    "INDEKS": "26879",
+    "NAZWA": "OLYMPIA 300G FASOLKA GOTOWANA - MANCARE DE FASOLE RUMUNIA",
+    "Ranking": "29",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466001338"
+  },
+  {
+    "INDEKS": "27053",
+    "NAZWA": "CONTEC FOOD OLYMPIA 720ML FASOLKA SZPARAGOWA-FASOLE VERDE 720ML RUMUNIA",
+    "Ranking": "30",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466002533"
+  },
+  {
+    "INDEKS": "32736",
+    "NAZWA": "MANDY 120G PASZTET WARZYWNY ORGINAL - PATE VEGETAL ORGINAL RUMUNIA",
+    "Ranking": "31",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "MANDY FOODS",
+    "Kod Ean": "5941334002122"
+  },
+  {
+    "INDEKS": "52335",
+    "NAZWA": "CONTEC FOOD OLYMPIA 580ML GOTOWANE LISCIE KAPUSTY-VARZA CALITA 580ML RUMUNIA",
+    "Ranking": "32",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466022944"
+  },
+  {
+    "INDEKS": "26937",
+    "NAZWA": "ARDEALUL 200G PASZTET DROBIOWY - PATE DE PUI RUMUNIA",
+    "Ranking": "33",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294000855"
+  },
+  {
+    "INDEKS": "31104",
+    "NAZWA": "CONTEC FOOD OLYMPIA 175G CHRZAN-PASTA HREAN 175G RUMUNIA",
+    "Ranking": "34",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466025877"
+  },
+  {
+    "INDEKS": "34097",
+    "NAZWA": "OLYMPIA 314G KONCENTRAT POMIDOROWY - PASTA DE TOMATE 24% RUMUNIA",
+    "Ranking": "35",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466001413"
+  },
+  {
+    "INDEKS": "34919",
+    "NAZWA": "RAURENI 1L BARSZCZ -BORS RUMUNIA",
+    "Ranking": "36",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028010006"
+  },
+  {
+    "INDEKS": "26885",
+    "NAZWA": "CONTEC FOOD OLYMPIA 480G MAJONEZ-MAIONEZA CLASICA 480G RUMUNIA",
+    "Ranking": "37",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466006111"
+  },
+  {
+    "INDEKS": "30091",
+    "NAZWA": "MANDY 300G GULASZ WARZYWNY Z BAKLAZANEM - ZACUSCA DE VINETE RUMUNIA",
+    "Ranking": "38",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "MANDY FOODS",
+    "Kod Ean": "5941334000593"
+  },
+  {
+    "INDEKS": "31252",
+    "NAZWA": "ARDEALUL100G PASZTET DROBIOWY - PATE DE PUI RUMUNIA",
+    "Ranking": "39",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294000848"
+  },
+  {
+    "INDEKS": "35364",
+    "NAZWA": "BUCEGI 120G PASZTET Z GESICH WATROBEK - PATE GASCA RUMUNIA",
+    "Ranking": "40",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341032563"
+  },
+  {
+    "INDEKS": "27054",
+    "NAZWA": "CONTEC FOOD OLYMPIA 500G MUSZTARDA-MUSTAR CLASIC 500G RUMUNIA",
+    "Ranking": "41",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466003592"
+  },
+  {
+    "INDEKS": "52332",
+    "NAZWA": "CONTEC FOOD OLYMPIA 550G ZACUSCA PASTA Z BAKLAZANA-ZACUSCA VINETE COAPTE 550G RUMUNIA",
+    "Ranking": "42",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466018374"
+  },
+  {
+    "INDEKS": "26883",
+    "NAZWA": "OLYMPIA 500G KETCHUP LAGODNY - KETCHUP DULCE RUMUNIA",
+    "Ranking": "43",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466000737"
+  },
+  {
+    "INDEKS": "27009",
+    "NAZWA": "BUCEGI 200G PASZTET DROBIOWY - PATE DE PUI MODERN RUMUNIA",
+    "Ranking": "44",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341001361"
+  },
+  {
+    "INDEKS": "29578",
+    "NAZWA": "RAURENI 500ML OCET JABLKOWY -OTET DE MERE RUMUNIA",
+    "Ranking": "45",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941865004725"
+  },
+  {
+    "INDEKS": "31256",
+    "NAZWA": "ARDEALUL 200G PASZTET WARZYWNY Z PAPRYKA - PATE VEGETAL CU ARDEI RUMUNIA",
+    "Ranking": "46",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294001524"
+  },
+  {
+    "INDEKS": "26882",
+    "NAZWA": "OLYMPIA 300G GULASZ WARZYWNY - TOCANA DE LEGUME RUMUNIA",
+    "Ranking": "47",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466001147"
+  },
+  {
+    "INDEKS": "27012",
+    "NAZWA": "BUCEGI 200G PASZTET WARZYWNY - PATE VEGETAL MODERN RUMUNIA",
+    "Ranking": "48",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341002993"
+  },
+  {
+    "INDEKS": "35360",
+    "NAZWA": "BUCEGI 300G PASZTET WIEPRZOWY - PATE PORC RUMUNIA",
+    "Ranking": "49",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341002771"
+  },
+  {
+    "INDEKS": "40585",
+    "NAZWA": "RAURENI OGORKI W OCCIE 3-6CM 490G - CASTRAVETI EXTRA IN OTET 3-6CM RUMUNIA",
+    "Ranking": "50",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028013823"
+  },
+  {
+    "INDEKS": "26933",
+    "NAZWA": "ARDEALUL 300G FASOLA Z BEKONEM - COSTITA CU FASOLE RUMUNIA",
+    "Ranking": "51",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294000077"
+  },
+  {
+    "INDEKS": "26934",
+    "NAZWA": "ARDEALUL 300G FASOLA Z KIELBASA - CARNATI CU FASOLE RUMUNIA",
+    "Ranking": "52",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294000060"
+  },
+  {
+    "INDEKS": "30092",
+    "NAZWA": "MANDY 300G GULASZ WARZYWNY PIKANTNY - ZACUSCA PICANTA RUMUNIA",
+    "Ranking": "53",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "MANDY FOODS",
+    "Kod Ean": "5941334000609"
+  },
+  {
+    "INDEKS": "31249",
+    "NAZWA": "ARDEALUL 300G PASZTET WIEPRZOWY - PATE DE PORC RUMUNIA",
+    "Ranking": "54",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294001029"
+  },
+  {
+    "INDEKS": "35363",
+    "NAZWA": "BUCEGI 200G PASZTET WARZYWNY Z GRZYBAMI - PATE VEGATAL CU CIUPERCI RUMUNIA",
+    "Ranking": "55",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341020904"
+  },
+  {
+    "INDEKS": "59087",
+    "NAZWA": "BUCEGI SCANDIA 120G PASZTET WARZYWNY CLASSIC-BUCEGI VEGETAL CLASIC PATE RUMUNIA",
+    "Ranking": "56",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341033843"
+  },
+  {
+    "INDEKS": "26884",
+    "NAZWA": "OLYMPIA 500G KETCHUP PIKANTNY - KETCHUP PICANT RUMUNIA",
+    "Ranking": "57",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466000744"
+  },
+  {
+    "INDEKS": "57312",
+    "NAZWA": "HADA PAPRYKA KROJONA W ZALEWIE OCTOWEJ 680G- GOGOSARI TAIATI IN OTET HADA RUMUNIA",
+    "Ranking": "58",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "HADA",
+    "Kod Ean": "6426495869894"
+  },
+  {
+    "INDEKS": "34090",
+    "NAZWA": "OLYMPIA 720ML PAPRYKA NA OSTRO W OCCIE - ARDEI IUTI IN OTET RUMUNIA",
+    "Ranking": "59",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466014338"
+  },
+  {
+    "INDEKS": "35362",
+    "NAZWA": "BUCEGI 200G PASZTET WARZYWNY Z PAPRYKA - PATE VEGATAL CU ARDEI RUMUNIA",
+    "Ranking": "60",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341014965"
+  },
+  {
+    "INDEKS": "46014",
+    "NAZWA": "ARDEALUL 100G PASZTET WIEPRZOWY - PATE DE PORC RUMUNIA",
+    "Ranking": "61",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294000824"
+  },
+  {
+    "INDEKS": "52338",
+    "NAZWA": "CONTEC FOOD OLYMPIA 750ML SOK POMIDOROWY Z KONCENTRATU 750ML RUMUNIA",
+    "Ranking": "62",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466023415"
+  },
+  {
+    "INDEKS": "57157",
+    "NAZWA": "BALEA BOCZEK Z FASOLA 300G-COSTITA CU FASOLE BOABE RUMUNIA",
+    "Ranking": "63",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "BALEA",
+    "Kod Ean": "5941341006380"
+  },
+  {
+    "INDEKS": "57323",
+    "NAZWA": "LA MINUT MUSZTARDA KLASYCZNA 300G-MUSTAR LA MINUT CLASIC RUMUNIA",
+    "Ranking": "64",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "LA MINUT",
+    "Kod Ean": "5941486004142"
+  },
+  {
+    "INDEKS": "31251",
+    "NAZWA": "ARDEALUL 200G PASZTET WIEPRZOWY PIKANTNY - PATE DE PORC PICANT RUMUNIA",
+    "Ranking": "65",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294000879"
+  },
+  {
+    "INDEKS": "57159",
+    "NAZWA": "BALEA FASOLA Z MIESEM WIEPRZOWYM-FASOLE CU CARNE DE PORC RUMUNIA",
+    "Ranking": "66",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "BALEA",
+    "Kod Ean": "5949095001590"
+  },
+  {
+    "INDEKS": "59088",
+    "NAZWA": "BUCEGI SCANDIA 120G PASZTET WARZYWNY Z PAPRYKA-BUCEGI VEGETALCU ARDEI PATE RUMUNIA",
+    "Ranking": "67",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341033935"
+  },
+  {
+    "INDEKS": "37298",
+    "NAZWA": "ORZECH 660G PAPRYKA MARYNOWANA - GOGOSARI MURATI TAIATI IN OTET RUMUNIA",
+    "Ranking": "68",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORZECH RO",
+    "Kod Ean": "5906013006228"
+  },
+  {
+    "INDEKS": "31253",
+    "NAZWA": "ARDEALUL 300G PASZTET DROBIOWY - PATE DE PUI RUMUNIA",
+    "Ranking": "69",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORKLA FOODS",
+    "Kod Ean": "5941294001081"
+  },
+  {
+    "INDEKS": "57160",
+    "NAZWA": "BALEA FASOLA Z GOLONKA 300G-FASOLE CU CIOLAN RUMUNIA",
+    "Ranking": "70",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "BALEA",
+    "Kod Ean": "5949095001576"
+  },
+  {
+    "INDEKS": "59089",
+    "NAZWA": "BUCEGI SCANDIA 120G PASZTET WARZYWNY Z PIECZONA PAPRYKA-BUCEGI VEGETALCU ARDEI COPT PATE RU",
+    "Ranking": "71",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341049011"
+  },
+  {
+    "INDEKS": "30406",
+    "NAZWA": "PAMBAC GRYSIK 500G-GRIS PAMBAC RUMUNIA",
+    "Ranking": "72",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "PAMBAC",
+    "Kod Ean": "5941113004408"
+  },
+  {
+    "INDEKS": "27045",
+    "NAZWA": "MANDY 200G PASZTET WARZYWNY Z GRZYBAMI - PATE VEGETAL CU CIUPERCI RUMUNIA",
+    "Ranking": "73",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "MANDY FOODS",
+    "Kod Ean": "5941334002191"
+  },
+  {
+    "INDEKS": "34923",
+    "NAZWA": "RAURENI 680G OGORKI PIKANTNE W OCCIE-CASTRAVETI PICANTI 6-9CM RUMUNIA",
+    "Ranking": "74",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028008614"
+  },
+  {
+    "INDEKS": "57325",
+    "NAZWA": "LA MINUT MUSZTARDA SLODKA 290G-MUSTAR LA MINUT DULCE RUMUNIA",
+    "Ranking": "75",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "LA MINUT",
+    "Kod Ean": "5941486004784"
+  },
+  {
+    "INDEKS": "57305",
+    "NAZWA": "HADA KALAFIOR W OCCIE 680G- CONOPIDA IN OTET HADA RUMUNIA",
+    "Ranking": "76",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "HADA",
+    "Kod Ean": "6426495869375"
+  },
+  {
+    "INDEKS": "57161",
+    "NAZWA": "BALEA WOLOWINA 300G-CARNE DE VITA RUMUNIA",
+    "Ranking": "77",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "BALEA",
+    "Kod Ean": "5941341027057"
+  },
+  {
+    "INDEKS": "57313",
+    "NAZWA": "HADA DOJRZALE BAKLAZANY 580ML-VINETE COAPTE HADA RUMUNIA",
+    "Ranking": "78",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "HADA",
+    "Kod Ean": "6426495869467"
+  },
+  {
+    "INDEKS": "54861",
+    "NAZWA": "RAURENI 270G KONFITURA ROZANA-DULCEATA DE TRANDAFIRI RUMUNIA",
+    "Ranking": "79",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028014172"
+  },
+  {
+    "INDEKS": "59091",
+    "NAZWA": "BUCEGI SCANDIA 300G MIESO WIEPRZOWE 65%-BUCEGI PORC CARNE RUMUNIA",
+    "Ranking": "80",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341021246"
+  },
+  {
+    "INDEKS": "59095",
+    "NAZWA": "BUCEGI SCANDIA 120G PASZTET DROBIOWY-BUCEGI PUI PATE RUMUNIA",
+    "Ranking": "81",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341002283"
+  },
+  {
+    "INDEKS": "59090",
+    "NAZWA": "BUCEGI SCANDIA 120G PASZTET WARZYWNY Z GRZYBAMI-BUCEGI VEGETALCU CIUPERCIC PATE RUMUNIA",
+    "Ranking": "82",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341033874"
+  },
+  {
+    "INDEKS": "28807",
+    "NAZWA": "RAURENI 300G GULASZ WARZYWNY WIEJSKI - ZACUSCA TARANEASCA MODERN RUMUNIA",
+    "Ranking": "83",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028003978"
+  },
+  {
+    "INDEKS": "37302",
+    "NAZWA": "ORZECH 830G OGORKI KONSERWOWE PO ZYDOWSKU - CASTRAVETI IN OTET CU MARAR SI LEGUME RUMUNIA",
+    "Ranking": "84",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "ORZECH RO",
+    "Kod Ean": "5906013006198"
+  },
+  {
+    "INDEKS": "57162",
+    "NAZWA": "BALEA WIEPRZOWINA 300G-CARNE DE PORC RUMUNIA",
+    "Ranking": "85",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "BALEA",
+    "Kod Ean": "5941341027033"
+  },
+  {
+    "INDEKS": "57775",
+    "NAZWA": "RAURENI KOMPOT 720G WISNIOWY KWASNY-COMPOT VISINE RUMUNIA",
+    "Ranking": "86",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028000496"
+  },
+  {
+    "INDEKS": "27046",
+    "NAZWA": "MANDY 200G PASZTET WARZYWNY Z PIEPRZEM - PATE VEGETAL CU ARDEI RUMUNIA",
+    "Ranking": "87",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "MANDY FOODS",
+    "Kod Ean": "5941334003518"
+  },
+  {
+    "INDEKS": "27056",
+    "NAZWA": "OLYMPIA 785G BULION POMIDOROWY - BULION DIN ROSII RUMUNIA",
+    "Ranking": "88",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466014383"
+  },
+  {
+    "INDEKS": "52333",
+    "NAZWA": "CONTEC FOOD OLYMPIA 314G PRZECIER POMIDOROWY Z CEBULA I CZOSNKIEM-BULION CU USTROI SI CEAPA RUMUNIA",
+    "Ranking": "89",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466023446"
+  },
+  {
+    "INDEKS": "35361",
+    "NAZWA": "BUCEGI 300G PASZTET DROBIOWY - PATE PUI RUMUNIA",
+    "Ranking": "90",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341003976"
+  },
+  {
+    "INDEKS": "36830",
+    "NAZWA": "CONTEC FOOD OLYMPIA 720ML OGORKI KONSERWOWE-CASTRAVETI RUMUNIA",
+    "Ranking": "91",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466008283"
+  },
+  {
+    "INDEKS": "59092",
+    "NAZWA": "BUCEGI SCANDIA 200G PASZTET WIEPRZOWY-BUCEGI PORC PATE RUMUNIA",
+    "Ranking": "92",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341000340"
+  },
+  {
+    "INDEKS": "29576",
+    "NAZWA": "RAURENI 350G MARMOLADA SLIWKOWA-MAGIUN PRUNE RUMUNIA",
+    "Ranking": "93",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028004968"
+  },
+  {
+    "INDEKS": "59094",
+    "NAZWA": "BUCEGI SCANDIA 120G PASZTET WIEPRZOWY-BUCEGI PORC PATE RUMUNIA",
+    "Ranking": "94",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341002276"
+  },
+  {
+    "INDEKS": "57321",
+    "NAZWA": "LA MINUT KETCHUP LAGODNY 480G-KETCHUP LA MINUT DULCE RUMUNIA",
+    "Ranking": "95",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "LA MINUT",
+    "Kod Ean": "5941486001271"
+  },
+  {
+    "INDEKS": "29567",
+    "NAZWA": "RAURENI 720ML SLIWKI W SYROPIE-COMPOT PRUNE RUMUNIA",
+    "Ranking": "96",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028000250"
+  },
+  {
+    "INDEKS": "46741",
+    "NAZWA": "GERULA 1350G WARZYWA W OCCIE MIX - MURATURI ASORTATE RUMUNIA",
+    "Ranking": "97",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAAL MODE",
+    "Kod Ean": "531054001123"
+  },
+  {
+    "INDEKS": "54846",
+    "NAZWA": "RAURENI 720ML SZPINAK W ZALEWIE-SPANAC IN SARAMURA RUMUNIA",
+    "Ranking": "98",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028013984"
+  },
+  {
+    "INDEKS": "57156",
+    "NAZWA": "BALEA SPRASOWANE MIESO DROBIOWE 300G- CARNE PRESATA DE PASARE RUMUNIA",
+    "Ranking": "99",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "BALEA",
+    "Kod Ean": "5941341018390"
+  },
+  {
+    "INDEKS": "57320",
+    "NAZWA": "LA MINUT KETCHUP PIKANTNY 480G-KETCHUP LA MINUT PICANT RUMUNIA",
+    "Ranking": "100",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "LA MINUT",
+    "Kod Ean": "5941486001318"
+  },
+  {
+    "INDEKS": "52337",
+    "NAZWA": "CONTEC FOOD OLYMPIA 500G POLEWA TRUSKAWKOWA-TOPPING CAPSUNI 500G RUMUNIA",
+    "Ranking": "101",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466023538"
+  },
+  {
+    "INDEKS": "57316",
+    "NAZWA": "SCANDIA ZUPA Z KLOPSAMI 400G-CIORBA DE PERISOARE SCANDIA RUMUNIA",
+    "Ranking": "102",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341041305"
+  },
+  {
+    "INDEKS": "57319",
+    "NAZWA": "SCANDIA GOLABKI WIEPRZOWO-WOLOWE W LISCIACH WINOGRON 400G-SARMALUTE SCANDIA IN FOI VITA POR",
+    "Ranking": "103",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341040858"
+  },
+  {
+    "INDEKS": "27067",
+    "NAZWA": "SCANDIA WEGANSKIE GOLABKI 400G-SARMALUTE POST SCANDIA RUMUNIA",
+    "Ranking": "104",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341001521"
+  },
+  {
+    "INDEKS": "57158",
+    "NAZWA": "BALEA KIELBASKI Z FASOLA 300G-CARNACIORI CU FASOL BOABE RUMUNIA",
+    "Ranking": "105",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "BALEA",
+    "Kod Ean": "5941341011087"
+  },
+  {
+    "INDEKS": "34928",
+    "NAZWA": "RAURENI 370G DZEM WISNIOWY-GEM CIRESE RUMUNIA",
+    "Ranking": "106",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028002926"
+  },
+  {
+    "INDEKS": "34931",
+    "NAZWA": "RAURENI SALATKA 680G Z CZERWONEJ KAPUSTY-SALATA VARZA ROSIE IN OTET RUMUNIA",
+    "Ranking": "107",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028000489"
+  },
+  {
+    "INDEKS": "54857",
+    "NAZWA": "RAURENI 270G KONFITURA JAGODOWA-DULCEATA DE AFINE RUMUNIA",
+    "Ranking": "108",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028014028"
+  },
+  {
+    "INDEKS": "57315",
+    "NAZWA": "SCANDIA ROSOL Z WARZYWAMI 400G-CIORBA PUI SCANDIA CU LEGUME RUMUNIA",
+    "Ranking": "109",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341041329"
+  },
+  {
+    "INDEKS": "27066",
+    "NAZWA": "SCANDIA ROSOL Z KWASNA SMIETANA 400G-CIORBA PUI CU SMANTANA SCANDIA RUMUNIA",
+    "Ranking": "110",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341005789"
+  },
+  {
+    "INDEKS": "29574",
+    "NAZWA": "RAURENI 370G DZEM BRZOSKWINIOWY-GEM PIERSICI RUMUNIA",
+    "Ranking": "111",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028003183"
+  },
+  {
+    "INDEKS": "54858",
+    "NAZWA": "RAURENI 270G KONFITURA TRUSKAWKOWA-DULCEATA DE CAPSUNI RUMUNIA",
+    "Ranking": "112",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028014042"
+  },
+  {
+    "INDEKS": "57322",
+    "NAZWA": "LA MINUT MUSZTARDA CHRZANOWA 290G-MUSTAR LA MINUT HREAN RUMUNIA",
+    "Ranking": "113",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "LA MINUT",
+    "Kod Ean": "5941486009284"
+  },
+  {
+    "INDEKS": "52356",
+    "NAZWA": "CONTEC FOOD OLYMPIA 340G DZEM Z WISNI-GEM VISINE RUMUNIA",
+    "Ranking": "114",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "CONTEC FOODS",
+    "Kod Ean": "5941466001741"
+  },
+  {
+    "INDEKS": "54859",
+    "NAZWA": "RAURENI 270G KONFITURA WISNIOWA-DULCEATA DE CIRESE RUMUNIA",
+    "Ranking": "115",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "RAURENI",
+    "Kod Ean": "5941028014110"
+  },
+  {
+    "INDEKS": "57318",
+    "NAZWA": "SCANDIA GOLABKI Z INDYKIEM W LISCIACH WINOGRONU 400G-SARMALUTE SCANDIA IN FOI VITA CU C.CUR",
+    "Ranking": "116",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341040865"
+  },
+  {
+    "INDEKS": "57324",
+    "NAZWA": "LA MINUT MUSZTARDA OSTRA 290G-MUSTAR LA MINUT IUTE RUMUNIA",
+    "Ranking": "117",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "LA MINUT",
+    "Kod Ean": "5941486004791"
+  },
+  {
+    "INDEKS": "27065",
+    "NAZWA": "SCANDIA ZUPA Z WOLOWINA 400G-CIORBA VACA SCANDIA RUMUNIA",
+    "Ranking": "118",
+    "Grupa": "PUSZKI I SŁOIKI RUMUNIA",
+    "Producent": "SCANDIA",
+    "Kod Ean": "5941341001514"
+  }
+]
