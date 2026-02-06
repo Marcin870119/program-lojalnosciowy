@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Food – Oferta</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <h1>World Food – Oferta</h1>
+  <nav>
+    <button class="tab active" data-tab="rumunia">Rumunia</button>
+    <button class="tab" data-tab="ukraina">Ukraina</button>
+    <button class="tab" data-tab="litwa">Litwa</button>
+    <button class="tab" data-tab="bulgaria">Bułgaria</button>
+  </nav>
+</header>
+
+<main>
+
+  <section id="rumunia" class="tab-content">
+    <div class="section-title">🇷🇴 Rumunia</div>
+    <div class="grid">
+      <div class="card" id="rumunia-slodycze">
+        <h3>Słodycze</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-mieso-wedliny">
+        <h3>Mięso i wędliny</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-nabial">
+        <h3>Nabiał</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-napoje">
+        <h3>Napoje</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-przyprawy-proszek">
+        <h3>Przyprawy i dodatki w proszku</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-puszki-sloiki">
+        <h3>Puszki i słoiki</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-produkty-podstawowe">
+        <h3>Produkty podstawowe</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-kawy-herbaty">
+        <h3>Kawy i herbaty</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+    </div>
+
+    <!-- TU ŁADUJE SIĘ: przyciski + tabela -->
+    <div id="slodycze-content"></div>
+    <div id="mieso-wedliny-content"></div>
+    <div id="nabial-content"></div>
+    <div id="napoje-content"></div>
+    <div id="przyprawy-proszek-content"></div>
+    <div id="puszki-sloiki-content"></div>
+    <div id="produkty-podstawowe-content"></div>
+    <div id="kawy-herbaty-content"></div>
+  </section>
+
+  <section id="ukraina" class="tab-content hidden"></section>
+  <section id="litwa" class="tab-content hidden"></section>
+  <section id="bulgaria" class="tab-content hidden"></section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
