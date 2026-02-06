@@ -330,12 +330,14 @@ function render(){
         </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr>
-        </thead>
-        <tbody id="data-tbody"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr>
+          </thead>
+          <tbody id="data-tbody"></tbody>
+        </table>
+      </div>
       <div id="expand-container"></div>
     `}
   `;
@@ -534,3 +536,4 @@ function setActiveCard(id){
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
 }
+
