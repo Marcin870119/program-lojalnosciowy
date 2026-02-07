@@ -35,6 +35,12 @@ body{
   gap:12px;
 }
 
+.brand-logo{
+  max-width:220px;
+  height:auto;
+  display:block;
+}
+
 .login-desc{
   color:var(--muted);
   margin:0 0 8px;
@@ -290,3 +296,4 @@ th{
   height:70vh;
   border:0;
 }
+
