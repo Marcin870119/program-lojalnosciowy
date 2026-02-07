@@ -10,17 +10,35 @@
 
 <body>
 
-<header>
-  <h1>World Food – Oferta</h1>
-  <nav>
-    <button class="tab active" data-tab="rumunia">Rumunia</button>
-    <button class="tab" data-tab="ukraina">Ukraina</button>
-    <button class="tab" data-tab="litwa">Litwa</button>
-    <button class="tab" data-tab="bulgaria">Bułgaria</button>
-  </nav>
-</header>
+<div id="login-view">
+  <div class="login-card">
+    <h1>World Food – Oferta</h1>
+    <p class="login-desc">Zaloguj się, aby zobaczyć ofertę.</p>
 
-<main>
+    <div class="login-form">
+      <input id="login-email" type="email" placeholder="Email">
+      <input id="login-password" type="password" placeholder="Hasło">
+      <button id="login-btn">Zaloguj</button>
+      <button id="register-btn" class="btn-outline">Utwórz konto</button>
+    </div>
+
+    <div id="login-error" class="login-error"></div>
+  </div>
+</div>
+
+<div id="app-view" class="hidden">
+  <header>
+    <h1>World Food – Oferta</h1>
+    <nav>
+      <button class="tab active" data-tab="rumunia">Rumunia</button>
+      <button class="tab" data-tab="ukraina">Ukraina</button>
+      <button class="tab" data-tab="litwa">Litwa</button>
+      <button class="tab" data-tab="bulgaria">Bułgaria</button>
+    </nav>
+    <button id="logout-btn" class="btn-outline">Wyloguj</button>
+  </header>
+
+  <main>
 
   <section id="rumunia" class="tab-content">
     <div class="section-title">🇷🇴 Rumunia</div>
@@ -74,10 +92,14 @@
   <section id="litwa" class="tab-content hidden"></section>
   <section id="bulgaria" class="tab-content hidden"></section>
 
-</main>
+  </main>
+</div>
 
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
+
 
