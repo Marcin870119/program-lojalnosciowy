@@ -55,6 +55,35 @@ function showLogin(){
   if(loginView) loginView.classList.remove('hidden');
 }
 
+function resetAppState(){
+  fullData = [];
+  expanded = false;
+  viewMode = 'table';
+  activeContainer = slodyczeContainer;
+  currentCategoryName = 'Slodycze';
+  currentCategorySlug = 'slodycze';
+  resetFilters();
+
+  slodyczeContainer.innerHTML = '';
+  miesoContainer.innerHTML = '';
+  nabialContainer.innerHTML = '';
+  napojeContainer.innerHTML = '';
+  przyprawyProszekContainer.innerHTML = '';
+  puszkiSloikiContainer.innerHTML = '';
+  produktyPodstawoweContainer.innerHTML = '';
+  kawyHerbatyContainer.innerHTML = '';
+
+  document.querySelectorAll('.grid .card').forEach(c => c.classList.remove('active'));
+
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const defaultTab = document.querySelector('.tab[data-tab="rumunia"]');
+  if(defaultTab) defaultTab.classList.add('active');
+
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+  const rumuniaSection = document.getElementById('rumunia');
+  if(rumuniaSection) rumuniaSection.classList.remove('hidden');
+}
+
 function setLoginError(message){
   if(loginError) loginError.textContent = message || '';
 }
@@ -72,8 +101,10 @@ if(typeof firebase !== 'undefined'){
     auth.onAuthStateChanged(user => {
       if(user){
         showApp();
+        resetAppState();
         setLoginError('');
       }else{
+        resetAppState();
         showLogin();
       }
     });
@@ -83,11 +114,11 @@ if(typeof firebase !== 'undefined'){
 }
 
 if(loginBtn){
-  loginBtn.addEventListener('click', async () => {
-    if(!authReady || !auth){
-      setLoginError('Firebase Auth nie jest gotowy.');
-      return;
-    }
+    loginBtn.addEventListener('click', async () => {
+      if(!authReady || !auth){
+        setLoginError('Firebase Auth nie jest gotowy.');
+        return;
+      }
     setLoginError('');
     console.log('LOGIN CLICK');
     console.log('EMAIL:', loginEmail.value);
@@ -95,6 +126,7 @@ if(loginBtn){
     try{
       await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
       showApp();
+      resetAppState();
     }catch(err){
       console.error('LOGIN ERROR:', err.code, err.message, err);
       setLoginError(err.code || err.message || 'Błąd logowania');
@@ -112,6 +144,7 @@ if(registerBtn){
     try{
       await auth.createUserWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
       showApp();
+      resetAppState();
     }catch(err){
       console.error('REGISTER ERROR:', err.code, err.message, err);
       setLoginError(err.code || err.message || 'Błąd rejestracji');
@@ -123,6 +156,7 @@ if(logoutBtn){
   logoutBtn.addEventListener('click', async () => {
     if(auth){
       await auth.signOut();
+      resetAppState();
     }
   });
 }
@@ -644,4 +678,3 @@ function setActiveCard(id){
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
 }
-
