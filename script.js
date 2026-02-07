@@ -27,6 +27,76 @@ const producerPdfMap = {
 const pdfPreviewUrl =
   'https://mozilla.github.io/pdf.js/web/viewer.html?file=';
 
+const firebaseConfig = {
+  apiKey: 'AIzaSyDwzVRS5W2lklGMLcZJn-YPCK9OtBQZ7bI',
+  authDomain: 'pdf-creator-f7a8b.firebaseapp.com',
+  projectId: 'pdf-creator-f7a8b',
+  appId: '1:606744201676:web:6f8c1b2c323fbaf6f3b569'
+};
+
+const loginView = document.getElementById('login-view');
+const appView = document.getElementById('app-view');
+const loginEmail = document.getElementById('login-email');
+const loginPassword = document.getElementById('login-password');
+const loginBtn = document.getElementById('login-btn');
+const registerBtn = document.getElementById('register-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const loginError = document.getElementById('login-error');
+
+function setLoginError(message){
+  if(loginError) loginError.textContent = message || '';
+}
+
+if(typeof firebase !== 'undefined'){
+  if(String(firebaseConfig.apiKey).startsWith('PASTE_')){
+    setLoginError('Uzupełnij firebaseConfig w script.js');
+  }else{
+    if(!firebase.apps.length){
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+
+    auth.onAuthStateChanged(user => {
+      if(user){
+        loginView.classList.add('hidden');
+        appView.classList.remove('hidden');
+        setLoginError('');
+      }else{
+        appView.classList.add('hidden');
+        loginView.classList.remove('hidden');
+      }
+    });
+
+    loginBtn.addEventListener('click', async () => {
+      setLoginError('');
+      try{
+        await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
+      }catch(err){
+        setLoginError(err.message);
+      }
+    });
+
+    registerBtn.addEventListener('click', async () => {
+      setLoginError('');
+      try{
+        await auth.createUserWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
+      }catch(err){
+        setLoginError(err.message);
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await auth.signOut();
+    });
+
+    loginPassword.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){
+        loginBtn.click();
+      }
+    });
+  }
+}
+
 const slodyczeContainer = document.getElementById('slodycze-content');
 const miesoContainer = document.getElementById('mieso-wedliny-content');
 const nabialContainer = document.getElementById('nabial-content');
@@ -536,4 +606,5 @@ function setActiveCard(id){
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
 }
+
 
