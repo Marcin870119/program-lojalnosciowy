@@ -42,6 +42,8 @@ const loginBtn = document.getElementById('login-btn');
 const registerBtn = document.getElementById('register-btn');
 const logoutBtn = document.getElementById('logout-btn');
 const loginError = document.getElementById('login-error');
+let auth = null;
+let authReady = false;
 
 function setLoginError(message){
   if(loginError) loginError.textContent = message || '';
@@ -54,7 +56,8 @@ if(typeof firebase !== 'undefined'){
     if(!firebase.apps.length){
       firebase.initializeApp(firebaseConfig);
     }
-    const auth = firebase.auth();
+    auth = firebase.auth();
+    authReady = true;
 
     auth.onAuthStateChanged(user => {
       if(user){
@@ -66,35 +69,57 @@ if(typeof firebase !== 'undefined'){
         loginView.classList.remove('hidden');
       }
     });
-
-    loginBtn.addEventListener('click', async () => {
-      setLoginError('');
-      try{
-        await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
-      }catch(err){
-        setLoginError(err.message);
-      }
-    });
-
-    registerBtn.addEventListener('click', async () => {
-      setLoginError('');
-      try{
-        await auth.createUserWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
-      }catch(err){
-        setLoginError(err.message);
-      }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-      await auth.signOut();
-    });
-
-    loginPassword.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter'){
-        loginBtn.click();
-      }
-    });
   }
+}else{
+  setLoginError('Firebase nie załadował się. Sprawdź połączenie.');
+}
+
+if(loginBtn){
+  loginBtn.addEventListener('click', async () => {
+    if(!authReady || !auth){
+      setLoginError('Firebase Auth nie jest gotowy.');
+      return;
+    }
+    setLoginError('');
+    try{
+      await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
+    }catch(err){
+      console.error(err);
+      setLoginError(err.message);
+    }
+  });
+}
+
+if(registerBtn){
+  registerBtn.addEventListener('click', async () => {
+    if(!authReady || !auth){
+      setLoginError('Firebase Auth nie jest gotowy.');
+      return;
+    }
+    setLoginError('');
+    try{
+      await auth.createUserWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
+    }catch(err){
+      console.error(err);
+      setLoginError(err.message);
+    }
+  });
+}
+
+if(logoutBtn){
+  logoutBtn.addEventListener('click', async () => {
+    if(auth){
+      await auth.signOut();
+    }
+  });
+}
+
+if(loginPassword){
+  loginPassword.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && loginBtn){
+      loginBtn.click();
+    }
+  });
 }
 
 const slodyczeContainer = document.getElementById('slodycze-content');
@@ -606,5 +631,3 @@ function setActiveCard(id){
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
 }
-
-
