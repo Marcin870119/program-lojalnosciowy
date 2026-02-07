@@ -26,6 +26,8 @@ const producerPdfMap = {
 };
 const pdfPreviewUrl =
   'https://mozilla.github.io/pdf.js/web/viewer.html?file=';
+const imageBaseUrl =
+  'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/zdjecia%20-%20World%20food%2F';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDwzVRS5W2lklGMLcZJn-YPCK9OtBQZ7bI',
@@ -39,20 +41,27 @@ const appView = document.getElementById('app-view');
 const loginEmail = document.getElementById('login-email');
 const loginPassword = document.getElementById('login-password');
 const loginBtn = document.getElementById('login-btn');
-const registerBtn = document.getElementById('register-btn');
 const logoutBtn = document.getElementById('logout-btn');
 const loginError = document.getElementById('login-error');
+const securityModal = document.getElementById('security-modal');
+const modalClose = document.getElementById('modal-close');
 let auth = null;
 let authReady = false;
 
 function showApp(){
   if(loginView) loginView.classList.add('hidden');
   if(appView) appView.classList.remove('hidden');
+  showSecurityModalOnce();
 }
 
 function showLogin(){
   if(appView) appView.classList.add('hidden');
   if(loginView) loginView.classList.remove('hidden');
+}
+
+function showSecurityModalOnce(){
+  if(!securityModal) return;
+  securityModal.classList.remove('hidden');
 }
 
 function resetAppState(){
@@ -134,23 +143,6 @@ if(loginBtn){
   });
 }
 
-if(registerBtn){
-  registerBtn.addEventListener('click', async () => {
-    if(!authReady || !auth){
-      setLoginError('Firebase Auth nie jest gotowy.');
-      return;
-    }
-    setLoginError('');
-    try{
-      await auth.createUserWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
-      showApp();
-      resetAppState();
-    }catch(err){
-      console.error('REGISTER ERROR:', err.code, err.message, err);
-      setLoginError(err.code || err.message || 'Błąd rejestracji');
-    }
-  });
-}
 
 if(logoutBtn){
   logoutBtn.addEventListener('click', async () => {
@@ -166,6 +158,12 @@ if(loginPassword){
     if(e.key === 'Enter' && loginBtn){
       loginBtn.click();
     }
+  });
+}
+
+if(modalClose){
+  modalClose.addEventListener('click', () => {
+    if(securityModal) securityModal.classList.add('hidden');
   });
 }
 
@@ -418,7 +416,7 @@ function render(){
 
     ${viewMode === 'pdf' ? `
       <div class="pdf-preview">
-        <iframe src="${pdfPreviewUrl + encodeURIComponent(getActivePdfUrl())}" title="Podgląd PDF"></iframe>
+        <iframe src="${pdfPreviewUrl + encodeURIComponent(getActivePdfUrl())}&t=${Date.now()}" title="Podgląd PDF"></iframe>
       </div>
     ` : `
       <div class="filters">
@@ -592,12 +590,13 @@ function updateTable(){
   const filteredData = getFilteredData();
   const limitValue = getLimitValue();
   const data = expanded ? filteredData : filteredData.slice(0, limitValue);
+  const indexKey = findColumn(cols, ['indeks', 'index', 'id']);
 
   const tbody = document.getElementById('data-tbody');
   if(tbody){
     tbody.innerHTML = data.map(r => `
       <tr>
-        ${cols.map(c => `<td>${r[c] ?? ''}</td>`).join('')}
+        ${cols.map(c => renderCell(c, r[c], indexKey)).join('')}
       </tr>
     `).join('');
   }
@@ -677,4 +676,67 @@ function setActiveCard(id){
   document.querySelectorAll('.grid .card').forEach(c => c.classList.remove('active'));
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
+}
+
+function renderCell(col, value, indexKey){
+  if(indexKey && col === indexKey){
+    const idx = String(value ?? '').trim();
+    const img = idx
+      ? `<span class="img-hover" onmouseenter="positionPopup(this)">
+           <img class="index-img" src="${buildImageUrl(idx, 'png')}" data-index="${escapeAttr(idx)}" data-tried="png" onerror="imageFallback(this)" alt="">
+           <span class="img-pop">
+             <img class="index-img-large" src="${buildImageUrl(idx, 'png')}" alt="">
+           </span>
+         </span>`
+      : '';
+    return `<td class="index-cell">${img}<span>${escapeHtml(idx)}</span></td>`;
+  }
+  return `<td>${escapeHtml(value ?? '')}</td>`;
+}
+
+function buildImageUrl(index, ext){
+  return `${imageBaseUrl}${encodeURIComponent(index)}.${ext}?alt=media`;
+}
+
+function imageFallback(img){
+  const index = img.getAttribute('data-index');
+  const tried = img.getAttribute('data-tried');
+  const pop = img.closest('.img-hover')?.querySelector('.index-img-large');
+  if(tried === 'png'){
+    img.setAttribute('data-tried', 'jpg');
+    img.src = buildImageUrl(index, 'jpg');
+    if(pop) pop.src = buildImageUrl(index, 'jpg');
+    return;
+  }
+  img.classList.add('img-missing');
+  if(pop) pop.classList.add('img-missing');
+}
+
+function positionPopup(el){
+  const pop = el.querySelector('.img-pop');
+  if(!pop) return;
+  pop.style.left = '';
+  pop.style.right = '';
+  const rect = el.getBoundingClientRect();
+  const popWidth = pop.offsetWidth || 260;
+  const popHeight = pop.offsetHeight || 260;
+  const padding = 16;
+
+  // Horizontal position: prefer right, else left
+  const spaceRight = window.innerWidth - rect.right;
+  const spaceLeft = rect.left;
+  if(spaceRight < popWidth + padding && spaceLeft >= popWidth + padding){
+    pop.style.left = `${Math.max(padding, rect.left - popWidth - 12)}px`;
+  }else{
+    pop.style.left = `${Math.min(window.innerWidth - popWidth - padding, rect.right + 12)}px`;
+  }
+
+  // Vertical position: clamp within viewport
+  const centerY = rect.top + rect.height / 2;
+  let top = centerY - popHeight / 2;
+  if(top < padding) top = padding;
+  if(top + popHeight > window.innerHeight - padding){
+    top = window.innerHeight - popHeight - padding;
+  }
+  pop.style.top = `${top}px`;
 }
