@@ -45,6 +45,16 @@ const loginError = document.getElementById('login-error');
 let auth = null;
 let authReady = false;
 
+function showApp(){
+  if(loginView) loginView.classList.add('hidden');
+  if(appView) appView.classList.remove('hidden');
+}
+
+function showLogin(){
+  if(appView) appView.classList.add('hidden');
+  if(loginView) loginView.classList.remove('hidden');
+}
+
 function setLoginError(message){
   if(loginError) loginError.textContent = message || '';
 }
@@ -61,12 +71,10 @@ if(typeof firebase !== 'undefined'){
 
     auth.onAuthStateChanged(user => {
       if(user){
-        loginView.classList.add('hidden');
-        appView.classList.remove('hidden');
+        showApp();
         setLoginError('');
       }else{
-        appView.classList.add('hidden');
-        loginView.classList.remove('hidden');
+        showLogin();
       }
     });
   }
@@ -81,11 +89,15 @@ if(loginBtn){
       return;
     }
     setLoginError('');
+    console.log('LOGIN CLICK');
+    console.log('EMAIL:', loginEmail.value);
+    console.log('AUTH READY:', authReady, auth);
     try{
       await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
+      showApp();
     }catch(err){
-      console.error(err);
-      setLoginError(err.message);
+      console.error('LOGIN ERROR:', err.code, err.message, err);
+      setLoginError(err.code || err.message || 'Błąd logowania');
     }
   });
 }
@@ -99,9 +111,10 @@ if(registerBtn){
     setLoginError('');
     try{
       await auth.createUserWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
+      showApp();
     }catch(err){
-      console.error(err);
-      setLoginError(err.message);
+      console.error('REGISTER ERROR:', err.code, err.message, err);
+      setLoginError(err.code || err.message || 'Błąd rejestracji');
     }
   });
 }
@@ -631,3 +644,4 @@ function setActiveCard(id){
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
 }
+
