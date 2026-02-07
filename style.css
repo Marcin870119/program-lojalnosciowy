@@ -9,6 +9,8 @@
   font-family: 'Inter', system-ui, sans-serif;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;600;700&display=swap');
+
 body{
   margin:0;
   background:var(--bg);
@@ -34,11 +36,11 @@ body{
   flex-direction:column;
   gap:12px;
 }
-
-.brand-logo{
-  max-width:220px;
-  height:auto;
-  display:block;
+.brand-title{
+  font-family:'Playfair Display', serif;
+  font-size:28px;
+  margin:0;
+  letter-spacing:.2px;
 }
 
 .login-desc{
@@ -296,4 +298,3 @@ th{
   height:70vh;
   border:0;
 }
-
