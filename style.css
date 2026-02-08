@@ -52,6 +52,18 @@ body{
   transform-origin:left center;
 }
 
+#admin-view header .brand-logo{
+  height:60px;
+  transform:scale(2);
+  transform-origin:left center;
+}
+
+.header-actions{
+  display:flex;
+  gap:12px;
+  justify-self:end;
+}
+
 #login-view .brand-logo{
   height:96px;
   margin:0;
@@ -137,8 +149,8 @@ header{
   background:#fff;
   box-shadow:var(--shadow);
   padding:20px 40px;
-  display:flex;
-  justify-content:space-between;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
   align-items:center;
   gap:16px;
   flex-wrap:wrap;
@@ -148,6 +160,7 @@ nav{
   display:flex;
   gap:12px;
   flex-wrap:wrap;
+  justify-self:center;
 }
 
 nav button{
@@ -608,4 +621,11 @@ th{
   border-radius:999px;
   background:linear-gradient(90deg,#0b3d91 0%, #0b3d91 33%, #f5d300 33%, #f5d300 66%, #ce1126 66%, #ce1126 100%);
   width:220px;
+}
+.admin-panel{
+  background:#fff;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:28px;
+  max-width:520px;
 }
