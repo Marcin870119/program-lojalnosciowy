@@ -42,6 +42,12 @@ body{
   display:block;
 }
 
+.brand-link{
+  display:inline-flex;
+  align-items:center;
+  text-decoration:none;
+}
+
 #app-view header{
   overflow:visible;
 }
