@@ -1,310 +1,364 @@
-// =======================================================
-// script.js – FINALNA WERSJA
-// PDF: bez ucinania + bez „skoku” layoutu + równe marginesy
-// =======================================================
-
-// FORMAT WALUTY
-const fmt = new Intl.NumberFormat('en-GB', {
-  style: 'currency',
-  currency: 'GBP',
-  maximumFractionDigits: 0
-});
-
-let clientsData = [];
-
-// =======================================================
-// DOM READY
-// =======================================================
-document.addEventListener('DOMContentLoaded', () => {
-  const targetInput = document.getElementById('target-world');
-  const salesInput = document.getElementById('sales-world');
-  const clientSelect = document.getElementById('clientSelect');
-  const clientNameEl = document.getElementById('selected-client-name');
-  const summaryBox = document.getElementById('points-summary');
-  const congratsEl = document.getElementById('congrats-text');
-  const endOfPeriodEl = document.getElementById('end-of-period');
-  const pointRows = summaryBox.querySelectorAll('.point-row');
-
-  // ─── PRZYCISK WYCZYŚĆ ───
-  const clearBtn = document.createElement('button');
-  clearBtn.textContent = 'Wyczyść dane';
-  clearBtn.id = 'clear-data';
-  clearBtn.style.marginLeft = '20px';
-  clearBtn.style.padding = '10px 20px';
-  clearBtn.style.background = '#6c757d';
-  clearBtn.style.color = '#fff';
-  clearBtn.style.border = 'none';
-  clearBtn.style.borderRadius = '8px';
-  clearBtn.style.cursor = 'pointer';
-  clearBtn.style.fontSize = '15px';
-
-  const actionsDiv = document.querySelector('.actions');
-  if (actionsDiv) actionsDiv.prepend(clearBtn);
-
-  clearBtn.addEventListener('click', () => {
-    clientNameEl.textContent = '';
-    summaryBox.style.display = 'none';
-    congratsEl.textContent = '';
-    congratsEl.className = 'congrats';
-    pointRows.forEach(r => r.style.display = 'none');
-    targetInput.value = 0;
-    salesInput.value = 0;
-    document.getElementById('progress-fill').style.width = '0%';
-    document.getElementById('progress-pct').textContent = '0%';
-    document.getElementById('target-display').textContent = fmt.format(0);
-    document.getElementById('sales-display').textContent = fmt.format(0);
-    document.getElementById('remain-display').textContent = fmt.format(0);
-    clientSelect.value = '';
-  });
-
-  targetInput.addEventListener('input', update);
-  salesInput.addEventListener('input', update);
-
-  document.getElementById('reset').addEventListener('click', () => {
-    salesInput.value = 0;
-    update();
-  });
-
-  document.getElementById('excelFile').addEventListener('change', handleExcelUpload);
-  document.getElementById('pdf').addEventListener('click', generatePDF);
-
-  clientSelect.addEventListener('change', () => {
-    const idx = Number(clientSelect.value);
-    if (!clientsData[idx]) {
-      clientNameEl.textContent = '';
-      summaryBox.style.display = 'none';
-      congratsEl.textContent = '';
-      congratsEl.className = 'congrats';
-      return;
+(() => {
+  function findColumn(cols, variants){
+    const lower = cols.map(c => c.toLowerCase());
+    for(const v of variants){
+      const i = lower.indexOf(v.toLowerCase());
+      if(i !== -1) return cols[i];
     }
+    return null;
+  }
 
-    const row = clientsData[idx];
-    clientNameEl.textContent = `${row[1] || ''} ${row[2] || ''}`.trim();
+  const imageCache = new Map();
 
-    const target = Math.round(Number(row[4]) || 0);
-    const sales = Math.round(Number(row[5]) || 0);
-    targetInput.value = target;
-    salesInput.value = sales;
-
-    const wykonany = (row[6] || '').toString().trim().toUpperCase() === 'TAK';
-
-    if (!wykonany) {
-      summaryBox.style.display = 'block';
-      pointRows.forEach(r => r.style.display = 'none');
-      congratsEl.textContent =
-        endOfPeriodEl && endOfPeriodEl.checked
-          ? 'Niestety, tym razem się nie udało. Popracuj ze swoim przedstawicielem w kolejnym etapie i razem osiągniesz cel.'
-          : 'Jesteś już bardzo blisko! Jeszcze chwila i osiągniesz swój cel 💪';
-      congratsEl.className =
-        endOfPeriodEl && endOfPeriodEl.checked
-          ? 'congrats end'
-          : 'congrats progress';
-      update();
-      return;
+  async function loadImageAsJpeg(url, maxDim){
+    if(imageCache.has(url)) return imageCache.get(url);
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Image not found');
+    const blob = await res.blob();
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const objectUrl = URL.createObjectURL(blob);
+    const loadedImg = await new Promise((resolve, reject) => {
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = objectUrl;
+    });
+    const canvas = document.createElement('canvas');
+    let w = loadedImg.naturalWidth;
+    let h = loadedImg.naturalHeight;
+    if(maxDim && (w > maxDim || h > maxDim)){
+      const scale = Math.min(maxDim / w, maxDim / h);
+      w = Math.round(w * scale);
+      h = Math.round(h * scale);
     }
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(loadedImg, 0, 0, w, h);
+    const jpg = canvas.toDataURL('image/jpeg', 0.75);
+    URL.revokeObjectURL(objectUrl);
+    const result = { dataUrl: jpg, width: canvas.width, height: canvas.height };
+    imageCache.set(url, result);
+    return result;
+  }
 
-    document.getElementById('points-h').textContent = Math.round(Number(row[7]) || 0);
-    document.getElementById('points-i').textContent = Math.round(Number(row[8]) || 0);
-    document.getElementById('points-j').textContent = Math.round(Number(row[9]) || 0);
-    document.getElementById('points-n').textContent = Math.round(Number(row[13]) || 0);
+  async function getProductImage(index){
+    const base = window.imageBaseUrl || '';
+    const png = `${base}${encodeURIComponent(index)}.png?alt=media`;
+    const jpg = `${base}${encodeURIComponent(index)}.jpg?alt=media`;
+    try{
+      return await loadImageAsJpeg(png, 900);
+    }catch(_){
+      return await loadImageAsJpeg(jpg, 900);
+    }
+  }
 
-    pointRows.forEach(r => r.style.display = 'block');
-    summaryBox.style.display = 'block';
-    congratsEl.textContent = 'Brawo! Osiągnąłeś swój cel 🎉';
-    congratsEl.className = 'congrats success';
+  const watermarkUrl =
+    'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2Fmaspo%20logo.png?alt=media&token=8fe33ebe-04d2-42cb-acb0-10379dbd7e11';
 
-    update();
-  });
+  async function loadImageAsPng(url){
+    if(imageCache.has(url)) return imageCache.get(url);
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('Image not found');
+    const blob = await res.blob();
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const objectUrl = URL.createObjectURL(blob);
+    const loadedImg = await new Promise((resolve, reject) => {
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = objectUrl;
+    });
+    const canvas = document.createElement('canvas');
+    canvas.width = loadedImg.naturalWidth;
+    canvas.height = loadedImg.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(loadedImg, 0, 0);
+    const png = canvas.toDataURL('image/png');
+    URL.revokeObjectURL(objectUrl);
+    const result = { dataUrl: png, width: canvas.width, height: canvas.height };
+    imageCache.set(url, result);
+    return result;
+  }
 
-  update();
-});
+  window.createCatalogPdf = async function(products, options = {}){
+    if(!products || !products.length) throw new Error('Brak produktów');
+    const { jsPDF } = window.jspdf;
+    const pageW = 794;
+    const pageH = 1123;
+    const margin = 30;
+    const gap = 16;
+    const cols = 2;
+    const rows = 3;
+    const cardW = (pageW - margin * 2 - gap * (cols - 1)) / cols;
+    const cardH = (pageH - margin * 2 - gap * (rows - 1)) / rows;
 
-// =======================================================
-// IMPORT EXCEL
-// =======================================================
-function handleExcelUpload(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = evt => {
-    const data = new Uint8Array(evt.target.result);
-    const workbook = XLSX.read(data, { type: 'array' });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, blankrows: false });
-
-    clientsData = rows.slice(1).filter(r => r && r[1]);
-
-    const select = document.getElementById('clientSelect');
-    select.innerHTML = '<option value="">Wybierz klienta...</option>';
-
-    clientsData.forEach((row, i) => {
-      const opt = document.createElement('option');
-      opt.value = i;
-      opt.textContent = `${row[1] || ''} ${row[2] || ''}`.trim();
-      select.appendChild(opt);
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'px',
+      format: [pageW, pageH],
+      compress: true
     });
 
-    select.disabled = clientsData.length === 0;
+    const colsKeys = Object.keys(products[0] || {});
+    const nameKey = findColumn(colsKeys, ['nazwa', 'name']);
+    const indexKey = findColumn(colsKeys, ['indeks', 'index', 'id']);
+    const eanKey = findColumn(colsKeys, ['kod ean', 'ean']);
+    const countryKey = findColumn(colsKeys, ['krajpochodzenia', 'kraj pochodzenia', 'country']);
+    const priceMap = options.priceMap || null;
+    const currency = options.currency || 'EUR';
+    const priceColor = options.priceColor || '#000000';
+
+    const hasCover = !!options.coverDataUrl;
+    const totalPages = Math.ceil(products.length / (cols * rows)) + (hasCover ? 1 : 0);
+
+    if(hasCover){
+      const coverImg = await loadCoverImage(options.coverDataUrl);
+      if(coverImg){
+        const scale = Math.min(pageW / coverImg.width, pageH / coverImg.height);
+        const cw = coverImg.width * scale;
+        const ch = coverImg.height * scale;
+        const cx = (pageW - cw) / 2;
+        const cy = (pageH - ch) / 2;
+        pdf.addImage(coverImg.dataUrl, 'JPEG', cx, cy, cw, ch, undefined, 'FAST');
+      }
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(10);
+      pdf.setTextColor(120);
+      pdf.text(`Strona 1 / ${totalPages}`, pageW - 110, pageH - 12);
+      pdf.setTextColor(0);
+      pdf.addPage();
+    }
+
+    for(let i = 0; i < products.length; i++){
+      if(i > 0 && i % (cols * rows) === 0){
+        pdf.addPage();
+      }
+
+      const p = products[i];
+      const pageIndex = i % (cols * rows);
+      const pageNumber = Math.floor(i / (cols * rows)) + 1 + (hasCover ? 1 : 0);
+      // no global watermark; we will add small logo per card
+      const col = pageIndex % cols;
+      const row = Math.floor(pageIndex / cols);
+      const x = margin + col * (cardW + gap);
+      const y = margin + row * (cardH + gap);
+
+      pdf.setDrawColor(220);
+      pdf.setFillColor(255, 255, 255);
+      pdf.roundedRect(x, y, cardW, cardH, 12, 12, 'FD');
+
+      const name = String(p[nameKey] || '').trim();
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(12);
+      const nameLines = pdf.splitTextToSize(name, cardW - 20).slice(0, 2);
+      pdf.text(nameLines, x + 10, y + 20);
+
+      const countryVal = String(p[countryKey] || 'Rumunia').trim().toLowerCase();
+      const badgeUrl = getCountryBadgeUrl(countryVal);
+      if(badgeUrl){
+        try{
+          const badge = await loadImageAsJpeg(badgeUrl);
+          const bw = 68;
+          const bh = 44;
+          const bx = x + 4;
+          const by = y + cardH - bh - 36;
+          pdf.addImage(badge.dataUrl, 'JPEG', bx, by, bw, bh, undefined, 'FAST');
+        }catch(_){}
+      }
+
+      const indexVal = String(p[indexKey] || '').trim();
+      let imgData = null;
+      if(indexVal){
+        try{
+          imgData = await getProductImage(indexVal);
+        }catch(_){}
+      }
+
+      if(imgData){
+        const maxW = cardW - 90;
+        const maxH = cardH - 150;
+        const scale = Math.min(maxW / imgData.width, maxH / imgData.height, 1);
+        const iw = imgData.width * scale;
+        const ih = imgData.height * scale;
+        const ix = x + (cardW - iw) / 2;
+        const iy = y + 40 + (maxH - ih) / 2;
+        pdf.addImage(imgData.dataUrl, 'JPEG', ix, iy, iw, ih, undefined, 'FAST');
+
+        // small logo near each image
+        try{
+          const wm = await loadImageAsPng(watermarkUrl);
+          const wmW = 48;
+          const wmH = (wm.height / wm.width) * wmW;
+          const wmX = x + cardW - wmW - 20;
+          const wmY = y + cardH - 94;
+          pdf.setGState(new pdf.GState({ opacity: 0.5 }));
+          pdf.addImage(wm.dataUrl, 'PNG', wmX, wmY, wmW, wmH, undefined, 'FAST');
+          pdf.setGState(new pdf.GState({ opacity: 1 }));
+        }catch(_){}
+      }
+
+      // price from excel
+      if(priceMap && indexVal && priceMap.get(indexVal)){
+        const priceInfo = priceMap.get(indexVal);
+        const priceText = String(priceInfo.price || '').replace(',', '.');
+        const unitRaw = String(priceInfo.unit || '').toUpperCase();
+        const unit = unitRaw.includes('KG') ? 'KG' : 'SZT.';
+        const [main, dec] = formatPriceParts(priceText);
+        const symbol = currency === 'PLN' ? 'PLN' : (currency === 'GBP' ? '£' : '€');
+
+        const px = x + cardW - 90;
+        const py = y + cardH - 150;
+
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(52);
+        const [pr, pg, pb] = hexToRgb(priceColor);
+        pdf.setTextColor(pr, pg, pb);
+        pdf.text(main, px, py);
+
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(18);
+        pdf.text(dec, px + 24, py - 12);
+
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(12);
+        pdf.text(`${symbol} / ${unit}`, px + 24, py + 4);
+        pdf.setTextColor(0);
+      }
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(12);
+      if(indexVal){
+        pdf.text(`Indeks: ${indexVal}`, x + 10, y + cardH - 22);
+      }
+      const eanVal = String(p[eanKey] || '').trim();
+      if(eanVal){
+        const barcode = buildBarcodeImage(eanVal);
+        if(barcode){
+          const bw = 220;
+          const bh = 60;
+          const bx = x + cardW - bw - 12;
+          const by = y + cardH - bh - 14;
+          pdf.addImage(barcode, 'PNG', bx, by, bw, bh, undefined, 'FAST');
+        }
+      }
+
+      if(pageIndex === 0){
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(10);
+        pdf.setTextColor(120);
+        pdf.text(`Strona ${pageNumber} / ${totalPages}`, pageW - 110, pageH - 12);
+        pdf.setTextColor(0);
+      }
+    }
+
+    return pdf.output('blob');
   };
-  reader.readAsArrayBuffer(file);
-}
 
-// =======================================================
-// UPDATE
-// =======================================================
-function update() {
-  const target = Math.round(Number(document.getElementById('target-world').value) || 0);
-  const sales = Math.round(Number(document.getElementById('sales-world').value) || 0);
-  const remain = Math.max(target - sales, 0);
-
-  let pct = target > 0 ? (sales / target) * 100 : 0;
-  pct = Math.round(Math.min(100, Math.max(0, pct)));
-
-  document.getElementById('target-display').textContent = fmt.format(target);
-  document.getElementById('sales-display').textContent = fmt.format(sales);
-  document.getElementById('remain-display').textContent = fmt.format(remain);
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-pct').textContent = pct + '%';
-}
-
-// =======================================================
-// PDF – wersja z przesunięciem mapy w prawo + mniejsza rozdzielczość (scale 1.4)
-// =======================================================
-function generatePDF() {
-  const source = document.getElementById('capture');
-  if (!source) return;
-
-  const clone = source.cloneNode(true);
-
-  // Przygotowanie klonu – staramy się zachować naturalny układ
-  clone.style.position = 'absolute';
-  clone.style.left = '-9999px';
-  clone.style.top = '0';
-  clone.style.width = 'auto';
-  clone.style.minWidth = 'unset';
-  clone.style.maxWidth = 'unset';
-  clone.style.height = 'auto';
-  clone.style.margin = '0';
-  clone.style.padding = '0';
-  clone.style.overflow = 'visible';
-  clone.style.boxSizing = 'border-box';
-  clone.style.backgroundColor = '#ffffff';
-  document.body.appendChild(clone);
-
-  // Usuwamy interaktywne elementy i niepotrzebne etykiety
-  clone.querySelectorAll(
-    'select, input, button, label[for="end-of-period"], #excelFile, .actions, #clear-data, #reset'
-  ).forEach(el => el.remove());
-
-  Array.from(clone.querySelectorAll('*')).forEach(el => {
-    const txt = (el.textContent || '').trim();
-    if (txt === 'Importuj Excel:' || txt === 'Koniec okresu programu') {
-      el.remove();
-    }
-  });
-
-  // Główny kontener – usuwamy ograniczenia szerokości
-  const main = clone.querySelector('#main-container');
-  if (main) {
-    main.style.maxWidth = 'none';
-    main.style.width = '100%';
-    main.style.margin = '0';
-    main.style.padding = '0';
-    main.style.boxShadow = 'none';
-  }
-
-  // Karta – bez sztucznego skalowania
-  const card = clone.querySelector('.world-food-card');
-  if (card) {
-    card.style.transform = 'none';
-    card.style.width = 'auto';
-    card.style.maxWidth = 'none';
-    card.style.margin = '0 auto';
-    card.style.padding = '15px'; // możesz zmienić na 0 jeśli chcesz mniej odstępu
-  }
-
-  // Mapa – wypełnia przestrzeń + przesunięcie w prawo
-  const map = clone.querySelector('.europe-map');
-  if (map) {
-    map.style.width = '100%';
-    map.style.maxWidth = 'none';
-    map.style.height = 'auto';
-    map.style.margin = '0';
-    map.style.padding = '0';
-    map.style.display = 'block';
-    map.style.objectFit = 'contain';
-    map.style.position = 'relative';
-    map.style.left = '80px';           // przesunięcie mapy w prawo
-  }
-
-  // Kontener mapy + flag – minimalne boczne marginesy
-  const mapCont = clone.querySelector('.map-container');
-  if (mapCont) {
-    mapCont.style.width = '100%';
-    mapCont.style.maxWidth = 'none';
-    mapCont.style.margin = '0';
-    mapCont.style.padding = '30px 10px 50px 10px';
-    mapCont.style.position = 'relative';
-    mapCont.style.overflow = 'visible';
-  }
-
-  const flagsColumn = clone.querySelector('.flags-column');
-  if (flagsColumn) {
-    flagsColumn.style.marginLeft = '0';
-    flagsColumn.style.paddingLeft = '8px';
-    flagsColumn.style.left = '0';
-  }
-
-  // Czekamy aż przeglądarka przeliczy rzeczywiste wymiary
-  setTimeout(() => {
-    const rect = clone.getBoundingClientRect();
-    const w = Math.ceil(rect.width);
-    const h = Math.ceil(rect.height);
-
-    html2canvas(clone, {
-      scale: 1.4,                    // <--- ZMIENIONE – mniejsza rozdzielczość → PDF otwiera się w czytelniejszej skali
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      width: w,
-      height: h,
-      windowWidth: w,
-      windowHeight: h,
-      x: 0,
-      y: 0,
-      scrollX: 0,
-      scrollY: 0,
-      logging: false,
-      allowTaint: true
-    }).then(canvas => {
-      const { jsPDF } = window.jspdf;
-
-      let orientation = 'landscape';
-      if (h > w * 1.2) orientation = 'portrait';
-
-      const pdf = new jsPDF({
-        orientation: orientation,
-        unit: 'px',
-        format: [canvas.width, canvas.height],
-        compress: true
+  async function loadCoverImage(dataUrl){
+    try{
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = dataUrl;
       });
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      const jpg = canvas.toDataURL('image/jpeg', 0.9);
+      return { dataUrl: jpg, width: canvas.width, height: canvas.height };
+    }catch(_){
+      return null;
+    }
+  }
 
-      pdf.addImage(
-        canvas.toDataURL('image/jpeg', 0.92),
-        'JPEG',
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
+  function buildBarcodeImage(raw){
+    const normalized = normalizeEAN(raw);
+    if(!normalized) return null;
+    const canvas = document.createElement('canvas');
+    const format = normalized.length === 8 ? 'EAN8' : 'EAN13';
+    try{
+      const data = format === 'EAN8' ? normalized.slice(0, 7) : normalized.slice(0, 12);
+      JsBarcode(canvas, data, {
+        format,
+        width: 2,
+        height: 50,
+        displayValue: true,
+        fontSize: 12,
+        margin: 6,
+        background: '#ffffff',
+        lineColor: '#000000'
+      });
+      return canvas.toDataURL('image/png');
+    }catch(_){
+      return null;
+    }
+  }
 
-      pdf.save('Euroeast_World_Food.pdf');
+  function normalizeEAN(raw){
+    const e = String(raw || '').replace(/\D/g, '');
+    if(e.length >= 13){
+      const base = e.slice(0, 12);
+      return base + calcEAN13Check(base);
+    }
+    if(e.length === 12) return e + calcEAN13Check(e);
+    if(e.length === 8){
+      const base = e.slice(0, 7);
+      return base + calcEAN8Check(base);
+    }
+    if(e.length === 7) return e + calcEAN8Check(e);
+    if(e.length < 7) return null;
+    return e;
+  }
 
-      document.body.removeChild(clone);
-    }).catch(err => {
-      console.error('PDF error:', err);
-      alert('Błąd generowania PDF – sprawdź konsolę');
-      document.body.removeChild(clone);
-    });
-  }, 1200);
-}
+  function calcEAN13Check(code12){
+    const digits = code12.split('').map(Number);
+    let sum = 0;
+    for(let i=0;i<12;i++){
+      sum += digits[i] * (i % 2 === 0 ? 1 : 3);
+    }
+    return String((10 - (sum % 10)) % 10);
+  }
+
+  function calcEAN8Check(code7){
+    const digits = code7.split('').map(Number);
+    let sum = 0;
+    for(let i=0;i<7;i++){
+      sum += digits[i] * (i % 2 === 0 ? 3 : 1);
+    }
+    return String((10 - (sum % 10)) % 10);
+  }
+
+
+  function getCountryBadgeUrl(country){
+    if(country.includes('rumunia')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FRumunia.png?alt=media';
+    if(country.includes('ukraina')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FUkraina.png?alt=media';
+    if(country.includes('litwa')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FLitwa.png?alt=media';
+    if(country.includes('bulgaria')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FBulgaria.png?alt=media';
+    if(country.includes('polska')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FPolska.png?alt=media';
+    return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FRumunia.png?alt=media';
+  }
+
+  function formatPriceParts(priceText){
+    let val = parseFloat(priceText);
+    if(!Number.isFinite(val)) return ['0', '00'];
+    const fixed = val.toFixed(2);
+    const [main, dec] = fixed.split('.');
+    return [main, dec];
+  }
+
+  function hexToRgb(hex){
+    const h = String(hex || '').replace('#','');
+    if(h.length !== 6) return [0,0,0];
+    return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+  }
+})();
