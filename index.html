@@ -12,11 +12,11 @@
 
 <div id="login-view">
   <div class="login-card">
-    <h1 class="brand-title">World Food – Oferta</h1>
-    <p class="login-desc">Zaloguj się, aby zobaczyć ofertę.</p>
-
+    <img class="brand-logo" alt="World Food – Oferta" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2Fmaspo%20logo.png?alt=media&token=8fe33ebe-04d2-42cb-acb0-10379dbd7e11">
     <div class="login-form">
+      <label class="login-label" for="login-email">Adres e-mail</label>
       <input id="login-email" type="email" placeholder="Email">
+      <label class="login-label" for="login-password">Hasło</label>
       <input id="login-password" type="password" placeholder="Hasło">
       <button id="login-btn">Zaloguj</button>
     </div>
@@ -26,6 +26,33 @@
 </div>
 
 <div id="app-view" class="hidden">
+  <div id="catalog-modal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Nazwa katalogu</h2>
+      <div class="login-form">
+        <input id="catalog-name" type="text" placeholder="Np. katalog_rumunia_2026">
+        <input id="catalog-cover" type="file" accept="image/*">
+        <label class="login-label" for="catalog-currency">Wybierz walutę</label>
+        <select id="catalog-currency">
+          <option value="">— wybierz —</option>
+          <option value="PLN">PLN</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+        </select>
+        <div class="color-field">
+          <label class="login-label" for="catalog-price-color">Kolor ceny</label>
+          <div class="color-row">
+            <input id="catalog-price-color" type="color" value="#000000">
+          </div>
+          <div class="color-hint">Kolor dotyczy tylko cyfry ceny.</div>
+        </div>
+        <input id="catalog-excel" type="file" accept=".xlsx,.xls">
+        <button id="catalog-save-btn">Zapisz katalog PDF</button>
+      </div>
+      <div id="catalog-error" class="login-error"></div>
+      <button id="catalog-cancel-btn" class="btn-outline">Anuluj</button>
+    </div>
+  </div>
   <div id="security-modal" class="modal hidden">
     <div class="modal-card warning">
       <h2><span class="warn-pill">WAŻNE</span>Informacja o bezpieczeństwie</h2>
@@ -34,8 +61,27 @@
       <button id="modal-close" class="btn-outline">Rozumiem</button>
     </div>
   </div>
+  <div id="price-warning-modal" class="modal hidden">
+    <div class="modal-card warning">
+      <h2><span class="warn-pill">WAŻNE</span>Komunikat</h2>
+      <p>Pamiętaj, aby ograniczać udostępnianie cen.</p>
+      <button id="price-warning-close" class="btn-outline">Rozumiem</button>
+    </div>
+  </div>
+  <div id="password-modal" class="modal hidden">
+    <div class="modal-card warning">
+      <h2><span class="warn-pill">WAŻNE</span>Potwierdzenie</h2>
+      <p>Przekroczono 50 pozycji. Aby zapisać katalog, podaj hasło.</p>
+      <div class="login-form">
+        <input id="password-input" type="password" placeholder="Hasło">
+        <button id="password-confirm" class="btn-outline">Potwierdź</button>
+      </div>
+      <div id="password-error" class="login-error"></div>
+      <button id="password-cancel" class="btn-outline">Anuluj</button>
+    </div>
+  </div>
   <header>
-    <h1 class="brand-title">World Food – Oferta</h1>
+    <img class="brand-logo" alt="World Food – Oferta" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2Fmaspo%20logo.png?alt=media&token=8fe33ebe-04d2-42cb-acb0-10379dbd7e11">
     <nav>
       <button class="tab active" data-tab="rumunia">Rumunia</button>
       <button class="tab" data-tab="ukraina">Ukraina</button>
@@ -48,37 +94,51 @@
   <main>
 
   <section id="rumunia" class="tab-content">
-    <div class="section-title">🇷🇴 Rumunia</div>
+    <div class="country-banner">
+      <div class="flag-pill">
+        <span class="flag-emoji">🇷🇴</span>
+        <span class="flag-text">Rumunia</span>
+      </div>
+      <div class="flag-stripe"></div>
+    </div>
     <div class="grid">
       <div class="card" id="rumunia-slodycze">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSLODYCZE.png?alt=media&token=58e3670c-bf1c-4bc9-9cc1-5b131ddbb410" alt="">
         <h3>Słodycze</h3>
         <p>Kliknij aby zobaczyć ranking</p>
       </div>
       <div class="card" id="rumunia-mieso-wedliny">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FWEDLINY.png?alt=media&token=f52bd843-c74d-4304-a475-4e3b46974004" alt="">
         <h3>Mięso i wędliny</h3>
         <p>Kliknij aby zobaczyć ranking</p>
       </div>
       <div class="card" id="rumunia-nabial">
+        <img class="card-corner-icon card-corner-icon--lg" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FNABIAL.png?alt=media&token=f56ac910-a83e-422a-b7a9-336a1362eb20" alt="">
         <h3>Nabiał</h3>
         <p>Kliknij aby zobaczyć ranking</p>
       </div>
       <div class="card" id="rumunia-napoje">
+        <img class="card-corner-icon card-corner-icon--sm" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FNAPOJE.png?alt=media&token=08c8ac15-58e0-45e1-88c4-4d2e7af3a437" alt="">
         <h3>Napoje</h3>
         <p>Kliknij aby zobaczyć ranking</p>
       </div>
       <div class="card" id="rumunia-przyprawy-proszek">
-        <h3>Przyprawy i dodatki w proszku</h3>
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSPICES.png?alt=media&token=7ae1c0fc-cdbb-48d4-8192-f4df21222530" alt="">
+        <h3>Przyprawy<br>i dodatki w proszku</h3>
         <p>Kliknij aby zobaczyć ranking</p>
       </div>
       <div class="card" id="rumunia-puszki-sloiki">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSLOIKI.png?alt=media&token=450c4683-628e-4598-875d-1660fdb601c0" alt="">
         <h3>Puszki i słoiki</h3>
         <p>Kliknij aby zobaczyć ranking</p>
       </div>
       <div class="card" id="rumunia-produkty-podstawowe">
-        <h3>Produkty podstawowe</h3>
+        <img class="card-corner-icon card-corner-icon--lg" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FPODSTAWA.png?alt=media&token=e3583eaa-261e-439c-b25b-cb7a4e598859" alt="">
+        <h3>Produkty<br>podstawowe</h3>
         <p>Kliknij aby zobaczyć ranking</p>
       </div>
       <div class="card" id="rumunia-kawy-herbaty">
+        <img class="card-corner-icon card-corner-icon--lg" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FKAWA.png?alt=media&token=82f30ff2-4a5b-4e39-9b60-fe23aad8c2c4" alt="">
         <h3>Kawy i herbaty</h3>
         <p>Kliknij aby zobaczyć ranking</p>
       </div>
@@ -105,6 +165,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="katalog.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
