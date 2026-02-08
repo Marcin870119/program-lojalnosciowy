@@ -62,8 +62,42 @@ const passwordInput = document.getElementById('password-input');
 const passwordConfirm = document.getElementById('password-confirm');
 const passwordCancel = document.getElementById('password-cancel');
 const passwordError = document.getElementById('password-error');
+const adminPanelBtn = document.getElementById('admin-panel-btn');
+
+const slodyczeContainer = document.getElementById('slodycze-content');
+const miesoContainer = document.getElementById('mieso-wedliny-content');
+const nabialContainer = document.getElementById('nabial-content');
+const napojeContainer = document.getElementById('napoje-content');
+const przyprawyProszekContainer = document.getElementById('przyprawy-proszek-content');
+const puszkiSloikiContainer = document.getElementById('puszki-sloiki-content');
+const produktyPodstawoweContainer = document.getElementById('produkty-podstawowe-content');
+const kawyHerbatyContainer = document.getElementById('kawy-herbaty-content');
+
+var fullData = [];
+let expanded = false;
+let viewMode = 'table';
+let activeContainer = slodyczeContainer;
+let currentCategoryName = 'Slodycze';
+let currentCategorySlug = 'slodycze';
+let selectedProducts = new Map();
+let filters = {
+  producer: '',
+  group: '',
+  name: '',
+  ean: '',
+  index: '',
+  limit: ''
+};
+let catalogBlobUrl = null;
+let catalogLoading = false;
+let catalogCoverDataUrl = null;
+let catalogPriceMap = null;
+const LIMIT = 25;
+
 let auth = null;
 let authReady = false;
+let lastLoginEmail = '';
+let lastLoginPassword = '';
 
 function showApp(){
   if(loginView) loginView.classList.add('hidden');
@@ -132,9 +166,11 @@ if(typeof firebase !== 'undefined'){
     auth.onAuthStateChanged(user => {
       if(user){
         showApp();
+        toggleAdminPanel(user.email || '');
         resetAppState();
         setLoginError('');
       }else{
+        toggleAdminPanel('');
         resetAppState();
         showLogin();
       }
@@ -151,12 +187,15 @@ if(loginBtn){
         return;
       }
     setLoginError('');
+    lastLoginEmail = loginEmail.value.trim();
+    lastLoginPassword = loginPassword.value;
     console.log('LOGIN CLICK');
     console.log('EMAIL:', loginEmail.value);
     console.log('AUTH READY:', authReady, auth);
     try{
       await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
       showApp();
+      toggleAdminPanel(lastLoginEmail);
       resetAppState();
     }catch(err){
       console.error('LOGIN ERROR:', err.code, err.message, err);
@@ -168,9 +207,17 @@ if(loginBtn){
 
 if(logoutBtn){
   logoutBtn.addEventListener('click', async () => {
-    if(auth){
-      await auth.signOut();
+    try{
+      if(auth){
+        await auth.signOut();
+      }
+    }catch(e){
+      console.error(e);
+    }finally{
+      localStorage.removeItem('is_admin');
+      toggleAdminPanel('');
       resetAppState();
+      showLogin();
     }
   });
 }
@@ -235,41 +282,13 @@ if(priceWarningClose){
   });
 }
 
+// Admin panel jest osobną stroną (admin.html) — brak modala na stronie głównej.
+
 if(passwordCancel){
   passwordCancel.addEventListener('click', () => {
     if(passwordModal) passwordModal.classList.add('hidden');
   });
 }
-
-const slodyczeContainer = document.getElementById('slodycze-content');
-const miesoContainer = document.getElementById('mieso-wedliny-content');
-const nabialContainer = document.getElementById('nabial-content');
-const napojeContainer = document.getElementById('napoje-content');
-const przyprawyProszekContainer = document.getElementById('przyprawy-proszek-content');
-const puszkiSloikiContainer = document.getElementById('puszki-sloiki-content');
-const produktyPodstawoweContainer = document.getElementById('produkty-podstawowe-content');
-const kawyHerbatyContainer = document.getElementById('kawy-herbaty-content');
-
-let fullData = [];
-let expanded = false;
-let viewMode = 'table';
-let activeContainer = slodyczeContainer;
-let currentCategoryName = 'Slodycze';
-let currentCategorySlug = 'slodycze';
-let selectedProducts = new Map();
-let filters = {
-  producer: '',
-  group: '',
-  name: '',
-  ean: '',
-  index: '',
-  limit: ''
-};
-let catalogBlobUrl = null;
-let catalogLoading = false;
-let catalogCoverDataUrl = null;
-let catalogPriceMap = null;
-const LIMIT = 25;
 
 // OBSŁUGA ZAKŁADEK
 document.querySelectorAll('.tab').forEach(tab => {
@@ -910,6 +929,17 @@ function setActiveCard(id){
   document.querySelectorAll('.grid .card').forEach(c => c.classList.remove('active'));
   const el = document.getElementById(id);
   if(el) el.classList.add('active');
+}
+
+function toggleAdminPanel(email){
+  if(!adminPanelBtn) return;
+  const isAdmin = email.toLowerCase() === 'admin@admin.com' && lastLoginPassword === 'ADMIN1';
+  adminPanelBtn.classList.toggle('hidden', !isAdmin);
+  if(isAdmin){
+    localStorage.setItem('is_admin', '1');
+  }else{
+    localStorage.removeItem('is_admin');
+  }
 }
 
 function toggleProductSelection(checkbox){
