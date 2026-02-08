@@ -933,7 +933,10 @@ function setActiveCard(id){
 
 function toggleAdminPanel(email){
   if(!adminPanelBtn) return;
-  const isAdmin = email.toLowerCase() === 'admin@admin.com' && lastLoginPassword === 'ADMIN1';
+  const isAdminEmail = String(email || '').toLowerCase() === 'admin@admin.com';
+  const isAdminSession = localStorage.getItem('is_admin') === '1';
+  const isAdminPassword = lastLoginPassword === 'ADMIN1';
+  const isAdmin = isAdminEmail && (isAdminPassword || isAdminSession);
   adminPanelBtn.classList.toggle('hidden', !isAdmin);
   if(isAdmin){
     localStorage.setItem('is_admin', '1');
