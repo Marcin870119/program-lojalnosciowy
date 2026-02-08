@@ -499,7 +499,10 @@ function render(){
       </div>
     ` : viewMode === 'catalog' ? `
       <div class="pdf-preview">
-        ${catalogLoading ? `<div class="catalog-loading">Tworzę katalog...</div>` : ''}
+        ${catalogLoading ? `<div class="catalog-loading">
+          <div class="catalog-spinner"></div>
+          <div>Tworzę katalog...</div>
+        </div>` : ''}
         ${catalogBlobUrl ? `<iframe src="${catalogBlobUrl}#zoom=50" title="Katalog PDF"></iframe>` : ''}
       </div>
     ` : `
@@ -613,15 +616,14 @@ function exportCSV(){
 
 function exportXLS(){
   const cols = Object.keys(fullData[0]);
-  let html = '<table><tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
-
   const selected = selectedProducts.size ? Array.from(selectedProducts.values()) : getFilteredData();
-  selected.forEach(r => {
-    html += '<tr>' + cols.map(c => `<td>${r[c] ?? ''}</td>`).join('') + '</tr>';
-  });
-
-  html += '</table>';
-  download(html, `${currentCategorySlug}_rumunia.xls`, 'application/vnd.ms-excel');
+  const rows = [cols, ...selected.map(r => cols.map(c => r[c] ?? ''))];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Dane');
+  const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  downloadBlob(blob, `${currentCategorySlug}_rumunia.xlsx`);
 }
 
 async function createCatalog(){
@@ -994,4 +996,3 @@ function positionPopup(el){
   }
   pop.style.top = `${top}px`;
 }
-
