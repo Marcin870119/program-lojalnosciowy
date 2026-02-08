@@ -28,6 +28,7 @@ const pdfPreviewUrl =
   'https://mozilla.github.io/pdf.js/web/viewer.html?file=';
 const imageBaseUrl =
   'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/zdjecia%20-%20World%20food%2F';
+window.imageBaseUrl = imageBaseUrl;
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDwzVRS5W2lklGMLcZJn-YPCK9OtBQZ7bI',
@@ -45,6 +46,22 @@ const logoutBtn = document.getElementById('logout-btn');
 const loginError = document.getElementById('login-error');
 const securityModal = document.getElementById('security-modal');
 const modalClose = document.getElementById('modal-close');
+const catalogModal = document.getElementById('catalog-modal');
+const catalogNameInput = document.getElementById('catalog-name');
+const catalogCoverInput = document.getElementById('catalog-cover');
+const catalogCurrencySelect = document.getElementById('catalog-currency');
+const catalogPriceColorInput = document.getElementById('catalog-price-color');
+const catalogExcelInput = document.getElementById('catalog-excel');
+const catalogSaveBtn = document.getElementById('catalog-save-btn');
+const catalogCancelBtn = document.getElementById('catalog-cancel-btn');
+const catalogError = document.getElementById('catalog-error');
+const priceWarningModal = document.getElementById('price-warning-modal');
+const priceWarningClose = document.getElementById('price-warning-close');
+const passwordModal = document.getElementById('password-modal');
+const passwordInput = document.getElementById('password-input');
+const passwordConfirm = document.getElementById('password-confirm');
+const passwordCancel = document.getElementById('password-cancel');
+const passwordError = document.getElementById('password-error');
 let auth = null;
 let authReady = false;
 
@@ -71,6 +88,11 @@ function resetAppState(){
   activeContainer = slodyczeContainer;
   currentCategoryName = 'Slodycze';
   currentCategorySlug = 'slodycze';
+  selectedProducts = new Map();
+  catalogBlobUrl = null;
+  catalogLoading = false;
+  catalogCoverDataUrl = null;
+  catalogPriceMap = null;
   resetFilters();
 
   slodyczeContainer.innerHTML = '';
@@ -167,6 +189,58 @@ if(modalClose){
   });
 }
 
+if(catalogCoverInput){
+  catalogCoverInput.addEventListener('change', async () => {
+    const file = catalogCoverInput.files?.[0];
+    if(!file){
+      catalogCoverDataUrl = null;
+      return;
+    }
+    catalogCoverDataUrl = await fileToDataUrl(file);
+  });
+}
+
+if(catalogExcelInput){
+  catalogExcelInput.addEventListener('change', async () => {
+    const file = catalogExcelInput.files?.[0];
+    if(!file){
+      catalogPriceMap = null;
+      return;
+    }
+    if(priceWarningModal) priceWarningModal.classList.remove('hidden');
+    try{
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      catalogPriceMap = buildPriceMap(rows);
+    }catch(e){
+      console.error(e);
+      catalogPriceMap = null;
+    }
+  });
+}
+
+if(catalogSaveBtn){
+  catalogSaveBtn.addEventListener('click', buildAndSaveCatalog);
+}
+
+if(catalogCancelBtn){
+  catalogCancelBtn.addEventListener('click', closeCatalogModal);
+}
+
+if(priceWarningClose){
+  priceWarningClose.addEventListener('click', () => {
+    if(priceWarningModal) priceWarningModal.classList.add('hidden');
+  });
+}
+
+if(passwordCancel){
+  passwordCancel.addEventListener('click', () => {
+    if(passwordModal) passwordModal.classList.add('hidden');
+  });
+}
+
 const slodyczeContainer = document.getElementById('slodycze-content');
 const miesoContainer = document.getElementById('mieso-wedliny-content');
 const nabialContainer = document.getElementById('nabial-content');
@@ -182,6 +256,7 @@ let viewMode = 'table';
 let activeContainer = slodyczeContainer;
 let currentCategoryName = 'Slodycze';
 let currentCategorySlug = 'slodycze';
+let selectedProducts = new Map();
 let filters = {
   producer: '',
   group: '',
@@ -190,6 +265,10 @@ let filters = {
   index: '',
   limit: ''
 };
+let catalogBlobUrl = null;
+let catalogLoading = false;
+let catalogCoverDataUrl = null;
+let catalogPriceMap = null;
 const LIMIT = 25;
 
 // OBSŁUGA ZAKŁADEK
@@ -410,13 +489,18 @@ function render(){
     <div class="actions">
       <button onclick="exportCSV()">Zapisz CSV</button>
       <button onclick="exportXLS()">Zapisz XLS</button>
-      <button onclick="previewPDF()">Podgląd PDF</button>
-      <button onclick="downloadPDF()">Zapisz PDF</button>
+      <button onclick="createCatalog()">Utwórz katalog</button>
+      ${catalogBlobUrl ? `<button onclick="downloadCatalog()">Zapisz katalog PDF</button>` : ''}
     </div>
 
     ${viewMode === 'pdf' ? `
       <div class="pdf-preview">
         <iframe src="${pdfPreviewUrl + encodeURIComponent(getActivePdfUrl())}&t=${Date.now()}" title="Podgląd PDF"></iframe>
+      </div>
+    ` : viewMode === 'catalog' ? `
+      <div class="pdf-preview">
+        ${catalogLoading ? `<div class="catalog-loading">Tworzę katalog...</div>` : ''}
+        ${catalogBlobUrl ? `<iframe src="${catalogBlobUrl}#zoom=50" title="Katalog PDF"></iframe>` : ''}
       </div>
     ` : `
       <div class="filters">
@@ -463,6 +547,10 @@ function render(){
         <div class="filter">
           <label>Ilość pozycji</label>
           <input type="number" min="1" value="${escapeAttr(filters.limit)}" oninput="setFilter('limit', this.value, true)" placeholder="Np. 50">
+        </div>
+        <div class="filter">
+          <label>Wybór</label>
+          <button class="btn-outline" onclick="clearSelected()">Wyczyść zaznaczone</button>
         </div>
         <div class="filter">
           <label>&nbsp;</label>
@@ -513,7 +601,8 @@ function exportCSV(){
   const cols = Object.keys(fullData[0]);
   let csv = cols.join(',') + '\n';
 
-  getFilteredData().forEach(r => {
+  const selected = selectedProducts.size ? Array.from(selectedProducts.values()) : getFilteredData();
+  selected.forEach(r => {
     csv += cols
       .map(c => `"${(r[c] ?? '').toString().replace(/"/g, '""')}"`)
       .join(',') + '\n';
@@ -526,7 +615,8 @@ function exportXLS(){
   const cols = Object.keys(fullData[0]);
   let html = '<table><tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
 
-  getFilteredData().forEach(r => {
+  const selected = selectedProducts.size ? Array.from(selectedProducts.values()) : getFilteredData();
+  selected.forEach(r => {
     html += '<tr>' + cols.map(c => `<td>${r[c] ?? ''}</td>`).join('') + '</tr>';
   });
 
@@ -534,9 +624,151 @@ function exportXLS(){
   download(html, `${currentCategorySlug}_rumunia.xls`, 'application/vnd.ms-excel');
 }
 
-function previewPDF(){
-  viewMode = 'pdf';
+async function createCatalog(){
+  viewMode = 'catalog';
+  catalogLoading = true;
+  catalogBlobUrl = null;
   render();
+  try{
+    const products = Array.from(selectedProducts.values());
+    if(!products.length){
+      catalogLoading = false;
+      render();
+      return;
+    }
+    if(typeof window.createCatalogPdf !== 'function'){
+      catalogLoading = false;
+      render();
+      return;
+    }
+    const blob = await window.createCatalogPdf(products);
+    catalogBlobUrl = URL.createObjectURL(blob);
+  }catch(e){
+    console.error(e);
+  }finally{
+    catalogLoading = false;
+    render();
+  }
+}
+
+function downloadCatalog(){
+  if(!catalogBlobUrl) return;
+  openCatalogModal();
+}
+
+function clearSelected(){
+  selectedProducts.clear();
+  updateTable();
+}
+
+function openCatalogModal(){
+  if(!catalogModal) return;
+  if(catalogNameInput) catalogNameInput.value = `katalog_${currentCategorySlug}`;
+  if(catalogCoverInput) catalogCoverInput.value = '';
+  if(catalogExcelInput) catalogExcelInput.value = '';
+  catalogPriceMap = null;
+  if(catalogError) catalogError.textContent = '';
+  catalogModal.classList.remove('hidden');
+}
+
+function closeCatalogModal(){
+  if(catalogModal) catalogModal.classList.add('hidden');
+}
+
+async function buildAndSaveCatalog(){
+  const name = (catalogNameInput?.value || '').trim() || `katalog_${currentCategorySlug}`;
+  if(catalogError) catalogError.textContent = '';
+  if(catalogSaveBtn) catalogSaveBtn.disabled = true;
+  try{
+    const products = Array.from(selectedProducts.values());
+    if(!products.length){
+      if(catalogError) catalogError.textContent = 'Najpierw zaznacz produkty.';
+      return;
+    }
+    await ensurePasswordIfNeeded(products.length);
+    const currency = catalogCurrencySelect?.value || '';
+    if(catalogPriceMap && !currency){
+      if(catalogError) catalogError.textContent = 'Wybierz walutę przed zapisem katalogu.';
+      return;
+    }
+    const priceColor = catalogPriceColorInput?.value || '#000000';
+    const options = { coverDataUrl: catalogCoverDataUrl, priceMap: catalogPriceMap, currency, priceColor };
+    const blob = await window.createCatalogPdf(products, options);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${name}.pdf`;
+    a.click();
+    closeCatalogModal();
+  }catch(e){
+    console.error(e);
+    if(catalogError) catalogError.textContent = 'Nie udało się zapisać katalogu.';
+  }finally{
+    if(catalogSaveBtn) catalogSaveBtn.disabled = false;
+  }
+}
+
+function fileToDataUrl(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function buildPriceMap(rows){
+  if(!rows || !rows.length) return null;
+  const header = rows[0].map(h => String(h).toLowerCase().trim());
+  const idxCol = header.indexOf('indeks');
+  const priceCol = header.indexOf('cena');
+  const unitCol = header.findIndex(h => h.includes('jednostka'));
+  if(idxCol === -1 || priceCol === -1) return null;
+  const map = new Map();
+  for(let i=1;i<rows.length;i++){
+    const r = rows[i];
+    const index = String(r[idxCol] || '').trim();
+    if(!index) continue;
+    const price = String(r[priceCol] || '').trim();
+    const unit = unitCol !== -1 ? String(r[unitCol] || '').trim() : '';
+    map.set(index, { price, unit });
+  }
+  return map;
+}
+
+function ensurePasswordIfNeeded(count){
+  return new Promise((resolve, reject) => {
+    if(count <= 50) return resolve();
+    if(!passwordModal) return reject();
+    if(passwordInput) passwordInput.value = '';
+    if(passwordError) passwordError.textContent = '';
+    passwordModal.classList.remove('hidden');
+
+    const onConfirm = () => {
+      const pass = passwordInput?.value || '';
+      if(pass !== 'Maspo2026'){
+        if(passwordError) passwordError.textContent = 'Nieprawidłowe hasło.';
+        return;
+      }
+      passwordModal.classList.add('hidden');
+      cleanup();
+      resolve();
+    };
+
+    const onCancel = () => {
+      passwordModal.classList.add('hidden');
+      cleanup();
+      reject();
+    };
+
+    const cleanup = () => {
+      passwordConfirm?.removeEventListener('click', onConfirm);
+      passwordCancel?.removeEventListener('click', onCancel);
+    };
+
+    passwordConfirm?.addEventListener('click', onConfirm);
+    passwordCancel?.addEventListener('click', onCancel);
+  });
 }
 
 async function downloadPDF(){
@@ -678,9 +910,24 @@ function setActiveCard(id){
   if(el) el.classList.add('active');
 }
 
+function toggleProductSelection(checkbox){
+  const index = checkbox.getAttribute('data-index');
+  if(!index) return;
+  const cols = Object.keys(fullData[0] || {});
+  const indexKey = findColumn(cols, ['indeks', 'index', 'id']);
+  if(!indexKey) return;
+  const row = fullData.find(r => String(r[indexKey]).trim() === index);
+  if(checkbox.checked && row){
+    selectedProducts.set(index, row);
+  }else{
+    selectedProducts.delete(index);
+  }
+}
+
 function renderCell(col, value, indexKey){
   if(indexKey && col === indexKey){
     const idx = String(value ?? '').trim();
+    const checked = selectedProducts.has(idx) ? 'checked' : '';
     const img = idx
       ? `<span class="img-hover" onmouseenter="positionPopup(this)">
            <img class="index-img" src="${buildImageUrl(idx, 'png')}" data-index="${escapeAttr(idx)}" data-tried="png" onerror="imageFallback(this)" alt="">
@@ -689,7 +936,14 @@ function renderCell(col, value, indexKey){
            </span>
          </span>`
       : '';
-    return `<td class="index-cell">${img}<span>${escapeHtml(idx)}</span></td>`;
+    return `<td class="index-cell">
+              <label class="select-box">
+                <input type="checkbox" data-index="${escapeAttr(idx)}" onchange="toggleProductSelection(this)" ${checked}>
+                <span></span>
+              </label>
+              ${img}
+              <span>${escapeHtml(idx)}</span>
+            </td>`;
   }
   return `<td>${escapeHtml(value ?? '')}</td>`;
 }
@@ -740,3 +994,4 @@ function positionPopup(el){
   }
   pop.style.top = `${top}px`;
 }
+
