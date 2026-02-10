@@ -244,6 +244,7 @@ main{
   transition: transform .18s ease, opacity .18s ease;
 }
 
+
 .card-corner-icon--lg{
   width:108px;
   height:108px;
@@ -288,6 +289,46 @@ main{
   font-weight:600;
 }
 
+.import-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:16px 20px;
+  margin:12px 0 6px;
+  flex-wrap:wrap;
+}
+
+.import-title{
+  font-weight:700;
+  color:#111827;
+}
+
+.import-sub{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.import-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.import-input{
+  max-width:220px;
+}
+
+.import-info{
+  font-size:12px;
+  color:#111827;
+  opacity:.8;
+}
+
 .actions button.secondary{
   background:#e5e7eb;
   color:#111827;
@@ -316,6 +357,16 @@ main{
   color:var(--muted);
   text-transform:uppercase;
   letter-spacing:.04em;
+}
+
+.index-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.select-box--header{
+  margin-right:4px;
 }
 
 .filter input,
@@ -348,6 +399,24 @@ th,td{
   padding:10px 12px;
   border-bottom:1px solid #eee;
   font-size:14px;
+}
+
+.ean-cell{
+  min-width:160px;
+  text-align:center;
+}
+
+.ean-barcode{
+  display:block;
+  width:140px;
+  height:auto;
+  margin:0 auto 4px;
+}
+
+.ean-text{
+  font-size:12px;
+  letter-spacing:0.4px;
+  color:#111827;
 }
 
 th{
@@ -616,6 +685,17 @@ th{
   font-size:20px;
 }
 
+.flag-image{
+  width:24px;
+  height:24px;
+  object-fit:contain;
+  display:block;
+  border-radius:6px;
+  box-shadow:0 2px 6px rgba(0,0,0,.12);
+  background:#fff;
+  padding:2px;
+}
+
 .flag-text{
   font-size:20px;
   font-weight:700;
@@ -627,6 +707,14 @@ th{
   border-radius:999px;
   background:linear-gradient(90deg,#0b3d91 0%, #0b3d91 33%, #f5d300 33%, #f5d300 66%, #ce1126 66%, #ce1126 100%);
   width:220px;
+}
+
+.country-banner--ua .flag-stripe{
+  background:linear-gradient(90deg,#0057b7 0%, #0057b7 50%, #ffd700 50%, #ffd700 100%);
+}
+
+.country-banner--ua .flag-pill{
+  border:1px solid #e5e7eb;
 }
 .admin-panel{
   background:#fff;
