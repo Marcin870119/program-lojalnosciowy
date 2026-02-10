@@ -14,6 +14,18 @@ const jsonUrlProduktyPodstawowe =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Produkty%20Podstawowe%20-%20Rumunia%20Ranking.json';
 const jsonUrlKawyHerbaty =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Kawa%20i%20Herbata%20-%20Ranking%20Rumunia.json';
+const jsonUrlSlodyczeUkraina =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/SLODYCZE%20UKRAINA%20-%20RANKING.json';
+const jsonUrlMiesoUkraina =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Mieso%20i%20wedliny%20-%20Ukraina%20Ranking.json';
+const jsonUrlKawyUkraina =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/KAWA%20I%20HERBATA%20-%20UKRAINA%20RANKING.json';
+const xlsxUrlPuszkiUkraina =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Puszki%20i%20s%C5%82oiki%20%20-%20UKRAINA%20RANKING.xlsx';
+const jsonUrlNapojeUkraina =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/NAPOJE%20-%20UKRAINA%20RANKING.json';
+const jsonUrlPrzyprawyUkraina =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Przyprawy%20i%20dodatki%20-%20ukraina%20ranking.json';
 const pdfUrl =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/katalog%20(59)_compressed.pdf';
 const producerPdfMap = {
@@ -26,9 +38,12 @@ const producerPdfMap = {
 };
 const pdfPreviewUrl =
   'https://mozilla.github.io/pdf.js/web/viewer.html?file=';
-const imageBaseUrl =
+const imageBaseUrlRumunia =
   'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/zdjecia%20-%20World%20food%2F';
-window.imageBaseUrl = imageBaseUrl;
+const imageBaseUrlUkraina =
+  'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/zdjecia%20-%20World%20food%2FUkraina%2F';
+let currentImageBaseUrl = imageBaseUrlRumunia;
+window.imageBaseUrl = currentImageBaseUrl;
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDwzVRS5W2lklGMLcZJn-YPCK9OtBQZ7bI',
@@ -63,6 +78,7 @@ const passwordConfirm = document.getElementById('password-confirm');
 const passwordCancel = document.getElementById('password-cancel');
 const passwordError = document.getElementById('password-error');
 const adminPanelBtn = document.getElementById('admin-panel-btn');
+const appBrandLink = document.querySelector('#app-view .brand-link');
 
 const slodyczeContainer = document.getElementById('slodycze-content');
 const miesoContainer = document.getElementById('mieso-wedliny-content');
@@ -72,6 +88,12 @@ const przyprawyProszekContainer = document.getElementById('przyprawy-proszek-con
 const puszkiSloikiContainer = document.getElementById('puszki-sloiki-content');
 const produktyPodstawoweContainer = document.getElementById('produkty-podstawowe-content');
 const kawyHerbatyContainer = document.getElementById('kawy-herbaty-content');
+const ukrainaSlodyczeContainer = document.getElementById('ukraina-slodycze-content');
+const ukrainaMiesoContainer = document.getElementById('ukraina-mieso-wedliny-content');
+const ukrainaKawyContainer = document.getElementById('ukraina-kawy-herbaty-content');
+const ukrainaPuszkiContainer = document.getElementById('ukraina-puszki-sloiki-content');
+const ukrainaNapojeContainer = document.getElementById('ukraina-napoje-content');
+const ukrainaPrzyprawyContainer = document.getElementById('ukraina-przyprawy-proszek-content');
 
 var fullData = [];
 let expanded = false;
@@ -93,6 +115,10 @@ let catalogLoading = false;
 let catalogCoverDataUrl = null;
 let catalogPriceMap = null;
 const LIMIT = 25;
+const barcodeCache = new Map();
+let importedIndexSet = null;
+let importedIndexCount = 0;
+let importedIndexFile = '';
 
 let auth = null;
 let authReady = false;
@@ -127,6 +153,9 @@ function resetAppState(){
   catalogLoading = false;
   catalogCoverDataUrl = null;
   catalogPriceMap = null;
+  importedIndexSet = null;
+  importedIndexCount = 0;
+  importedIndexFile = '';
   resetFilters();
 
   slodyczeContainer.innerHTML = '';
@@ -137,6 +166,12 @@ function resetAppState(){
   puszkiSloikiContainer.innerHTML = '';
   produktyPodstawoweContainer.innerHTML = '';
   kawyHerbatyContainer.innerHTML = '';
+  if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
+  if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
+  if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
+  if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
+  if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
+  if(ukrainaPrzyprawyContainer) ukrainaPrzyprawyContainer.innerHTML = '';
 
   document.querySelectorAll('.grid .card').forEach(c => c.classList.remove('active'));
 
@@ -147,6 +182,8 @@ function resetAppState(){
   document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
   const rumuniaSection = document.getElementById('rumunia');
   if(rumuniaSection) rumuniaSection.classList.remove('hidden');
+  currentImageBaseUrl = imageBaseUrlRumunia;
+  window.imageBaseUrl = currentImageBaseUrl;
 }
 
 function setLoginError(message){
@@ -230,6 +267,17 @@ if(loginPassword){
   });
 }
 
+if(appBrandLink){
+  appBrandLink.addEventListener('click', (e) => {
+    if(auth && auth.currentUser){
+      e.preventDefault();
+      showApp();
+      resetAppState();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+}
+
 if(modalClose){
   modalClose.addEventListener('click', () => {
     if(securityModal) securityModal.classList.add('hidden');
@@ -298,6 +346,8 @@ document.querySelectorAll('.tab').forEach(tab => {
 
     document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
     document.getElementById(tab.dataset.tab).classList.remove('hidden');
+    currentImageBaseUrl = tab.dataset.tab === 'ukraina' ? imageBaseUrlUkraina : imageBaseUrlRumunia;
+    window.imageBaseUrl = currentImageBaseUrl;
 
     slodyczeContainer.innerHTML = '';
     miesoContainer.innerHTML = '';
@@ -307,6 +357,12 @@ document.querySelectorAll('.tab').forEach(tab => {
     puszkiSloikiContainer.innerHTML = '';
     produktyPodstawoweContainer.innerHTML = '';
     kawyHerbatyContainer.innerHTML = '';
+    if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
+    if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
+    if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
+    if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
+    if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
+    if(ukrainaPrzyprawyContainer) ukrainaPrzyprawyContainer.innerHTML = '';
     viewMode = 'table';
   });
 });
@@ -330,8 +386,189 @@ document.getElementById('rumunia-slodycze').addEventListener('click', async () =
   puszkiSloikiContainer.innerHTML = '';
   produktyPodstawoweContainer.innerHTML = '';
   kawyHerbatyContainer.innerHTML = '';
+  if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
+  if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
+  if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
+  if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
+  if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
+  if(ukrainaPrzyprawyContainer) ukrainaPrzyprawyContainer.innerHTML = '';
   render();
 });
+
+// KLIK KAFELKA "SŁODYCZE" - UKRAINA
+const ukrainaSlodyczeCard = document.getElementById('ukraina-slodycze');
+if(ukrainaSlodyczeCard){
+  ukrainaSlodyczeCard.addEventListener('click', async () => {
+    setActiveCard('ukraina-slodycze');
+    const res = await fetch(jsonUrlSlodyczeUkraina);
+    fullData = await res.json();
+    expanded = false;
+    viewMode = 'table';
+    activeContainer = ukrainaSlodyczeContainer;
+    currentCategoryName = 'Slodycze_Ukraina';
+    currentCategorySlug = 'slodycze_ukraina';
+    resetFilters();
+    slodyczeContainer.innerHTML = '';
+    miesoContainer.innerHTML = '';
+    nabialContainer.innerHTML = '';
+    napojeContainer.innerHTML = '';
+    przyprawyProszekContainer.innerHTML = '';
+    puszkiSloikiContainer.innerHTML = '';
+    produktyPodstawoweContainer.innerHTML = '';
+    kawyHerbatyContainer.innerHTML = '';
+    if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
+    if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
+    render();
+  });
+}
+
+// KLIK KAFELKA "MIĘSO I WĘDLINY" - UKRAINA
+const ukrainaMiesoCard = document.getElementById('ukraina-mieso-wedliny');
+if(ukrainaMiesoCard){
+  ukrainaMiesoCard.addEventListener('click', async () => {
+    setActiveCard('ukraina-mieso-wedliny');
+    const res = await fetch(jsonUrlMiesoUkraina);
+    fullData = await res.json();
+    expanded = false;
+    viewMode = 'table';
+    activeContainer = ukrainaMiesoContainer;
+    currentCategoryName = 'Mieso_i_wedliny_Ukraina';
+    currentCategorySlug = 'mieso_i_wedliny_ukraina';
+    resetFilters();
+    slodyczeContainer.innerHTML = '';
+    miesoContainer.innerHTML = '';
+    nabialContainer.innerHTML = '';
+    napojeContainer.innerHTML = '';
+    przyprawyProszekContainer.innerHTML = '';
+    puszkiSloikiContainer.innerHTML = '';
+    produktyPodstawoweContainer.innerHTML = '';
+    kawyHerbatyContainer.innerHTML = '';
+    if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
+    if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
+    if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
+    render();
+  });
+}
+
+// KLIK KAFELKA "KAWY I HERBATY" - UKRAINA
+const ukrainaKawyCard = document.getElementById('ukraina-kawy-herbaty');
+if(ukrainaKawyCard){
+  ukrainaKawyCard.addEventListener('click', async () => {
+    setActiveCard('ukraina-kawy-herbaty');
+    const res = await fetch(jsonUrlKawyUkraina);
+    fullData = await res.json();
+    expanded = false;
+    viewMode = 'table';
+    activeContainer = ukrainaKawyContainer;
+    currentCategoryName = 'Kawy_i_herbaty_Ukraina';
+    currentCategorySlug = 'kawy_i_herbaty_ukraina';
+    resetFilters();
+    slodyczeContainer.innerHTML = '';
+    miesoContainer.innerHTML = '';
+    nabialContainer.innerHTML = '';
+    napojeContainer.innerHTML = '';
+    przyprawyProszekContainer.innerHTML = '';
+    puszkiSloikiContainer.innerHTML = '';
+    produktyPodstawoweContainer.innerHTML = '';
+    kawyHerbatyContainer.innerHTML = '';
+    if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
+    if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
+    if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
+    if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
+    render();
+  });
+}
+
+// KLIK KAFELKA "PUSZKI I SŁOIKI" - UKRAINA
+const ukrainaPuszkiCard = document.getElementById('ukraina-puszki-sloiki');
+if(ukrainaPuszkiCard){
+  ukrainaPuszkiCard.addEventListener('click', async () => {
+    setActiveCard('ukraina-puszki-sloiki');
+    fullData = await loadXlsxAsJson(xlsxUrlPuszkiUkraina);
+    expanded = false;
+    viewMode = 'table';
+    activeContainer = ukrainaPuszkiContainer;
+    currentCategoryName = 'Puszki_i_sloiki_Ukraina';
+    currentCategorySlug = 'puszki_i_sloiki_ukraina';
+    resetFilters();
+    slodyczeContainer.innerHTML = '';
+    miesoContainer.innerHTML = '';
+    nabialContainer.innerHTML = '';
+    napojeContainer.innerHTML = '';
+    przyprawyProszekContainer.innerHTML = '';
+    puszkiSloikiContainer.innerHTML = '';
+    produktyPodstawoweContainer.innerHTML = '';
+    kawyHerbatyContainer.innerHTML = '';
+    if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
+    if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
+    if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
+    if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
+    if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
+    render();
+  });
+}
+
+// KLIK KAFELKA "NAPOJE" - UKRAINA
+const ukrainaNapojeCard = document.getElementById('ukraina-napoje');
+if(ukrainaNapojeCard){
+  ukrainaNapojeCard.addEventListener('click', async () => {
+    setActiveCard('ukraina-napoje');
+    const res = await fetch(jsonUrlNapojeUkraina);
+    fullData = await res.json();
+    expanded = false;
+    viewMode = 'table';
+    activeContainer = ukrainaNapojeContainer;
+    currentCategoryName = 'Napoje_Ukraina';
+    currentCategorySlug = 'napoje_ukraina';
+    resetFilters();
+    slodyczeContainer.innerHTML = '';
+    miesoContainer.innerHTML = '';
+    nabialContainer.innerHTML = '';
+    napojeContainer.innerHTML = '';
+    przyprawyProszekContainer.innerHTML = '';
+    puszkiSloikiContainer.innerHTML = '';
+    produktyPodstawoweContainer.innerHTML = '';
+    kawyHerbatyContainer.innerHTML = '';
+    if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
+    if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
+    if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
+    if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
+    if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
+    if(ukrainaPrzyprawyContainer) ukrainaPrzyprawyContainer.innerHTML = '';
+    render();
+  });
+}
+
+// KLIK KAFELKA "PRZYPRAWY I DODATKI W PROSZKU" - UKRAINA
+const ukrainaPrzyprawyCard = document.getElementById('ukraina-przyprawy-proszek');
+if(ukrainaPrzyprawyCard){
+  ukrainaPrzyprawyCard.addEventListener('click', async () => {
+    setActiveCard('ukraina-przyprawy-proszek');
+    const res = await fetch(jsonUrlPrzyprawyUkraina);
+    fullData = await res.json();
+    expanded = false;
+    viewMode = 'table';
+    activeContainer = ukrainaPrzyprawyContainer;
+    currentCategoryName = 'Przyprawy_Ukraina';
+    currentCategorySlug = 'przyprawy_ukraina';
+    resetFilters();
+    slodyczeContainer.innerHTML = '';
+    miesoContainer.innerHTML = '';
+    nabialContainer.innerHTML = '';
+    napojeContainer.innerHTML = '';
+    przyprawyProszekContainer.innerHTML = '';
+    puszkiSloikiContainer.innerHTML = '';
+    produktyPodstawoweContainer.innerHTML = '';
+    kawyHerbatyContainer.innerHTML = '';
+    if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
+    if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
+    if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
+    if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
+    if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
+    if(ukrainaPrzyprawyContainer) ukrainaPrzyprawyContainer.innerHTML = '';
+    render();
+  });
+}
 
 // KLIK KAFELKA "MIĘSO I WĘDLINY"
 document.getElementById('rumunia-mieso-wedliny').addEventListener('click', async () => {
@@ -505,6 +742,22 @@ function render(){
   const indexKey = findColumn(cols, ['indeks', 'index', 'id']);
 
   let html = `
+    ${viewMode === 'table' ? `
+      <div class="import-bar">
+        <div>
+          <div class="import-title">Import Excel</div>
+        </div>
+        <div class="import-actions">
+          <input id="index-import-input" class="import-input" type="file" accept=".xlsx,.xls">
+          <button class="btn-outline" onclick="importIndexExcel()">Importuj Excel</button>
+          <button class="btn-outline" onclick="clearIndexImport()">Wyczyść import</button>
+        </div>
+        <div class="import-info">
+          ${importedIndexSet ? `Zaimportowano: ${importedIndexCount} (${escapeHtml(importedIndexFile)})` : 'Brak importu'}
+        </div>
+      </div>
+    ` : ''}
+
     <div class="actions">
       <button onclick="exportCSV()">Zapisz CSV</button>
       <button onclick="exportXLS()">Zapisz XLS</button>
@@ -571,10 +824,6 @@ function render(){
           <input type="number" min="1" value="${escapeAttr(filters.limit)}" oninput="setFilter('limit', this.value, true)" placeholder="Np. 50">
         </div>
         <div class="filter">
-          <label>Wybór</label>
-          <button class="btn-outline" onclick="clearSelected()">Wyczyść zaznaczone</button>
-        </div>
-        <div class="filter">
           <label>&nbsp;</label>
           <button class="btn-outline" onclick="resetFilters(); render();">Wyczyść filtry</button>
         </div>
@@ -583,7 +832,7 @@ function render(){
       <div class="table-wrap">
         <table>
           <thead>
-            <tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr>
+            <tr>${cols.map(c => renderHeaderCell(c, indexKey)).join('')}</tr>
           </thead>
           <tbody id="data-tbody"></tbody>
         </table>
@@ -605,6 +854,39 @@ function expandTable(){
   updateTable();
 }
 
+function clearIndexImport(){
+  importedIndexSet = null;
+  importedIndexCount = 0;
+  importedIndexFile = '';
+  render();
+}
+
+async function importIndexExcel(){
+  const input = document.getElementById('index-import-input');
+  const file = input?.files?.[0];
+  if(!file) return;
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    const set = new Set();
+    rows.slice(1).forEach(row => {
+      const idx = normalizeIndexValue(row[0]);
+      if(idx) set.add(idx);
+    });
+    importedIndexSet = set.size ? set : null;
+    importedIndexCount = set.size;
+    importedIndexFile = file.name;
+  }catch(e){
+    console.error(e);
+    importedIndexSet = null;
+    importedIndexCount = 0;
+    importedIndexFile = '';
+  }
+  render();
+}
+
 function setFilter(key, value, soft){
   filters[key] = value;
   expanded = false;
@@ -613,6 +895,13 @@ function setFilter(key, value, soft){
   }else{
     render();
   }
+}
+
+function normalizeIndexValue(value){
+  return String(value ?? '')
+    .trim()
+    .replace(/\.0+$/, '')
+    .replace(/\s+/g, '');
 }
 
 function resetFilters(){
@@ -680,6 +969,56 @@ function downloadCatalog(){
 function clearSelected(){
   selectedProducts.clear();
   updateTable();
+}
+
+function selectAllVisible(){
+  const filteredData = getFilteredData();
+  const limitValue = getLimitValue();
+  const data = expanded ? filteredData : filteredData.slice(0, limitValue);
+  const cols = Object.keys(fullData[0] || {});
+  const indexKey = findColumn(cols, ['indeks', 'index', 'id']);
+  if(!indexKey) return;
+  data.forEach(r => {
+    const idx = String(r[indexKey] ?? '').trim();
+    if(idx) selectedProducts.set(idx, r);
+  });
+  updateTable();
+}
+
+function renderHeaderCell(col, indexKey){
+  if(indexKey && col === indexKey){
+    const allSelected = areAllVisibleSelected();
+    const checked = allSelected ? 'checked' : '';
+    return `<th class="index-header">
+              <label class="select-box select-box--header">
+                <input type="checkbox" onclick="toggleSelectAll(this)" ${checked}>
+                <span></span>
+              </label>
+              ${escapeHtml(col)}
+            </th>`;
+  }
+  return `<th>${escapeHtml(col)}</th>`;
+}
+
+function toggleSelectAll(checkbox){
+  if(checkbox.checked){
+    selectAllVisible();
+  }else{
+    clearSelected();
+  }
+}
+
+function areAllVisibleSelected(){
+  const filteredData = getFilteredData();
+  const limitValue = getLimitValue();
+  const data = expanded ? filteredData : filteredData.slice(0, limitValue);
+  const cols = Object.keys(fullData[0] || {});
+  const indexKey = findColumn(cols, ['indeks', 'index', 'id']);
+  if(!indexKey || data.length === 0) return false;
+  return data.every(r => {
+    const idx = String(r[indexKey] ?? '').trim();
+    return idx && selectedProducts.has(idx);
+  });
 }
 
 function openCatalogModal(){
@@ -829,6 +1168,10 @@ function getFilteredData(){
   const indexKey = findColumn(cols, ['indeks', 'index', 'id']);
 
   return fullData.filter(r => {
+    if(importedIndexSet && indexKey){
+      const idx = normalizeIndexValue(r[indexKey]);
+      if(!importedIndexSet.has(idx)) return false;
+    }
     if(producerKey && filters.producer && String(r[producerKey] ?? '') !== filters.producer) return false;
     if(groupKey && filters.group && String(r[groupKey] ?? '') !== filters.group) return false;
     if(nameKey && filters.name && !includesText(r[nameKey], filters.name)) return false;
@@ -844,12 +1187,13 @@ function updateTable(){
   const limitValue = getLimitValue();
   const data = expanded ? filteredData : filteredData.slice(0, limitValue);
   const indexKey = findColumn(cols, ['indeks', 'index', 'id']);
+  const eanKey = findColumn(cols, ['kod ean', 'ean']);
 
   const tbody = document.getElementById('data-tbody');
   if(tbody){
     tbody.innerHTML = data.map(r => `
       <tr>
-        ${cols.map(c => renderCell(c, r[c], indexKey)).join('')}
+        ${cols.map(c => renderCell(c, r[c], indexKey, eanKey)).join('')}
       </tr>
     `).join('');
   }
@@ -959,7 +1303,7 @@ function toggleProductSelection(checkbox){
   }
 }
 
-function renderCell(col, value, indexKey){
+function renderCell(col, value, indexKey, eanKey){
   if(indexKey && col === indexKey){
     const idx = String(value ?? '').trim();
     const checked = selectedProducts.has(idx) ? 'checked' : '';
@@ -980,11 +1324,85 @@ function renderCell(col, value, indexKey){
               <span>${escapeHtml(idx)}</span>
             </td>`;
   }
+  if(eanKey && col === eanKey){
+    const raw = String(value ?? '').trim();
+    const normalized = normalizeEanForBarcode(raw);
+    if(normalized){
+      const barcode = getBarcodeDataUrl(normalized);
+      return `<td class="ean-cell">
+                ${barcode ? `<img class="ean-barcode" src="${barcode}" alt="${escapeAttr(normalized.code)}">` : ''}
+                <div class="ean-text">${escapeHtml(normalized.code)}</div>
+              </td>`;
+    }
+  }
   return `<td>${escapeHtml(value ?? '')}</td>`;
 }
 
+function calculateEAN13Checksum(code12){
+  const digits = code12.split('').map(Number);
+  let sum = 0;
+  for(let i = 0; i < 12; i++){
+    sum += digits[i] * (i % 2 === 0 ? 1 : 3);
+  }
+  return (10 - (sum % 10)) % 10;
+}
+
+function calculateEAN8Checksum(code7){
+  const digits = code7.split('').map(Number);
+  let sum = 0;
+  for(let i = 0; i < 7; i++){
+    sum += digits[i] * (i % 2 === 0 ? 3 : 1);
+  }
+  return (10 - (sum % 10)) % 10;
+}
+
+function normalizeEanForBarcode(raw){
+  const digits = String(raw ?? '').replace(/\D/g, '');
+  if(!digits) return null;
+
+  if(digits.length <= 8){
+    let code = digits;
+    if(code.length < 7) code = code.padStart(7, '0');
+    if(code.length >= 7){
+      const base = code.slice(0, 7);
+      code = base + calculateEAN8Checksum(base);
+    }
+    if(code.length !== 8) return null;
+    return { code, format: 'EAN8' };
+  }
+
+  let code = digits;
+  if(code.length < 12) code = code.padStart(12, '0');
+  const base = code.slice(0, 12);
+  code = base + calculateEAN13Checksum(base);
+  if(code.length !== 13) return null;
+  return { code, format: 'EAN13' };
+}
+
+function getBarcodeDataUrl(normalized){
+  const key = `${normalized.format}:${normalized.code}`;
+  if(barcodeCache.has(key)) return barcodeCache.get(key);
+  if(typeof JsBarcode === 'undefined') return '';
+  const canvas = document.createElement('canvas');
+  try{
+    JsBarcode(canvas, normalized.code, {
+      format: normalized.format,
+      width: 1.6,
+      height: 44,
+      displayValue: false,
+      margin: 0
+    });
+    const url = canvas.toDataURL('image/png');
+    barcodeCache.set(key, url);
+    return url;
+  }catch(e){
+    console.error('Barcode error', e);
+    return '';
+  }
+}
+
 function buildImageUrl(index, ext){
-  return `${imageBaseUrl}${encodeURIComponent(index)}.${ext}?alt=media`;
+  return `${currentImageBaseUrl}${encodeURIComponent(index)}.${ext}?alt=media`;
 }
 
 function imageFallback(img){
