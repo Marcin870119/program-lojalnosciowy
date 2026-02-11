@@ -91,6 +91,7 @@
       <button class="tab" data-tab="ukraina">Ukraina</button>
       <button class="tab" data-tab="litwa">Litwa</button>
       <button class="tab" data-tab="bulgaria">Bułgaria</button>
+      <button class="tab" data-tab="listing">Listing</button>
     </nav>
     <div class="header-actions">
       <a id="admin-panel-btn" class="btn-outline hidden" href="admin.html">Panel admin</a>
@@ -211,6 +212,37 @@
   </section>
   <section id="litwa" class="tab-content hidden"></section>
   <section id="bulgaria" class="tab-content hidden"></section>
+  <section id="listing" class="tab-content hidden">
+    <div class="country-banner">
+      <div class="flag-pill">
+        <span class="flag-text">Listing</span>
+      </div>
+      <div class="flag-stripe"></div>
+    </div>
+    <div class="listing-panel">
+      <div class="listing-controls">
+        <div>
+          <label>Kod kreskowy</label>
+          <input id="listing-code" type="text" placeholder="Zeskanuj lub wpisz kod">
+        </div>
+        <div class="listing-buttons">
+          <button class="btn-outline" id="listing-start-btn">Start skanowania</button>
+          <button class="btn-outline" id="listing-stop-btn">Stop</button>
+          <button class="btn-outline" id="listing-search-btn">Szukaj</button>
+          <button class="btn-outline" id="listing-export-btn">Zapisz XLSX</button>
+        </div>
+      </div>
+      <div id="listing-camera" class="listing-camera"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr id="listing-head"></tr>
+          </thead>
+          <tbody id="listing-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
   </main>
 </div>
@@ -218,7 +250,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.2.6/dist/quagga.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="katalog.js"></script>
 <script src="script.js"></script>
