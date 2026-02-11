@@ -485,6 +485,10 @@ th{
   object-fit:cover;
 }
 
+.listing-camera canvas{
+  display:none;
+}
+
 .index-cell{
   display:flex;
   align-items:center;
