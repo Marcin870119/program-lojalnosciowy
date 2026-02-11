@@ -119,6 +119,8 @@ const barcodeCache = new Map();
 let importedIndexSet = null;
 let importedIndexCount = 0;
 let importedIndexFile = '';
+let listingResults = [];
+let listingAllDataCache = null;
 
 let auth = null;
 let authReady = false;
@@ -364,6 +366,10 @@ document.querySelectorAll('.tab').forEach(tab => {
     if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
     if(ukrainaPrzyprawyContainer) ukrainaPrzyprawyContainer.innerHTML = '';
     viewMode = 'table';
+
+    if(tab.dataset.tab !== 'listing'){
+      stopListingScanner();
+    }
   });
 });
 
@@ -902,6 +908,178 @@ function normalizeIndexValue(value){
     .trim()
     .replace(/\.0+$/, '')
     .replace(/\s+/g, '');
+}
+
+const listingCodeInput = document.getElementById('listing-code');
+const listingStartBtn = document.getElementById('listing-start-btn');
+const listingStopBtn = document.getElementById('listing-stop-btn');
+const listingSearchBtn = document.getElementById('listing-search-btn');
+const listingExportBtn = document.getElementById('listing-export-btn');
+const listingHead = document.getElementById('listing-head');
+const listingBody = document.getElementById('listing-body');
+
+if(listingStartBtn){
+  listingStartBtn.addEventListener('click', startListingScanner);
+}
+if(listingStopBtn){
+  listingStopBtn.addEventListener('click', stopListingScanner);
+}
+if(listingSearchBtn){
+  listingSearchBtn.addEventListener('click', () => {
+    const code = listingCodeInput?.value.trim();
+    if(code) searchListingByCode(code);
+  });
+}
+if(listingExportBtn){
+  listingExportBtn.addEventListener('click', exportListingXlsx);
+}
+if(listingCodeInput){
+  listingCodeInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      const code = listingCodeInput.value.trim();
+      if(code) searchListingByCode(code);
+    }
+  });
+}
+
+function startListingScanner(){
+  const target = document.getElementById('listing-camera');
+  if(!target || typeof Quagga === 'undefined') return;
+  Quagga.init({
+    inputStream: {
+      type: 'LiveStream',
+      target,
+      constraints: {
+        facingMode: 'environment'
+      }
+    },
+    decoder: {
+      readers: ['ean_reader', 'ean_8_reader', 'upc_reader', 'upc_e_reader']
+    },
+    locate: true
+  }, err => {
+    if(err){
+      console.error(err);
+      return;
+    }
+    Quagga.start();
+  });
+
+  Quagga.offDetected();
+  Quagga.onDetected(result => {
+    const code = result?.codeResult?.code;
+    if(code){
+      listingCodeInput.value = code;
+      stopListingScanner();
+      searchListingByCode(code);
+    }
+  });
+}
+
+function stopListingScanner(){
+  if(typeof Quagga === 'undefined') return;
+  try{
+    Quagga.stop();
+  }catch(e){
+    // ignore
+  }
+}
+
+async function loadListingData(){
+  if(listingAllDataCache) return listingAllDataCache;
+  const sources = [
+    { name: 'Rumunia - Słodycze', type: 'json', url: jsonUrl },
+    { name: 'Rumunia - Mięso i wędliny', type: 'json', url: jsonUrlMieso },
+    { name: 'Rumunia - Nabiał', type: 'xlsx', url: xlsxUrlNabial },
+    { name: 'Rumunia - Napoje', type: 'json', url: jsonUrlNapoje },
+    { name: 'Rumunia - Przyprawy', type: 'json', url: jsonUrlPrzyprawyProszek },
+    { name: 'Rumunia - Puszki i słoiki', type: 'json', url: jsonUrlPuszkiSloiki },
+    { name: 'Rumunia - Produkty podstawowe', type: 'json', url: jsonUrlProduktyPodstawowe },
+    { name: 'Rumunia - Kawy i herbaty', type: 'json', url: jsonUrlKawyHerbaty },
+    { name: 'Ukraina - Słodycze', type: 'json', url: jsonUrlSlodyczeUkraina },
+    { name: 'Ukraina - Mięso i wędliny', type: 'json', url: jsonUrlMiesoUkraina },
+    { name: 'Ukraina - Kawy i herbaty', type: 'json', url: jsonUrlKawyUkraina },
+    { name: 'Ukraina - Puszki i słoiki', type: 'xlsx', url: xlsxUrlPuszkiUkraina },
+    { name: 'Ukraina - Napoje', type: 'json', url: jsonUrlNapojeUkraina },
+    { name: 'Ukraina - Przyprawy', type: 'json', url: jsonUrlPrzyprawyUkraina }
+  ];
+
+  const results = [];
+  for(const src of sources){
+    try{
+      const data = src.type === 'xlsx' ? await loadXlsxAsJson(src.url) : await (await fetch(src.url)).json();
+      results.push({ ...src, data });
+    }catch(e){
+      console.error('Listing load error', src.name, e);
+    }
+  }
+  listingAllDataCache = results;
+  return results;
+}
+
+async function searchListingByCode(code){
+  const normalized = normalizeEanForBarcode(code);
+  const searchCode = normalized ? normalized.code : code.replace(/\D/g, '');
+  if(!searchCode){
+    listingResults = [];
+    renderListingTable();
+    return;
+  }
+  const datasets = await loadListingData();
+  const matches = [];
+  datasets.forEach(ds => {
+    const cols = Object.keys(ds.data[0] || {});
+    const eanKey = findColumn(cols, ['kod ean', 'ean']);
+    const indexKey = findColumn(cols, ['indeks', 'index', 'id', 'numer katalogowy']);
+    const nameKey = findColumn(cols, ['nazwa', 'name']);
+    const producerKey = findColumn(cols, ['producent', 'producer']);
+    const groupKey = findColumn(cols, ['grupa', 'group']);
+    const rankingKey = findColumn(cols, ['ranking']);
+    ds.data.forEach(row => {
+      const eanVal = eanKey ? String(row[eanKey] ?? '').replace(/\D/g, '') : '';
+      const idxVal = indexKey ? String(row[indexKey] ?? '').replace(/\D/g, '') : '';
+      if(eanVal === searchCode || idxVal === searchCode){
+        matches.push({
+          Źródło: ds.name,
+          Indeks: indexKey ? row[indexKey] ?? '' : '',
+          Nazwa: nameKey ? row[nameKey] ?? '' : '',
+          Producent: producerKey ? row[producerKey] ?? '' : '',
+          Grupa: groupKey ? row[groupKey] ?? '' : '',
+          Ranking: rankingKey ? row[rankingKey] ?? '' : '',
+          'Kod EAN': eanKey ? row[eanKey] ?? '' : ''
+        });
+      }
+    });
+  });
+  listingResults = matches;
+  renderListingTable();
+}
+
+function renderListingTable(){
+  if(!listingHead || !listingBody){
+    return;
+  }
+  if(!listingResults.length){
+    listingHead.innerHTML = '<th>Brak wyników</th>';
+    listingBody.innerHTML = '';
+    return;
+  }
+  const cols = Object.keys(listingResults[0]);
+  listingHead.innerHTML = cols.map(c => `<th>${escapeHtml(c)}</th>`).join('');
+  listingBody.innerHTML = listingResults.map(r => `
+    <tr>
+      ${cols.map(c => `<td>${escapeHtml(r[c] ?? '')}</td>`).join('')}
+    </tr>
+  `).join('');
+}
+
+function exportListingXlsx(){
+  if(!listingResults.length || typeof XLSX === 'undefined') return;
+  const ws = XLSX.utils.json_to_sheet(listingResults);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Listing');
+  XLSX.writeFile(wb, 'listing.xlsx');
 }
 
 function resetFilters(){
