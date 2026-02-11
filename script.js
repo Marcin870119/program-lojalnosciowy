@@ -924,6 +924,9 @@ const listingConfirmModal = document.getElementById('listing-confirm-modal');
 const listingConfirmYes = document.getElementById('listing-confirm-yes');
 const listingConfirmNo = document.getElementById('listing-confirm-no');
 let pendingListingAdd = null;
+const listingFoundModal = document.getElementById('listing-found-modal');
+const listingFoundText = document.getElementById('listing-found-text');
+const listingFoundOk = document.getElementById('listing-found-ok');
 
 if(listingStartBtn){
   listingStartBtn.addEventListener('click', startListingScanner);
@@ -953,6 +956,11 @@ if(listingConfirmNo){
   listingConfirmNo.addEventListener('click', () => {
     pendingListingAdd = null;
     if(listingConfirmModal) listingConfirmModal.classList.add('hidden');
+  });
+}
+if(listingFoundOk){
+  listingFoundOk.addEventListener('click', () => {
+    if(listingFoundModal) listingFoundModal.classList.add('hidden');
   });
 }
 if(listingCodeInput){
@@ -1121,12 +1129,20 @@ function maybeAddListingResult(code, matches){
   if(!matches.length){
     return;
   }
+  showListingFoundInfo(matches[0]);
   if(listingScannedCodes.has(code)){
     pendingListingAdd = { code, matches };
     if(listingConfirmModal) listingConfirmModal.classList.remove('hidden');
     return;
   }
   applyListingAdd(code, matches, false);
+}
+
+function showListingFoundInfo(item){
+  if(!listingFoundModal || !listingFoundText) return;
+  const name = item?.Nazwa ? ` (${item.Nazwa})` : '';
+  listingFoundText.textContent = `Ten produkt znajduje się w ofercie Maspo${name}.`;
+  listingFoundModal.classList.remove('hidden');
 }
 
 function applyListingAdd(code, matches, force){
