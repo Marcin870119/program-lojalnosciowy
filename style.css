@@ -471,11 +471,17 @@ th{
 }
 
 .listing-camera{
-  min-height:220px;
+  min-height:0;
+  height:0;
   background:#0f172a;
   border-radius:16px;
   overflow:hidden;
   position:relative;
+  transition:height .2s ease;
+}
+
+.listing-camera.is-active{
+  height:260px;
 }
 
 .listing-camera video,
