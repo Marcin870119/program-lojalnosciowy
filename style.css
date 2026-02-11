@@ -500,6 +500,13 @@ th{
   object-fit:cover;
 }
 
+.modal-actions{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
+
 .listing-camera canvas{
   display:none;
 }
