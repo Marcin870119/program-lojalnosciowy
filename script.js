@@ -946,12 +946,15 @@ if(listingCodeInput){
 function startListingScanner(){
   const target = document.getElementById('listing-camera');
   if(!target || typeof Quagga === 'undefined') return;
+  target.classList.add('is-active');
   Quagga.init({
     inputStream: {
       type: 'LiveStream',
       target,
       constraints: {
-        facingMode: 'environment'
+        facingMode: { exact: 'environment' },
+        width: { min: 640 },
+        height: { min: 480 }
       }
     },
     decoder: {
@@ -960,10 +963,37 @@ function startListingScanner(){
     locate: true
   }, err => {
     if(err){
-      console.error(err);
+      // fallback bez exact
+      Quagga.init({
+        inputStream: {
+          type: 'LiveStream',
+          target,
+          constraints: {
+            facingMode: 'environment'
+          }
+        },
+        decoder: {
+          readers: ['ean_reader', 'ean_8_reader', 'upc_reader', 'upc_e_reader']
+        },
+        locate: true
+      }, err2 => {
+        if(err2){
+          console.error(err2);
+          return;
+        }
+        Quagga.start();
+      });
       return;
     }
     Quagga.start();
+    setTimeout(() => {
+      const video = target.querySelector('video');
+      if(video){
+        video.setAttribute('playsinline', 'true');
+        video.setAttribute('webkit-playsinline', 'true');
+        video.muted = true;
+      }
+    }, 100);
   });
 
   Quagga.offDetected();
@@ -979,6 +1009,8 @@ function startListingScanner(){
 
 function stopListingScanner(){
   if(typeof Quagga === 'undefined') return;
+  const target = document.getElementById('listing-camera');
+  if(target) target.classList.remove('is-active');
   try{
     Quagga.stop();
   }catch(e){
