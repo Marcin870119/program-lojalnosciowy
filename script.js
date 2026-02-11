@@ -120,6 +120,7 @@ let importedIndexSet = null;
 let importedIndexCount = 0;
 let importedIndexFile = '';
 let listingResults = [];
+let listingResultsMap = new Map();
 let listingAllDataCache = null;
 let listingScannedCodes = new Set();
 let listingCooldown = false;
@@ -1078,6 +1079,7 @@ async function searchListingByCode(code, fromScan){
   const searchCode = normalized ? normalized.code : code.replace(/\D/g, '');
   if(!searchCode){
     listingResults = [];
+    listingResultsMap.clear();
     renderListingTable();
     return;
   }
@@ -1107,10 +1109,10 @@ async function searchListingByCode(code, fromScan){
       }
     });
   });
-  listingResults = matches;
   if(fromScan){
     maybeAddListingResult(searchCode, matches);
   }else{
+    listingResults = matches;
     renderListingTable();
   }
 }
@@ -1130,7 +1132,13 @@ function maybeAddListingResult(code, matches){
 function applyListingAdd(code, matches, force){
   if(!force && listingScannedCodes.has(code)) return;
   listingScannedCodes.add(code);
-  listingResults = listingResults.concat(matches);
+  matches.forEach(item => {
+    const key = `${item['Źródło'] || ''}|${item.Indeks || ''}|${item['Kod EAN'] || ''}|${item.Nazwa || ''}`;
+    if(!listingResultsMap.has(key) || force){
+      listingResultsMap.set(key, item);
+    }
+  });
+  listingResults = Array.from(listingResultsMap.values());
   renderListingTable();
 }
 
