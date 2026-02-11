@@ -1196,6 +1196,13 @@ function applyListingAdd(code, matches, force){
   });
   listingResults = Array.from(listingResultsMap.values());
   renderListingTable();
+  showListingFoundToast(matches[0]);
+}
+
+function showListingFoundToast(item){
+  const name = item?.Nazwa || 'Produkt';
+  if(listingFoundText) listingFoundText.textContent = `Znaleziono: ${name}`;
+  if(listingFoundModal) listingFoundModal.classList.remove('hidden');
 }
 
 function renderListingTable(){
