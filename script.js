@@ -121,6 +121,8 @@ let importedIndexCount = 0;
 let importedIndexFile = '';
 let listingResults = [];
 let listingAllDataCache = null;
+let listingScannedCodes = new Set();
+let listingCooldown = false;
 
 let auth = null;
 let authReady = false;
@@ -917,6 +919,10 @@ const listingSearchBtn = document.getElementById('listing-search-btn');
 const listingExportBtn = document.getElementById('listing-export-btn');
 const listingHead = document.getElementById('listing-head');
 const listingBody = document.getElementById('listing-body');
+const listingConfirmModal = document.getElementById('listing-confirm-modal');
+const listingConfirmYes = document.getElementById('listing-confirm-yes');
+const listingConfirmNo = document.getElementById('listing-confirm-no');
+let pendingListingAdd = null;
 
 if(listingStartBtn){
   listingStartBtn.addEventListener('click', startListingScanner);
@@ -932,6 +938,21 @@ if(listingSearchBtn){
 }
 if(listingExportBtn){
   listingExportBtn.addEventListener('click', exportListingXlsx);
+}
+if(listingConfirmYes){
+  listingConfirmYes.addEventListener('click', () => {
+    if(pendingListingAdd){
+      applyListingAdd(pendingListingAdd.code, pendingListingAdd.matches, true);
+      pendingListingAdd = null;
+    }
+    if(listingConfirmModal) listingConfirmModal.classList.add('hidden');
+  });
+}
+if(listingConfirmNo){
+  listingConfirmNo.addEventListener('click', () => {
+    pendingListingAdd = null;
+    if(listingConfirmModal) listingConfirmModal.classList.add('hidden');
+  });
 }
 if(listingCodeInput){
   listingCodeInput.addEventListener('keydown', (e) => {
@@ -1000,9 +1021,11 @@ function startListingScanner(){
   Quagga.onDetected(result => {
     const code = result?.codeResult?.code;
     if(code){
+      if(listingCooldown) return;
+      listingCooldown = true;
+      setTimeout(() => { listingCooldown = false; }, 1200);
       listingCodeInput.value = code;
-      stopListingScanner();
-      searchListingByCode(code);
+      searchListingByCode(code, true);
     }
   });
 }
@@ -1050,7 +1073,7 @@ async function loadListingData(){
   return results;
 }
 
-async function searchListingByCode(code){
+async function searchListingByCode(code, fromScan){
   const normalized = normalizeEanForBarcode(code);
   const searchCode = normalized ? normalized.code : code.replace(/\D/g, '');
   if(!searchCode){
@@ -1085,6 +1108,29 @@ async function searchListingByCode(code){
     });
   });
   listingResults = matches;
+  if(fromScan){
+    maybeAddListingResult(searchCode, matches);
+  }else{
+    renderListingTable();
+  }
+}
+
+function maybeAddListingResult(code, matches){
+  if(!matches.length){
+    return;
+  }
+  if(listingScannedCodes.has(code)){
+    pendingListingAdd = { code, matches };
+    if(listingConfirmModal) listingConfirmModal.classList.remove('hidden');
+    return;
+  }
+  applyListingAdd(code, matches, false);
+}
+
+function applyListingAdd(code, matches, force){
+  if(!force && listingScannedCodes.has(code)) return;
+  listingScannedCodes.add(code);
+  listingResults = listingResults.concat(matches);
   renderListingTable();
 }
 
