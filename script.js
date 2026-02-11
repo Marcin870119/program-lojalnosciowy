@@ -934,6 +934,8 @@ const listingAddModal = document.getElementById('listing-add-modal');
 const listingAddYes = document.getElementById('listing-add-yes');
 const listingAddNo = document.getElementById('listing-add-no');
 let pendingMaspoAdd = null;
+const listingAddImage = document.getElementById('listing-add-image');
+const listingAddName = document.getElementById('listing-add-name');
 
 if(listingStartBtn){
   listingStartBtn.addEventListener('click', startListingScanner);
@@ -1129,7 +1131,6 @@ async function searchListingByCode(code, fromScan){
       if(eanVal === searchCode || idxVal === searchCode){
         const imageUrl = buildListingImageUrl(ds.name, idxVal || row[indexKey], row);
         matches.push({
-          Źródło: ds.name,
           Indeks: indexKey ? row[indexKey] ?? '' : '',
           Nazwa: nameKey ? row[nameKey] ?? '' : '',
           Producent: producerKey ? row[producerKey] ?? '' : '',
@@ -1143,7 +1144,7 @@ async function searchListingByCode(code, fromScan){
   });
   if(matches.length){
     if(fromScan){
-      showListingFoundInfo(matches[0]);
+      showListingAddPrompt(matches[0]);
       pendingMaspoAdd = { code: searchCode, matches };
       if(listingAddModal) listingAddModal.classList.remove('hidden');
     }else{
@@ -1175,11 +1176,13 @@ function maybeAddListingResult(code, matches){
   applyListingAdd(code, matches, false);
 }
 
-function showListingFoundInfo(item){
-  if(!listingFoundModal || !listingFoundText) return;
-  const name = item?.Nazwa ? ` (${item.Nazwa})` : '';
-  listingFoundText.textContent = `Ten produkt znajduje się w ofercie Maspo${name}.`;
-  listingFoundModal.classList.remove('hidden');
+function showListingAddPrompt(item){
+  if(!listingAddModal) return;
+  if(listingAddName) listingAddName.textContent = item?.Nazwa || 'Produkt';
+  if(listingAddImage){
+    listingAddImage.src = item?.Zdjęcie || '';
+    listingAddImage.alt = item?.Nazwa || '';
+  }
 }
 
 function applyListingAdd(code, matches, force){
@@ -1204,7 +1207,8 @@ function renderListingTable(){
     listingBody.innerHTML = '';
     return;
   }
-  const cols = Object.keys(listingResults[0]);
+  const preferred = ['Zdjęcie','Nazwa','Indeks','SKU Number','Price','Producent','Grupa','Ranking','Kod EAN'];
+  const cols = preferred.filter(c => Object.prototype.hasOwnProperty.call(listingResults[0], c));
   listingHead.innerHTML = cols.map(c => `<th>${escapeHtml(c)}</th>`).join('');
   listingBody.innerHTML = listingResults.map(r => `
     <tr>
@@ -1255,7 +1259,6 @@ async function searchMarionDatabase(code){
     if(ean1 === code || ean2 === code || sku === code){
       const imgUrl = item[''] || item['Image'] || item['image'] || item['Photo'] || '';
       matches.push({
-        Źródło: 'Marion',
         Nazwa: item['Name'] ?? '',
         'SKU Number': item['SKU Number'] ?? '',
         Price: item['Price'] ?? '',
