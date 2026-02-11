@@ -26,6 +26,8 @@ const jsonUrlNapojeUkraina =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/NAPOJE%20-%20UKRAINA%20RANKING.json';
 const jsonUrlPrzyprawyUkraina =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Przyprawy%20i%20dodatki%20-%20ukraina%20ranking.json';
+const jsonUrlMarion =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Baza%20danych%20-%20Marion.json';
 const pdfUrl =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/katalog%20(59)_compressed.pdf';
 const producerPdfMap = {
@@ -124,6 +126,7 @@ let listingResultsMap = new Map();
 let listingAllDataCache = null;
 let listingScannedCodes = new Set();
 let listingCooldown = false;
+let listingMarionCache = null;
 
 let auth = null;
 let authReady = false;
@@ -927,6 +930,10 @@ let pendingListingAdd = null;
 const listingFoundModal = document.getElementById('listing-found-modal');
 const listingFoundText = document.getElementById('listing-found-text');
 const listingFoundOk = document.getElementById('listing-found-ok');
+const listingAddModal = document.getElementById('listing-add-modal');
+const listingAddYes = document.getElementById('listing-add-yes');
+const listingAddNo = document.getElementById('listing-add-no');
+let pendingMaspoAdd = null;
 
 if(listingStartBtn){
   listingStartBtn.addEventListener('click', startListingScanner);
@@ -961,6 +968,21 @@ if(listingConfirmNo){
 if(listingFoundOk){
   listingFoundOk.addEventListener('click', () => {
     if(listingFoundModal) listingFoundModal.classList.add('hidden');
+  });
+}
+if(listingAddYes){
+  listingAddYes.addEventListener('click', () => {
+    if(pendingMaspoAdd){
+      applyListingAdd(pendingMaspoAdd.code, pendingMaspoAdd.matches, false);
+      pendingMaspoAdd = null;
+    }
+    if(listingAddModal) listingAddModal.classList.add('hidden');
+  });
+}
+if(listingAddNo){
+  listingAddNo.addEventListener('click', () => {
+    pendingMaspoAdd = null;
+    if(listingAddModal) listingAddModal.classList.add('hidden');
   });
 }
 if(listingCodeInput){
@@ -1105,6 +1127,7 @@ async function searchListingByCode(code, fromScan){
       const eanVal = eanKey ? String(row[eanKey] ?? '').replace(/\D/g, '') : '';
       const idxVal = indexKey ? String(row[indexKey] ?? '').replace(/\D/g, '') : '';
       if(eanVal === searchCode || idxVal === searchCode){
+        const imageUrl = buildListingImageUrl(ds.name, idxVal || row[indexKey], row);
         matches.push({
           Źródło: ds.name,
           Indeks: indexKey ? row[indexKey] ?? '' : '',
@@ -1112,15 +1135,29 @@ async function searchListingByCode(code, fromScan){
           Producent: producerKey ? row[producerKey] ?? '' : '',
           Grupa: groupKey ? row[groupKey] ?? '' : '',
           Ranking: rankingKey ? row[rankingKey] ?? '' : '',
-          'Kod EAN': eanKey ? row[eanKey] ?? '' : ''
+          'Kod EAN': eanKey ? row[eanKey] ?? '' : '',
+          Zdjęcie: imageUrl || ''
         });
       }
     });
   });
+  if(matches.length){
+    if(fromScan){
+      showListingFoundInfo(matches[0]);
+      pendingMaspoAdd = { code: searchCode, matches };
+      if(listingAddModal) listingAddModal.classList.remove('hidden');
+    }else{
+      listingResults = matches;
+      renderListingTable();
+    }
+    return;
+  }
+
+  const marionMatches = await searchMarionDatabase(searchCode);
   if(fromScan){
-    maybeAddListingResult(searchCode, matches);
+    applyListingAdd(searchCode, marionMatches, false);
   }else{
-    listingResults = matches;
+    listingResults = marionMatches;
     renderListingTable();
   }
 }
@@ -1171,7 +1208,9 @@ function renderListingTable(){
   listingHead.innerHTML = cols.map(c => `<th>${escapeHtml(c)}</th>`).join('');
   listingBody.innerHTML = listingResults.map(r => `
     <tr>
-      ${cols.map(c => `<td>${escapeHtml(r[c] ?? '')}</td>`).join('')}
+      ${cols.map(c => c === 'Zdjęcie'
+        ? `<td>${r[c] ? `<img class="listing-img" src="${escapeAttr(r[c])}" alt="">` : ''}</td>`
+        : `<td>${escapeHtml(r[c] ?? '')}</td>`).join('')}
     </tr>
   `).join('');
 }
@@ -1182,6 +1221,50 @@ function exportListingXlsx(){
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Listing');
   XLSX.writeFile(wb, 'listing.xlsx');
+}
+
+function buildListingImageUrl(source, indexValue, row){
+  const idx = String(indexValue ?? '').replace(/\D/g, '');
+  if(!idx) return '';
+  if(String(source).toLowerCase().includes('ukraina')){
+    return `${imageBaseUrlUkraina}${encodeURIComponent(idx)}.png?alt=media`;
+  }
+  return `${imageBaseUrlRumunia}${encodeURIComponent(idx)}.png?alt=media`;
+}
+
+async function loadMarionDatabase(){
+  if(listingMarionCache) return listingMarionCache;
+  try{
+    const res = await fetch(jsonUrlMarion);
+    const data = await res.json();
+    listingMarionCache = Array.isArray(data) ? data : [];
+  }catch(e){
+    console.error('Marion load error', e);
+    listingMarionCache = [];
+  }
+  return listingMarionCache;
+}
+
+async function searchMarionDatabase(code){
+  const data = await loadMarionDatabase();
+  const matches = [];
+  data.forEach(item => {
+    const ean1 = String(item['EAN 1'] ?? '').replace(/\D/g, '');
+    const ean2 = String(item['EAN 2'] ?? '').replace(/\D/g, '');
+    const sku = String(item['SKU Number'] ?? '').replace(/\D/g, '');
+    if(ean1 === code || ean2 === code || sku === code){
+      const imgUrl = item[''] || item['Image'] || item['image'] || item['Photo'] || '';
+      matches.push({
+        Źródło: 'Marion',
+        Nazwa: item['Name'] ?? '',
+        'SKU Number': item['SKU Number'] ?? '',
+        Price: item['Price'] ?? '',
+        'Kod EAN': ean1 === code ? item['EAN 1'] ?? '' : item['EAN 2'] ?? item['EAN 1'] ?? '',
+        Zdjęcie: imgUrl
+      });
+    }
+  });
+  return matches;
 }
 
 function resetFilters(){
