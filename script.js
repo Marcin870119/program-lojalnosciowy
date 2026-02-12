@@ -944,6 +944,9 @@ const listingStartBtn = document.getElementById('listing-start-btn');
 const listingStopBtn = document.getElementById('listing-stop-btn');
 const listingSearchBtn = document.getElementById('listing-search-btn');
 const listingExportBtn = document.getElementById('listing-export-btn');
+const listingExcelInput = document.getElementById('listing-excel');
+const listingImportBtn = document.getElementById('listing-import-btn');
+const listingExportPdfBtn = document.getElementById('listing-export-pdf-btn');
 const listingHead = document.getElementById('listing-head');
 const listingBody = document.getElementById('listing-body');
 const listingConfirmModal = document.getElementById('listing-confirm-modal');
@@ -974,6 +977,12 @@ if(listingSearchBtn){
 }
 if(listingExportBtn){
   listingExportBtn.addEventListener('click', exportListingXlsx);
+}
+if(listingExportPdfBtn){
+  listingExportPdfBtn.addEventListener('click', exportListingPdf);
+}
+if(listingImportBtn){
+  listingImportBtn.addEventListener('click', importListingExcel);
 }
 if(listingConfirmYes){
   listingConfirmYes.addEventListener('click', () => {
@@ -1018,6 +1027,28 @@ if(listingCodeInput){
       if(code) searchListingByCode(code);
     }
   });
+}
+
+async function importListingExcel(){
+  const file = listingExcelInput?.files?.[0];
+  if(!file) return;
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    const eans = rows.slice(1)
+      .map(r => String(r[0] ?? '').replace(/\D/g, ''))
+      .filter(Boolean);
+    for(const code of eans){
+      const matches = await searchMarionDatabase(code);
+      if(matches.length){
+        applyListingAdd(code, matches, false);
+      }
+    }
+  }catch(e){
+    console.error(e);
+  }
 }
 
 function startListingScanner(){
@@ -1255,6 +1286,73 @@ function exportListingXlsx(){
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Listing');
   XLSX.writeFile(wb, 'listing.xlsx');
+}
+
+async function exportListingPdf(){
+  if(!listingResults.length || !window.jspdf) return;
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+  const margin = 36;
+  const pageW = pdf.internal.pageSize.getWidth();
+  const pageH = pdf.internal.pageSize.getHeight();
+  let y = margin;
+
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(14);
+  pdf.text('Listing - produkty', margin, y);
+  y += 18;
+
+  const rows = listingResults;
+  for(const item of rows){
+    if(y + 70 > pageH - margin){
+      pdf.addPage();
+      y = margin;
+    }
+
+    let imgData = null;
+    if(item['Zdjęcie']){
+      imgData = await loadImageAsDataUrl(item['Zdjęcie']);
+    }
+    if(imgData?.dataUrl){
+      pdf.addImage(imgData.dataUrl, imgData.format, margin, y, 48, 48);
+    }
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(11);
+    pdf.text(String(item['Nazwa'] || item['Name'] || '').slice(0, 80), margin + 60, y + 14);
+
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(9);
+    const ean = item['Kod EAN'] || '';
+    const idx = item['Indeks'] || item['SKU Number'] || '';
+    const price = item['Price'] || '';
+    pdf.text(`Indeks/SKU: ${idx}`, margin + 60, y + 30);
+    pdf.text(`EAN: ${ean}`, margin + 60, y + 44);
+    if(price) pdf.text(`Cena: ${price}`, margin + 60, y + 58);
+
+    y += 70;
+  }
+
+  pdf.save('listing.pdf');
+}
+
+async function loadImageAsDataUrl(url){
+  try{
+    const res = await fetch(url);
+    if(!res.ok) return null;
+    const blob = await res.blob();
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    const type = blob.type || '';
+    const format = type.includes('png') ? 'PNG' : 'JPEG';
+    return { dataUrl, format };
+  }catch(e){
+    return null;
+  }
 }
 
 function buildListingImageUrl(source, indexValue, row){
