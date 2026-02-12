@@ -49,6 +49,20 @@
           <div class="color-hint">Kolor dotyczy tylko cyfry ceny.</div>
         </div>
         <input id="catalog-excel" type="file" accept=".xlsx,.xls">
+        <div class="catalog-columns">
+          <div>
+            <label class="login-label" for="catalog-index-col">Kolumna indeksu</label>
+            <select id="catalog-index-col">
+              <option value="auto">Auto</option>
+            </select>
+          </div>
+          <div>
+            <label class="login-label" for="catalog-price-col">Kolumna ceny</label>
+            <select id="catalog-price-col">
+              <option value="auto">Auto</option>
+            </select>
+          </div>
+        </div>
         <button id="catalog-save-btn">Zapisz katalog PDF</button>
       </div>
       <div id="catalog-error" class="login-error"></div>
