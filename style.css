@@ -122,6 +122,16 @@ body{
   color:var(--muted);
 }
 
+.catalog-columns{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.catalog-columns select{
+  min-width:160px;
+}
+
 .login-form{
   display:flex;
   flex-direction:column;
