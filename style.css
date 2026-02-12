@@ -480,6 +480,10 @@ th{
   flex-wrap:wrap;
 }
 
+.listing-buttons input[type="file"]{
+  max-width:200px;
+}
+
 .listing-camera{
   min-height:0;
   height:0;
