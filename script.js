@@ -69,6 +69,8 @@ const catalogCoverInput = document.getElementById('catalog-cover');
 const catalogCurrencySelect = document.getElementById('catalog-currency');
 const catalogPriceColorInput = document.getElementById('catalog-price-color');
 const catalogExcelInput = document.getElementById('catalog-excel');
+const catalogIndexColSelect = document.getElementById('catalog-index-col');
+const catalogPriceColSelect = document.getElementById('catalog-price-col');
 const catalogSaveBtn = document.getElementById('catalog-save-btn');
 const catalogCancelBtn = document.getElementById('catalog-cancel-btn');
 const catalogError = document.getElementById('catalog-error');
@@ -116,6 +118,7 @@ let catalogBlobUrl = null;
 let catalogLoading = false;
 let catalogCoverDataUrl = null;
 let catalogPriceMap = null;
+let catalogPriceRows = null;
 const LIMIT = 25;
 const barcodeCache = new Map();
 let importedIndexSet = null;
@@ -308,6 +311,7 @@ if(catalogExcelInput){
     const file = catalogExcelInput.files?.[0];
     if(!file){
       catalogPriceMap = null;
+      catalogPriceRows = null;
       return;
     }
     if(priceWarningModal) priceWarningModal.classList.remove('hidden');
@@ -316,10 +320,29 @@ if(catalogExcelInput){
       const wb = XLSX.read(buf, { type: 'array' });
       const ws = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
-      catalogPriceMap = buildPriceMap(rows);
+      catalogPriceRows = rows;
+      populateCatalogColumnOptions(rows);
+      catalogPriceMap = buildPriceMap(rows, getCatalogColumnConfig());
     }catch(e){
       console.error(e);
       catalogPriceMap = null;
+      catalogPriceRows = null;
+    }
+  });
+}
+
+if(catalogIndexColSelect){
+  catalogIndexColSelect.addEventListener('change', () => {
+    if(catalogPriceRows){
+      catalogPriceMap = buildPriceMap(catalogPriceRows, getCatalogColumnConfig());
+    }
+  });
+}
+
+if(catalogPriceColSelect){
+  catalogPriceColSelect.addEventListener('change', () => {
+    if(catalogPriceRows){
+      catalogPriceMap = buildPriceMap(catalogPriceRows, getCatalogColumnConfig());
     }
   });
 }
@@ -1324,6 +1347,7 @@ async function createCatalog(){
       render();
       return;
     }
+    window.imageBaseUrl = currentImageBaseUrl;
     const blob = await window.createCatalogPdf(products);
     catalogBlobUrl = URL.createObjectURL(blob);
   }catch(e){
@@ -1400,6 +1424,7 @@ function openCatalogModal(){
   if(catalogCoverInput) catalogCoverInput.value = '';
   if(catalogExcelInput) catalogExcelInput.value = '';
   catalogPriceMap = null;
+  catalogPriceRows = null;
   if(catalogError) catalogError.textContent = '';
   catalogModal.classList.remove('hidden');
 }
@@ -1426,6 +1451,7 @@ async function buildAndSaveCatalog(){
     }
     const priceColor = catalogPriceColorInput?.value || '#000000';
     const options = { coverDataUrl: catalogCoverDataUrl, priceMap: catalogPriceMap, currency, priceColor };
+    window.imageBaseUrl = currentImageBaseUrl;
     const blob = await window.createCatalogPdf(products, options);
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1450,11 +1476,11 @@ function fileToDataUrl(file){
   });
 }
 
-function buildPriceMap(rows){
+function buildPriceMap(rows, config){
   if(!rows || !rows.length) return null;
   const header = rows[0].map(h => String(h).toLowerCase().trim());
-  const idxCol = header.indexOf('indeks');
-  const priceCol = header.indexOf('cena');
+  const idxCol = typeof config?.indexCol === 'number' ? config.indexCol : header.indexOf('indeks');
+  const priceCol = typeof config?.priceCol === 'number' ? config.priceCol : header.indexOf('cena');
   const unitCol = header.findIndex(h => h.includes('jednostka'));
   if(idxCol === -1 || priceCol === -1) return null;
   const map = new Map();
@@ -1467,6 +1493,45 @@ function buildPriceMap(rows){
     map.set(index, { price, unit });
   }
   return map;
+}
+
+function populateCatalogColumnOptions(rows){
+  if(!catalogIndexColSelect || !catalogPriceColSelect) return;
+  const colCount = Math.max(...rows.map(r => r.length));
+  const header = rows[0] || [];
+  const makeLabel = (i) => {
+    const name = header[i] ? ` (${header[i]})` : '';
+    return `${columnLabel(i)}${name}`;
+  };
+  const options = Array.from({ length: colCount }, (_, i) =>
+    `<option value="${i}">${makeLabel(i)}</option>`
+  ).join('');
+  catalogIndexColSelect.innerHTML = `<option value="auto">Auto</option>${options}`;
+  catalogPriceColSelect.innerHTML = `<option value="auto">Auto</option>${options}`;
+}
+
+function getCatalogColumnConfig(){
+  return {
+    indexCol: parseColumnValue(catalogIndexColSelect?.value),
+    priceCol: parseColumnValue(catalogPriceColSelect?.value)
+  };
+}
+
+function parseColumnValue(value){
+  if(value === undefined || value === null || value === '' || value === 'auto') return null;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : null;
+}
+
+function columnLabel(index){
+  let n = index + 1;
+  let label = '';
+  while(n > 0){
+    const rem = (n - 1) % 26;
+    label = String.fromCharCode(65 + rem) + label;
+    n = Math.floor((n - 1) / 26);
+  }
+  return label;
 }
 
 function ensurePasswordIfNeeded(count){
