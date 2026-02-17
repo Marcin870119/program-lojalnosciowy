@@ -1202,8 +1202,12 @@ async function searchListingByCode(code, fromScan){
       pendingMaspoAdd = { code: searchCode, matches };
       if(listingAddModal) listingAddModal.classList.remove('hidden');
     }else{
-      listingResults = matches;
-      renderListingTable();
+      if(listingResultsMap.size){
+        applyListingAdd(searchCode, matches, false);
+      }else{
+        listingResults = matches;
+        renderListingTable();
+      }
     }
     return;
   }
@@ -1354,6 +1358,7 @@ async function loadImageAsDataUrl(url){
     return null;
   }
 }
+
 
 function buildListingImageUrl(source, indexValue, row){
   const idx = String(indexValue ?? '').replace(/\D/g, '');
