@@ -962,6 +962,12 @@ const listingAddNo = document.getElementById('listing-add-no');
 let pendingMaspoAdd = null;
 const listingAddImage = document.getElementById('listing-add-image');
 const listingAddName = document.getElementById('listing-add-name');
+const listingMarionModal = document.getElementById('listing-marion-modal');
+const listingMarionYes = document.getElementById('listing-marion-yes');
+const listingMarionNo = document.getElementById('listing-marion-no');
+const listingMarionImage = document.getElementById('listing-marion-image');
+const listingMarionName = document.getElementById('listing-marion-name');
+let pendingMarionAdd = null;
 
 if(listingStartBtn){
   listingStartBtn.addEventListener('click', startListingScanner);
@@ -1017,6 +1023,21 @@ if(listingAddNo){
   listingAddNo.addEventListener('click', () => {
     pendingMaspoAdd = null;
     if(listingAddModal) listingAddModal.classList.add('hidden');
+  });
+}
+if(listingMarionYes){
+  listingMarionYes.addEventListener('click', () => {
+    if(pendingMarionAdd){
+      applyListingAdd(pendingMarionAdd.code, pendingMarionAdd.matches, false);
+      pendingMarionAdd = null;
+    }
+    if(listingMarionModal) listingMarionModal.classList.add('hidden');
+  });
+}
+if(listingMarionNo){
+  listingMarionNo.addEventListener('click', () => {
+    pendingMarionAdd = null;
+    if(listingMarionModal) listingMarionModal.classList.add('hidden');
   });
 }
 if(listingCodeInput){
@@ -1185,6 +1206,7 @@ async function searchListingByCode(code, fromScan){
       if(eanVal === searchCode || idxVal === searchCode){
         const imageUrl = buildListingImageUrl(ds.name, idxVal || row[indexKey], row);
         matches.push({
+          _source: ds.name,
           Indeks: indexKey ? row[indexKey] ?? '' : '',
           Nazwa: nameKey ? row[nameKey] ?? '' : '',
           Producent: producerKey ? row[producerKey] ?? '' : '',
@@ -1202,7 +1224,9 @@ async function searchListingByCode(code, fromScan){
         pendingListingAdd = { code: searchCode, matches };
         if(listingConfirmModal) listingConfirmModal.classList.remove('hidden');
       }else{
-        applyListingAdd(searchCode, matches, false);
+        showListingAddPrompt(matches[0]);
+        pendingMaspoAdd = { code: searchCode, matches };
+        if(listingAddModal) listingAddModal.classList.remove('hidden');
       }
     }else{
       if(listingResultsMap.size){
@@ -1217,7 +1241,16 @@ async function searchListingByCode(code, fromScan){
 
   const marionMatches = await searchMarionDatabase(searchCode);
   if(fromScan){
-    applyListingAdd(searchCode, marionMatches, false);
+    if(marionMatches.length){
+      if(listingScannedCodes.has(searchCode)){
+        pendingListingAdd = { code: searchCode, matches: marionMatches };
+        if(listingConfirmModal) listingConfirmModal.classList.remove('hidden');
+      }else{
+        showListingMarionPrompt(marionMatches[0]);
+        pendingMarionAdd = { code: searchCode, matches: marionMatches };
+        if(listingMarionModal) listingMarionModal.classList.remove('hidden');
+      }
+    }
   }else{
     listingResults = marionMatches;
     renderListingTable();
@@ -1246,11 +1279,20 @@ function showListingAddPrompt(item){
   }
 }
 
+function showListingMarionPrompt(item){
+  if(!listingMarionModal) return;
+  if(listingMarionName) listingMarionName.textContent = item?.Nazwa || 'Produkt';
+  if(listingMarionImage){
+    listingMarionImage.src = item?.Zdjęcie || '';
+    listingMarionImage.alt = item?.Nazwa || '';
+  }
+}
+
 function applyListingAdd(code, matches, force){
   if(!force && listingScannedCodes.has(code)) return;
   listingScannedCodes.add(code);
   matches.forEach(item => {
-    const key = `${item['Źródło'] || ''}|${item.Indeks || ''}|${item['Kod EAN'] || ''}|${item.Nazwa || ''}`;
+    const key = `${item._source || ''}|${item.Indeks || ''}|${item['Kod EAN'] || ''}|${item.Nazwa || ''}`;
     if(!listingResultsMap.has(key) || force){
       listingResultsMap.set(key, item);
     }
@@ -1395,6 +1437,7 @@ async function searchMarionDatabase(code){
     if(ean1 === code || ean2 === code || sku === code){
       const imgUrl = item[''] || item['Image'] || item['image'] || item['Photo'] || '';
       matches.push({
+        _source: 'Marion',
         Nazwa: item['Name'] ?? '',
         'SKU Number': item['SKU Number'] ?? '',
         Price: item['Price'] ?? '',
