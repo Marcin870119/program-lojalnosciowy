@@ -1198,9 +1198,12 @@ async function searchListingByCode(code, fromScan){
   });
   if(matches.length){
     if(fromScan){
-      showListingAddPrompt(matches[0]);
-      pendingMaspoAdd = { code: searchCode, matches };
-      if(listingAddModal) listingAddModal.classList.remove('hidden');
+      if(listingScannedCodes.has(searchCode)){
+        pendingListingAdd = { code: searchCode, matches };
+        if(listingConfirmModal) listingConfirmModal.classList.remove('hidden');
+      }else{
+        applyListingAdd(searchCode, matches, false);
+      }
     }else{
       if(listingResultsMap.size){
         applyListingAdd(searchCode, matches, false);
