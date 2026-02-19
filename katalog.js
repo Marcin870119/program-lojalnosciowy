@@ -151,7 +151,7 @@
       pdf.setFillColor(255, 255, 255);
       pdf.roundedRect(x, y, cardW, cardH, 12, 12, 'FD');
 
-      const name = String(p[nameKey] || '').trim();
+      const name = String(getValueByVariants(p, ['nazwa', 'name']) || p[nameKey] || '').trim();
       pdf.setFont('helvetica', 'bold');
       pdf.setFontSize(12);
       const nameLines = pdf.splitTextToSize(name, cardW - 20).slice(0, 2);
@@ -170,7 +170,7 @@
         }catch(_){}
       }
 
-      const indexVal = String(p[indexKey] || '').trim();
+      const indexVal = String(getValueByVariants(p, ['indeks', 'index', 'id']) || p[indexKey] || '').trim();
       let imgData = null;
       if(indexVal){
         try{
@@ -234,7 +234,7 @@
       if(indexVal){
         pdf.text(`Indeks: ${indexVal}`, x + 10, y + cardH - 22);
       }
-      const eanVal = String(p[eanKey] || '').trim();
+      const eanVal = String(getValueByVariants(p, ['kod ean', 'ean']) || p[eanKey] || '').trim();
       if(eanVal){
         const barcode = buildBarcodeImage(eanVal);
         if(barcode){
@@ -257,6 +257,16 @@
 
     return pdf.output('blob');
   };
+
+  function getValueByVariants(obj, variants){
+    if(!obj) return '';
+    const keys = Object.keys(obj);
+    for(const v of variants){
+      const key = keys.find(k => k.toLowerCase() === v.toLowerCase());
+      if(key && obj[key] !== undefined && obj[key] !== null) return obj[key];
+    }
+    return '';
+  }
 
   async function loadCoverImage(dataUrl){
     try{
@@ -285,11 +295,9 @@
     const normalized = normalizeEAN(raw);
     if(!normalized) return null;
     const canvas = document.createElement('canvas');
-    const format = normalized.length === 8 ? 'EAN8' : 'EAN13';
     try{
-      const data = format === 'EAN8' ? normalized.slice(0, 7) : normalized.slice(0, 12);
-      JsBarcode(canvas, data, {
-        format,
+      JsBarcode(canvas, normalized.data, {
+        format: normalized.format,
         width: 2,
         height: 50,
         displayValue: true,
@@ -305,19 +313,25 @@
   }
 
   function normalizeEAN(raw){
-    const e = String(raw || '').replace(/\D/g, '');
-    if(e.length >= 13){
-      const base = e.slice(0, 12);
-      return base + calcEAN13Check(base);
+    const digits = String(raw || '').replace(/\D/g, '');
+    if(!digits) return null;
+    let e = digits;
+    if(e.length > 13){
+      e = e.slice(-13);
     }
-    if(e.length === 12) return e + calcEAN13Check(e);
+    if(e.length === 13){
+      return { data: e, format: 'EAN13' };
+    }
+    if(e.length === 12){
+      return { data: e, format: 'EAN13' };
+    }
     if(e.length === 8){
-      const base = e.slice(0, 7);
-      return base + calcEAN8Check(base);
+      return { data: e, format: 'EAN8' };
     }
-    if(e.length === 7) return e + calcEAN8Check(e);
-    if(e.length < 7) return null;
-    return e;
+    if(e.length === 7){
+      return { data: e, format: 'EAN8' };
+    }
+    return null;
   }
 
   function calcEAN13Check(code12){
