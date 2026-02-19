@@ -607,6 +607,34 @@ th{
 @keyframes spin{
   to { transform: rotate(360deg); }
 }
+
+
+.skeleton-row td{
+  padding: 16px 12px;
+}
+
+.skeleton-line{
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #eef1f4 0%, #f6f7f9 50%, #eef1f4 100%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+.skeleton-row td:first-child .skeleton-line{
+  height: 18px;
+  width: 70%;
+}
+
+.skeleton-row td:nth-child(2) .skeleton-line{
+  height: 14px;
+  width: 85%;
+}
+
+@keyframes skeleton-shimmer{
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 .index-img{
   width:56px;
   height:56px;
