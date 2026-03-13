@@ -44,8 +44,8 @@
     return result;
   }
 
-  async function getProductImage(index){
-    const base = window.imageBaseUrl || '';
+  async function getProductImage(index, baseOverride){
+    const base = baseOverride || window.imageBaseUrl || '';
     const png = `${base}${encodeURIComponent(index)}.png?alt=media`;
     const jpg = `${base}${encodeURIComponent(index)}.jpg?alt=media`;
     try{
@@ -174,7 +174,11 @@
       let imgData = null;
       if(indexVal){
         try{
-          imgData = await getProductImage(indexVal);
+          const sourceHint = String(p.__country || p.__source || p[countryKey] || '').toLowerCase();
+          const baseOverride = sourceHint.includes('ukraina')
+            ? (window.imageBaseUrlUkraina || window.imageBaseUrl || '')
+            : (window.imageBaseUrlRumunia || window.imageBaseUrl || '');
+          imgData = await getProductImage(indexVal, baseOverride);
         }catch(_){}
       }
 
@@ -320,16 +324,17 @@
       e = e.slice(-13);
     }
     if(e.length === 13){
-      return { data: e, format: 'EAN13' };
+      const base = e.slice(0, 12);
+      return { data: base + calcEAN13Check(base), format: 'EAN13' };
     }
     if(e.length === 12){
-      return { data: e, format: 'EAN13' };
+      return { data: e + calcEAN13Check(e), format: 'EAN13' };
     }
     if(e.length === 8){
       return { data: e, format: 'EAN8' };
     }
     if(e.length === 7){
-      return { data: e, format: 'EAN8' };
+      return { data: e + calcEAN8Check(e), format: 'EAN8' };
     }
     return null;
   }
