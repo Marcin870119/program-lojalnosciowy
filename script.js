@@ -46,6 +46,8 @@ const imageBaseUrlUkraina =
   'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/zdjecia%20-%20World%20food%2FUkraina%2F';
 let currentImageBaseUrl = imageBaseUrlRumunia;
 window.imageBaseUrl = currentImageBaseUrl;
+window.imageBaseUrlRumunia = imageBaseUrlRumunia;
+window.imageBaseUrlUkraina = imageBaseUrlUkraina;
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDwzVRS5W2lklGMLcZJn-YPCK9OtBQZ7bI',
@@ -676,6 +678,12 @@ function render(){
         <iframe src="${pdfPreviewUrl + encodeURIComponent(getActivePdfUrl())}&t=${Date.now()}" title="Podgląd PDF"></iframe>
       </div>
     ` : viewMode === 'catalog' ? `
+      <div class="actions">
+        <button onclick="exportCSV()">Zapisz CSV</button>
+        <button onclick="exportXLS()">Zapisz XLS</button>
+        <button onclick="createCatalog()">Utwórz katalog</button>
+        ${catalogBlobUrl ? `<button onclick="downloadCatalog()">Zapisz katalog PDF</button>` : ''}
+      </div>
       <div class="pdf-preview">
         ${catalogLoading ? `<div class="catalog-loading">
           <div class="catalog-spinner"></div>
@@ -1368,6 +1376,17 @@ function normalizeRowIndex(row){
   }
 }
 
+function getValueByVariants(row, variants){
+  if(!row) return '';
+  const keys = Object.keys(row);
+  const key = findColumn(keys, variants);
+  if(key) return row[key];
+  for(const v of variants){
+    if(row[v] !== undefined) return row[v];
+  }
+  return '';
+}
+
 async function loadImportDane(){
   if(importDaneCache) return importDaneCache;
   const sources = [
@@ -1388,7 +1407,7 @@ async function loadImportDane(){
   ];
 
   const allRows = [];
-  const colSet = new Set();
+  const columns = ['INDEKS', 'NAZWA', 'RANKING', 'GRUPA', 'PRODUCENT', 'KOD EAN'];
 
   for(const src of sources){
     try{
@@ -1396,13 +1415,16 @@ async function loadImportDane(){
         ? await loadXlsxAsJson(src.url)
         : await (await fetch(src.url)).json();
       (data || []).forEach(row => {
-        const item = { ...row };
+        const item = {
+          INDEKS: String(getValueByVariants(row, ['indeks', 'index', 'id', 'numer katalogowy', 'sku number']) || '').trim(),
+          NAZWA: String(getValueByVariants(row, ['nazwa', 'name']) || '').trim(),
+          RANKING: getValueByVariants(row, ['ranking']),
+          GRUPA: getValueByVariants(row, ['grupa', 'group']),
+          PRODUCENT: getValueByVariants(row, ['producent', 'producer']),
+          'KOD EAN': getValueByVariants(row, ['kod ean', 'ean'])
+        };
         item.__source = src.name;
         item.__country = src.name.toLowerCase().includes('ukraina') ? 'Ukraina' : 'Rumunia';
-        normalizeRowIndex(item);
-        Object.keys(item).forEach(k => {
-          if(!k.startsWith('__')) colSet.add(k);
-        });
         allRows.push(item);
       });
     }catch(e){
@@ -1410,7 +1432,6 @@ async function loadImportDane(){
     }
   }
 
-  const columns = Array.from(colSet);
   importDaneCache = { data: allRows, columns };
   return importDaneCache;
 }
@@ -1589,17 +1610,39 @@ function fileToDataUrl(file){
 
 function buildPriceMap(rows, config){
   if(!rows || !rows.length) return null;
-  const header = rows[0].map(h => String(h).toLowerCase().trim());
-  const idxCol = typeof config?.indexCol === 'number' ? config.indexCol : header.indexOf('indeks');
-  const priceCol = typeof config?.priceCol === 'number' ? config.priceCol : header.indexOf('cena');
-  const unitCol = header.findIndex(h => h.includes('jednostka'));
+  const headerRow = rows[0] || [];
+  const header = headerRow.map(h => String(h).toLowerCase().trim());
+  const hasHeader =
+    header.some(h => h.includes('indeks')) ||
+    header.some(h => h.includes('cena')) ||
+    header.some(h => h.includes('price'));
+
+  const idxCol = typeof config?.indexCol === 'number'
+    ? config.indexCol
+    : (hasHeader ? header.indexOf('indeks') : 0);
+  const priceCol = typeof config?.priceCol === 'number'
+    ? config.priceCol
+    : (hasHeader ? header.indexOf('cena') : 1);
+  const unitCol = hasHeader ? header.findIndex(h => h.includes('jednostka')) : -1;
+
   if(idxCol === -1 || priceCol === -1) return null;
   const map = new Map();
-  for(let i=1;i<rows.length;i++){
+  const startRow = hasHeader ? 1 : 0;
+
+  for(let i = startRow; i < rows.length; i++){
     const r = rows[i];
-    const index = String(r[idxCol] || '').trim();
+    const indexRaw = r[idxCol];
+    const index = normalizeIndexValue(indexRaw);
     if(!index) continue;
-    const price = String(r[priceCol] || '').trim();
+    let priceRaw = r[priceCol];
+    let price = String(priceRaw ?? '').trim();
+    const numeric = Number(priceRaw);
+    if(Number.isFinite(numeric)){
+      price = numeric.toFixed(2);
+    }else if(price){
+      const parsed = Number(String(price).replace(',', '.'));
+      if(Number.isFinite(parsed)) price = parsed.toFixed(2);
+    }
     const unit = unitCol !== -1 ? String(r[unitCol] || '').trim() : '';
     map.set(index, { price, unit });
   }
@@ -2000,4 +2043,3 @@ function positionPopup(el){
   }
   pop.style.top = `${top}px`;
 }
-
