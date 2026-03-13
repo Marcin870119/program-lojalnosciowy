@@ -1,58 +1,37 @@
-const firebaseConfig = {
-  apiKey: 'AIzaSyDwzVRS5W2lklGMLcZJn-YPCK9OtBQZ7bI',
-  authDomain: 'pdf-creator-f7a8b.firebaseapp.com',
-  projectId: 'pdf-creator-f7a8b',
-  appId: '1:606744201676:web:6f8c1b2c323fbaf6f3b569'
-};
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Food – Panel admin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="admin-view">
+    <header>
+      <img class="brand-logo" alt="World Food – Oferta" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2Fmaspo%20logo.png?alt=media&token=8fe33ebe-04d2-42cb-acb0-10379dbd7e11">
+      <div class="header-actions">
+        <button class="btn-outline" id="admin-back-btn">Powrót</button>
+      </div>
+    </header>
 
-const emailInput = document.getElementById('admin-user-email');
-const passwordInput = document.getElementById('admin-user-password');
-const createBtn = document.getElementById('admin-create-user');
-const msg = document.getElementById('admin-create-msg');
-const backBtn = document.getElementById('admin-back-btn');
+    <main>
+      <section class="admin-panel">
+        <h2>Panel admin</h2>
+        <div class="login-form">
+          <label class="login-label" for="admin-user-email">Email użytkownika</label>
+          <input id="admin-user-email" type="email" placeholder="nowy@firma.com">
+          <label class="login-label" for="admin-user-password">Hasło użytkownika</label>
+          <input id="admin-user-password" type="password" placeholder="Minimum 6 znaków">
+          <button id="admin-create-user" class="btn-outline">Utwórz konto</button>
+        </div>
+        <div id="admin-create-msg" class="login-error"></div>
+      </section>
+    </main>
+  </div>
 
-if(!localStorage.getItem('is_admin')){
-  window.location.href = 'index.html';
-}
-
-if(backBtn){
-  backBtn.addEventListener('click', () => {
-    window.location.href = 'index.html';
-  });
-}
-
-if(typeof firebase !== 'undefined'){
-  if(!firebase.apps.length){
-    firebase.initializeApp(firebaseConfig);
-  }
-  if(!firebase.apps.some(a => a.name === 'adminApp')){
-    firebase.initializeApp(firebaseConfig, 'adminApp');
-  }
-  const adminAuth = firebase.app('adminApp').auth();
-
-  createBtn.addEventListener('click', async () => {
-    const email = emailInput.value.trim();
-    const pass = passwordInput.value;
-    msg.textContent = '';
-    if(!email || !pass){
-      msg.textContent = 'Podaj email i hasło.';
-      return;
-    }
-    if(pass.length < 6){
-      msg.textContent = 'Hasło min. 6 znaków.';
-      return;
-    }
-    createBtn.disabled = true;
-    try{
-      await adminAuth.createUserWithEmailAndPassword(email, pass);
-      await adminAuth.signOut();
-      msg.textContent = 'Konto utworzone.';
-      emailInput.value = '';
-      passwordInput.value = '';
-    }catch(e){
-      msg.textContent = e.code || 'Nie udało się utworzyć konta.';
-    }finally{
-      createBtn.disabled = false;
-    }
-  });
-}
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
