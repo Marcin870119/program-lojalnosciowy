@@ -1,183 +1,332 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EuroEast Club - Dashboard</title>
-  <link rel="stylesheet" href="kreator.css">
-  <style>
-    /* Dodatkowy styl tylko dla nowego logo po prawej */
-    .maspo-logo-container {
-      position: absolute;
-      top: 40px;
-      right: 40px;
-      z-index: 8;
-      width: 180px;
-      height: auto;
-      opacity: 0.92;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18));
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Food – Oferta</title>
 
-    .maspo-logo-container img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    @media (max-width: 1100px) {
-      .maspo-logo-container {
-        right: 20px;
-        top: 30px;
-        width: 140px;
-      }
-    }
-
-    @media (max-width: 800px) {
-      .maspo-logo-container {
-        display: none;   /* chowamy na bardzo małych ekranach, bo przeszkadza */
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div id="main-container">
-  <div id="capture">
-    <div class="top-logo">
-      <img src="https://raw.githubusercontent.com/Marcin870119/masterzamowienia/main/euroeast%20club.png" alt="EuroEast Club">
+<div id="login-view">
+  <div class="login-card">
+    <a href="index.html" class="brand-link" aria-label="Przejdź do strony startowej">
+      <img class="brand-logo" alt="World Food – Oferta" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2Fmaspo%20logo.png?alt=media&token=8fe33ebe-04d2-42cb-acb0-10379dbd7e11">
+    </a>
+    <div class="login-form">
+      <label class="login-label" for="login-email">Adres e-mail</label>
+      <input id="login-email" type="email" placeholder="Email">
+      <label class="login-label" for="login-password">Hasło</label>
+      <input id="login-password" type="password" placeholder="Hasło">
+      <button id="login-btn">Zaloguj</button>
     </div>
 
-    <div class="excel-import">
-      <label>Importuj Excel:</label>
-      <input type="file" id="excelFile" accept=".xlsx,.xls" />
-      <select id="clientSelect" disabled>
-        <option value="">Wybierz klienta...</option>
-      </select>
-      <label style="margin-left: 20px; font-weight: 500;">
-        <input type="checkbox" id="end-of-period">
-        Koniec okresu programu
-      </label>
-    </div>
-
-    <div class="map-container">
-      <!-- NOWE LOGO PO PRAWEJ STRONIE -->
-      <div class="maspo-logo-container">
-        <img src="https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/logo-Maspo.png"
-     alt="Maspo Logo"
-     crossorigin="anonymous">
-
-
-      </div>
-
-      <img
-        src="https://raw.githubusercontent.com/Marcin870119/masterzamowienia/main/mapa%20europy.png"
-        alt="Mapa Europy"
-        class="europe-map"
-      >
-
-      <div class="flags-column">
-        <div class="flag-item">
-          <img src="https://flagcdn.com/ro.svg" alt="Rumunia">
-          <span>Rumunia</span>
-        </div>
-        <div class="flag-item">
-          <img src="https://flagcdn.com/bg.svg" alt="Bułgaria">
-          <span>Bułgaria</span>
-        </div>
-        <div class="flag-item">
-          <img src="https://flagcdn.com/ua.svg" alt="Ukraina">
-          <span>Ukraina</span>
-        </div>
-        <div class="flag-item">
-          <img src="https://flagcdn.com/lt.svg" alt="Litwa">
-          <span>Litwa</span>
-        </div>
-      </div>
-
-      <div class="world-food-center">
-        <div class="world-food-box">
-          <div class="logo-circle">
-            <img src="https://raw.githubusercontent.com/Marcin870119/masterzamowienia/main/euroeast%20club.png" alt="Logo EuroEast Club">
-          </div>
-
-          <div class="wf-title">World Food</div>
-          <div id="selected-client-name" class="selected-client"></div>
-
-          <div class="values">
-            <div class="value-row">
-              <span class="label">Target:</span>
-              <span class="amount" id="target-display">£0</span>
-            </div>
-            <div class="value-row">
-              <span class="label">Sprzedaż:</span>
-              <span class="amount" id="sales-display">£0</span>
-            </div>
-            <div class="value-row">
-              <span class="label">Pozostało:</span>
-              <span class="amount" id="remain-display">£0</span>
-            </div>
-          </div>
-
-          <!-- Sekcja punktów i gratulacji -->
-          <div class="points-summary" id="points-summary">
-            <div class="congrats" id="congrats-text" data-type="success">
-              Brawo! Osiągnąłeś swój cel 🎉
-            </div>
-
-            <div class="point-row">
-              <span class="label">Ilość otrzymanych punktów:</span>
-              <span class="value"><span id="points-h">0</span></span>
-            </div>
-            <div class="point-row">
-              <span class="label">Ilość punktów za ilość unikalnych indeksów grudzień:</span>
-              <span class="value"><span id="points-i">0</span></span>
-            </div>
-            <div class="point-row">
-              <span class="label">Suma punktów:</span>
-              <span class="value highlight"><span id="points-j">0</span></span>
-            </div>
-            <div class="point-row total">
-              <span class="label">Łącznie zebrane punkty:</span>
-              <span class="value"><span id="points-n">0</span></span>
-            </div>
-          </div>
-
-          <div class="progress-container">
-            <div class="progress-bar">
-              <div id="progress-fill" style="width: 0%;"></div>
-            </div>
-            <div class="progress-label" id="progress-pct">0%</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="bottom-bar">
-      BETTER TOGETHER<br>
-      <span>EASTERN EUROPEAN food</span>
-    </div>
-  </div>
-
-  <!-- Panel edycyjny -->
-  <div class="editor">
-    <div class="input-group">
-      <label>Target World Food (£)</label>
-      <input type="number" id="target-world" value="0">
-    </div>
-    <div class="input-group">
-      <label>Sprzedaż World Food (£)</label>
-      <input type="number" id="sales-world" value="0">
-    </div>
-    <div class="actions">
-      <button id="reset">Wyczyść sprzedaż</button>
-      <button id="pdf">Pobierz PDF</button>
-    </div>
+    <div id="login-error" class="login-error"></div>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="kreator.js"></script>
+<div id="app-view" class="hidden">
+  <div id="catalog-modal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Nazwa katalogu</h2>
+      <div class="login-form">
+        <input id="catalog-name" type="text" placeholder="Np. katalog_rumunia_2026">
+        <input id="catalog-cover" type="file" accept="image/*">
+        <label class="login-label" for="catalog-currency">Wybierz walutę</label>
+        <select id="catalog-currency">
+          <option value="">— wybierz —</option>
+          <option value="PLN">PLN</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+        </select>
+        <div class="color-field">
+          <label class="login-label" for="catalog-price-color">Kolor ceny</label>
+          <div class="color-row">
+            <input id="catalog-price-color" type="color" value="#000000">
+          </div>
+          <div class="color-hint">Kolor dotyczy tylko cyfry ceny.</div>
+        </div>
+        <input id="catalog-excel" type="file" accept=".xlsx,.xls">
+        <div class="catalog-columns">
+          <div>
+            <label class="login-label" for="catalog-index-col">Kolumna indeksu</label>
+            <select id="catalog-index-col">
+              <option value="auto">Auto</option>
+            </select>
+          </div>
+          <div>
+            <label class="login-label" for="catalog-price-col">Kolumna ceny</label>
+            <select id="catalog-price-col">
+              <option value="auto">Auto</option>
+            </select>
+          </div>
+        </div>
+        <button id="catalog-save-btn">Zapisz katalog PDF</button>
+      </div>
+      <div id="catalog-error" class="login-error"></div>
+      <button id="catalog-cancel-btn" class="btn-outline">Anuluj</button>
+    </div>
+  </div>
+  <div id="security-modal" class="modal hidden">
+    <div class="modal-card warning">
+      <h2><span class="warn-pill">WAŻNE</span>Informacja o bezpieczeństwie</h2>
+      <p>Prosimy pamiętać, że wszystkie dane, z których korzystasz, są przeznaczone wyłącznie do Twojego użytku.</p>
+      <p>Nie udostępniaj nikomu swoich loginów ani haseł.</p>
+      <button id="modal-close" class="btn-outline">Rozumiem</button>
+    </div>
+  </div>
+  <div id="price-warning-modal" class="modal hidden">
+    <div class="modal-card warning">
+      <h2><span class="warn-pill">WAŻNE</span>Komunikat</h2>
+      <p>Pamiętaj, aby ograniczać udostępnianie cen.</p>
+      <button id="price-warning-close" class="btn-outline">Rozumiem</button>
+    </div>
+  </div>
+  <div id="password-modal" class="modal hidden">
+    <div class="modal-card warning">
+      <h2><span class="warn-pill">WAŻNE</span>Potwierdzenie</h2>
+      <p>Przekroczono 50 pozycji. Aby zapisać katalog, podaj hasło.</p>
+      <div class="login-form">
+        <input id="password-input" type="password" placeholder="Hasło">
+        <button id="password-confirm" class="btn-outline">Potwierdź</button>
+      </div>
+      <div id="password-error" class="login-error"></div>
+      <button id="password-cancel" class="btn-outline">Anuluj</button>
+    </div>
+  </div>
+  <div id="listing-confirm-modal" class="modal hidden">
+    <div class="modal-card warning">
+      <h2><span class="warn-pill">UWAGA</span>Produkt już na liście</h2>
+      <p>Ten produkt znajduje się już na liście. Czy na pewno chcesz go dodać ponownie?</p>
+      <div class="modal-actions">
+        <button id="listing-confirm-yes" class="btn-outline">Tak, dodaj</button>
+        <button id="listing-confirm-no" class="btn-outline">Nie dodawaj</button>
+      </div>
+    </div>
+  </div>
+  <div id="listing-found-modal" class="modal hidden">
+    <div class="modal-card warning">
+      <h2><span class="warn-pill">INFO</span>Produkt w ofercie</h2>
+      <p id="listing-found-text">Produkt znajduje się w ofercie Maspo.</p>
+      <div class="modal-actions">
+        <button id="listing-found-ok" class="btn-outline">Rozumiem</button>
+      </div>
+    </div>
+  </div>
+  <div id="listing-add-modal" class="modal hidden">
+    <div class="modal-card warning">
+      <h2><span class="warn-pill">ZNALEZIONO</span>Produkt w ofercie Rumunia</h2>
+      <div class="listing-found-card">
+        <img id="listing-add-image" alt="" />
+        <div>
+          <div class="listing-found-title" id="listing-add-name">Produkt</div>
+          <div class="listing-found-sub">Czy chcesz dodać produkt do listy?</div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="listing-add-yes" class="btn-outline">Dodaj</button>
+        <button id="listing-add-no" class="btn-outline">Nie dodawaj</button>
+      </div>
+    </div>
+  </div>
+  <div id="listing-marion-modal" class="modal hidden">
+    <div class="modal-card warning">
+      <h2><span class="warn-pill">ZNALEZIONO</span>Produkt z oferty Marion</h2>
+      <div class="listing-found-card">
+        <img id="listing-marion-image" alt="" />
+        <div>
+          <div class="listing-found-title" id="listing-marion-name">Produkt</div>
+          <div class="listing-found-sub">Czy chcesz dodać produkt do listy?</div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="listing-marion-yes" class="btn-outline">Dodaj</button>
+        <button id="listing-marion-no" class="btn-outline">Nie dodawaj</button>
+      </div>
+    </div>
+  </div>
+  <header>
+    <a href="index.html" class="brand-link" aria-label="Przejdź do strony startowej">
+      <img class="brand-logo" alt="World Food – Oferta" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2Fmaspo%20logo.png?alt=media&token=8fe33ebe-04d2-42cb-acb0-10379dbd7e11">
+    </a>
+    <nav>
+      <button class="tab active" data-tab="rumunia">Rumunia</button>
+      <button class="tab" data-tab="ukraina">Ukraina</button>
+      <button class="tab" data-tab="litwa">Litwa</button>
+      <button class="tab" data-tab="bulgaria">Bułgaria</button>
+      <button class="tab" data-tab="listing">Listing</button>
+    </nav>
+    <div class="header-actions">
+      <a id="admin-panel-btn" class="btn-outline hidden" href="admin.html">Panel admin</a>
+      <button id="logout-btn" class="btn-outline">Wyloguj</button>
+    </div>
+  </header>
+
+  <main>
+
+  <section id="rumunia" class="tab-content">
+    <div class="country-banner">
+      <div class="flag-pill">
+        <span class="flag-emoji">🇷🇴</span>
+        <span class="flag-text">Rumunia</span>
+      </div>
+      <div class="flag-stripe"></div>
+    </div>
+    <div class="grid">
+      <div class="card" id="rumunia-slodycze">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSLODYCZE.png?alt=media&token=58e3670c-bf1c-4bc9-9cc1-5b131ddbb410" alt="">
+        <h3>Słodycze</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-mieso-wedliny">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FWEDLINY.png?alt=media&token=f52bd843-c74d-4304-a475-4e3b46974004" alt="">
+        <h3>Mięso i wędliny</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-nabial">
+        <img class="card-corner-icon card-corner-icon--lg" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FNABIAL.png?alt=media&token=f56ac910-a83e-422a-b7a9-336a1362eb20" alt="">
+        <h3>Nabiał</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-napoje">
+        <img class="card-corner-icon card-corner-icon--sm" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FNAPOJE.png?alt=media&token=08c8ac15-58e0-45e1-88c4-4d2e7af3a437" alt="">
+        <h3>Napoje</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-przyprawy-proszek">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSPICES.png?alt=media&token=7ae1c0fc-cdbb-48d4-8192-f4df21222530" alt="">
+        <h3>Przyprawy<br>i dodatki w proszku</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-puszki-sloiki">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSLOIKI.png?alt=media&token=450c4683-628e-4598-875d-1660fdb601c0" alt="">
+        <h3>Puszki i słoiki</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-produkty-podstawowe">
+        <img class="card-corner-icon card-corner-icon--lg" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FPODSTAWA.png?alt=media&token=e3583eaa-261e-439c-b25b-cb7a4e598859" alt="">
+        <h3>Produkty<br>podstawowe</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="rumunia-kawy-herbaty">
+        <img class="card-corner-icon card-corner-icon--lg" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FKAWA.png?alt=media&token=82f30ff2-4a5b-4e39-9b60-fe23aad8c2c4" alt="">
+        <h3>Kawy i herbaty</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="import-dane">
+        <h3>Import danych</h3>
+        <p>Kliknij aby wczytać wszystkie indeksy</p>
+      </div>
+    </div>
+
+    <!-- TU ŁADUJE SIĘ: przyciski + tabela -->
+    <div id="slodycze-content"></div>
+    <div id="mieso-wedliny-content"></div>
+    <div id="nabial-content"></div>
+    <div id="napoje-content"></div>
+    <div id="przyprawy-proszek-content"></div>
+    <div id="puszki-sloiki-content"></div>
+    <div id="produkty-podstawowe-content"></div>
+    <div id="kawy-herbaty-content"></div>
+    <div id="import-dane-content"></div>
+  </section>
+
+  <section id="ukraina" class="tab-content hidden">
+    <div class="country-banner country-banner--ua">
+      <div class="flag-pill">
+        <img class="flag-image" alt="Ukraina" src="https://flagcdn.com/w80/ua.png">
+        <span class="flag-text">Ukraina</span>
+      </div>
+      <div class="flag-stripe"></div>
+    </div>
+    <div class="grid">
+      <div class="card" id="ukraina-slodycze">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSLODYCZE.png?alt=media&token=58e3670c-bf1c-4bc9-9cc1-5b131ddbb410" alt="">
+        <h3>Słodycze</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="ukraina-mieso-wedliny">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FWEDLINY.png?alt=media&token=f52bd843-c74d-4304-a475-4e3b46974004" alt="">
+        <h3>Mięso i wędliny</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="ukraina-kawy-herbaty">
+        <img class="card-corner-icon card-corner-icon--lg" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FKAWA.png?alt=media&token=82f30ff2-4a5b-4e39-9b60-fe23aad8c2c4" alt="">
+        <h3>Kawy i herbaty</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="ukraina-puszki-sloiki">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSLOIKI.png?alt=media&token=450c4683-628e-4598-875d-1660fdb601c0" alt="">
+        <h3>Puszki i słoiki</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="ukraina-napoje">
+        <img class="card-corner-icon card-corner-icon--sm" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FNAPOJE.png?alt=media&token=08c8ac15-58e0-45e1-88c4-4d2e7af3a437" alt="">
+        <h3>Napoje</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="ukraina-przyprawy-proszek">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSPICES.png?alt=media&token=7ae1c0fc-cdbb-48d4-8192-f4df21222530" alt="">
+        <h3>Przyprawy<br>i dodatki w proszku</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+    </div>
+    <div id="ukraina-slodycze-content"></div>
+    <div id="ukraina-mieso-wedliny-content"></div>
+    <div id="ukraina-kawy-herbaty-content"></div>
+    <div id="ukraina-puszki-sloiki-content"></div>
+    <div id="ukraina-napoje-content"></div>
+    <div id="ukraina-przyprawy-proszek-content"></div>
+  </section>
+  <section id="litwa" class="tab-content hidden"></section>
+  <section id="bulgaria" class="tab-content hidden"></section>
+  <section id="listing" class="tab-content hidden">
+    <div class="country-banner">
+      <div class="flag-pill">
+        <span class="flag-text">Listing</span>
+      </div>
+      <div class="flag-stripe"></div>
+    </div>
+    <div class="listing-panel">
+      <div class="listing-controls">
+        <div>
+          <label>Kod kreskowy</label>
+          <input id="listing-code" type="text" placeholder="Zeskanuj lub wpisz kod">
+        </div>
+        <div class="listing-buttons">
+          <button class="btn-outline" id="listing-start-btn">Start skanowania</button>
+          <button class="btn-outline" id="listing-stop-btn">Stop</button>
+          <button class="btn-outline" id="listing-search-btn">Szukaj</button>
+          <input id="listing-excel" type="file" accept=".xlsx,.xls">
+          <button class="btn-outline" id="listing-import-btn">Import Excel</button>
+          <button class="btn-outline" id="listing-export-btn">Zapisz XLSX</button>
+          <button class="btn-outline" id="listing-export-pdf-btn">Zapisz PDF</button>
+        </div>
+      </div>
+      <div id="listing-camera" class="listing-camera"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr id="listing-head"></tr>
+          </thead>
+          <tbody id="listing-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.2.6/dist/quagga.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="katalog.js"></script>
+<script src="script.js?v=2026-02-18"></script>
 </body>
 </html>
