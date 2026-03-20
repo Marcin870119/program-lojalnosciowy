@@ -1,0 +1,461 @@
+[
+  {
+    "INDEKS": "30398",
+    "NAZWA": "HOCHLAND 200G SER ALA FETA KROWI - TELEMEA VACA RUMUNIA",
+    "Ranking": "1",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238005069",
+    "": ""
+  },
+  {
+    "INDEKS": "48242",
+    "NAZWA": "DANONE RO MILKBURGER KAKAO/MIOD/SMIETANKA - MILKBURGER CU CACAO/MIERE/CREMA LAPTE 35G RUMUNIA",
+    "Ranking": "2",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "ETI",
+    "Kod Ean": "8690526067797",
+    "": ""
+  },
+  {
+    "INDEKS": "48244",
+    "NAZWA": "DANONE RO MILKBURGER MIOD/SMIETANKA - MILKBURGER CU MIERE/CREMA DE LAPTE 35G RUMUNIA",
+    "Ranking": "3",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "ETI",
+    "Kod Ean": "8690526067803",
+    "": ""
+  },
+  {
+    "INDEKS": "48243",
+    "NAZWA": "DANONE RO MILKBURGER SMIETANKA/TRUSKAWKA - MILKBURGER CU CREMA DE LAPTE/CAPSUNI 35G RUMUNIA",
+    "Ranking": "4",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "ETI",
+    "Kod Ean": "8690526069852",
+    "": ""
+  },
+  {
+    "INDEKS": "48246",
+    "NAZWA": "DANONE RO MILKBURGER MIOD/MLEKO/BANAN - MILKBURGER CU MIERE/LAPTE/BANANE 35G RUMUNIA",
+    "Ranking": "5",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "ETI",
+    "Kod Ean": "8690526069005",
+    "": ""
+  },
+  {
+    "INDEKS": "59480",
+    "NAZWA": "LEGUMIX OK.2KG KAPUSTA KISZONA GLOWKA-LEGUMIX VARZA MURATA RUMUNIA",
+    "Ranking": "6",
+    "Grupa": "RUMUNIA CHŁODNIA POZOSTAŁE",
+    "Producent": "LEGUMIX",
+    "Kod Ean": "2875004",
+    "": ""
+  },
+  {
+    "INDEKS": "30399",
+    "NAZWA": "HOCHLAND 350G SER ALA FETA KROWI - TELEMEA VACA RUMUNIA",
+    "Ranking": "7",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238005052",
+    "": ""
+  },
+  {
+    "INDEKS": "30402",
+    "NAZWA": "HOCHLAND 150G SER ALA FETA - TELEMEA VACA LIGHT RUMUNIA",
+    "Ranking": "8",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238005663",
+    "": ""
+  },
+  {
+    "INDEKS": "30401",
+    "NAZWA": "HOCHLAND 500G SER ALA FETA KROWI W KUBELKU - TELEMEA DE VACA RUMUNIA",
+    "Ranking": "9",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238005311",
+    "": ""
+  },
+  {
+    "INDEKS": "29069",
+    "NAZWA": "DELMA SANDWICH 450G - MAGARYNA KANAPKOWA RUMUNIA",
+    "Ranking": "10",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "UPFIELD RO",
+    "Kod Ean": "8719200240902",
+    "": ""
+  },
+  {
+    "INDEKS": "30459",
+    "NAZWA": "TUDIA OK.7KG SER A LA FETA KROWI - TELEMEA VACA RUMUNIA",
+    "Ranking": "11",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "6424453000884",
+    "": ""
+  },
+  {
+    "INDEKS": "33093",
+    "NAZWA": "PACHET DE ACASA SER ALA FETA KROWI - TELEMEA DE VACA 4KG RUMUNIA",
+    "Ranking": "12",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "FERMA CU OMENIE",
+    "Kod Ean": "2822710040002",
+    "": ""
+  },
+  {
+    "INDEKS": "30400",
+    "NAZWA": "HOCHLAND 1000G SER ALA FETA KROWI W KUBELKU - TELEMEA DE VACA RUMUNIA",
+    "Ranking": "13",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238005236",
+    "": ""
+  },
+  {
+    "INDEKS": "29068",
+    "NAZWA": "DELMA SANDWICH 225G - MAGARYNA KANAPKOWA RUMUNIA",
+    "Ranking": "14",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "UPFIELD RO",
+    "Kod Ean": "8719200240810",
+    "": ""
+  },
+  {
+    "INDEKS": "53498",
+    "NAZWA": "HOCHLAND SEREK ALMETTE GRZYBOWY-ALMETTE HRIBI 150G RUMUNIA",
+    "Ranking": "15",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "4002671165640",
+    "": ""
+  },
+  {
+    "INDEKS": "30403",
+    "NAZWA": "HOCHLAND 150G SZCZYPIOREK- TELEMEA VACA VERDEATA RUMUNIA",
+    "Ranking": "16",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238005076",
+    "": ""
+  },
+  {
+    "INDEKS": "30396",
+    "NAZWA": "HOCHLAND 200G SER ALA FETA KOZI - TELEMEA CAPRA RUMUNIA",
+    "Ranking": "17",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238012890",
+    "": ""
+  },
+  {
+    "INDEKS": "48576",
+    "NAZWA": "FERMA CU OMENIE SLONY SER OWCZY - BURDUF PACHET DE ACASA 300G RUMUNIA",
+    "Ranking": "18",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "FERMA CU OMENIE",
+    "Kod Ean": "5941850872421",
+    "": ""
+  },
+  {
+    "INDEKS": "30375",
+    "NAZWA": "HOCHLAND SEREK TOPIONY MIXTET CLASSIC-BRANZA TOPITA TRUNGHIURI MIXTET CLASSICO 140G RUMUNIA",
+    "Ranking": "19",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238100054",
+    "": ""
+  },
+  {
+    "INDEKS": "30380",
+    "NAZWA": "HOCHLAND 140G SER TOPIONY PLASTRY -FELII CHEESEBURGER RUMUNIA",
+    "Ranking": "20",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238010636",
+    "": ""
+  },
+  {
+    "INDEKS": "30378",
+    "NAZWA": "HOCHLAND SEREK TOPIONY SMIETANKOWY-BRANZA TOPITA TRIUNGHIURI SMANTANA 140G RUMUNIA",
+    "Ranking": "21",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238100047",
+    "": ""
+  },
+  {
+    "INDEKS": "47916",
+    "NAZWA": "CRISTIM 250G SER CASCAVAL - CRISTIM CASCAVAL CLASIC RUMUNIA",
+    "Ranking": "22",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265032106",
+    "": ""
+  },
+  {
+    "INDEKS": "53499",
+    "NAZWA": "HOCHLAND SER FETA 150G RUMUNIA",
+    "Ranking": "23",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238012692",
+    "": ""
+  },
+  {
+    "INDEKS": "53496",
+    "NAZWA": "HOCHLAND SEREK ALMETTE POMIDOROWO BAZYLIOWY-ALMETTE ROSII SI BUSUIOC 150G RUMUNIA",
+    "Ranking": "24",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "4002671147059",
+    "": ""
+  },
+  {
+    "INDEKS": "49721",
+    "NAZWA": "DE LA FERMA SER OWCZY DELIKATNY - BRANZA DE BURDUF CU GUST BLAND 250G BATON RUMUNIA",
+    "Ranking": "25",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "FERMA CU OMENIE",
+    "Kod Ean": "5941850872742",
+    "": ""
+  },
+  {
+    "INDEKS": "53124",
+    "NAZWA": "HOCHLAND SEREK KANAPKOWY CREMA 200G ZIOLA",
+    "Ranking": "26",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5902899145228",
+    "": ""
+  },
+  {
+    "INDEKS": "53466",
+    "NAZWA": "HOCHLAND SEREK TOPIONY SEROWY-BRANZA TOPITA TRIUNGIURI CASCAVAL 140G RUMUNIA",
+    "Ranking": "27",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238013989",
+    "": ""
+  },
+  {
+    "INDEKS": "58500",
+    "NAZWA": "TUDIA SER CASCAVAL WEDZONY OK.0,4KG- CASCAVAL BRADUT AFUMAT RUMUNIA",
+    "Ranking": "28",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "2805740000000",
+    "": ""
+  },
+  {
+    "INDEKS": "30382",
+    "NAZWA": "HOCHLAND PLASTRY FELII SMANTANA 140G RUMUNIA",
+    "Ranking": "29",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238010605",
+    "": ""
+  },
+  {
+    "INDEKS": "27072",
+    "NAZWA": "TUDIA SER TOPIONY BRANZA BATON 100G -BRANZA TOPITA BATON RUMUNIA",
+    "Ranking": "30",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "6424453000112",
+    "": ""
+  },
+  {
+    "INDEKS": "30383",
+    "NAZWA": "HOCHLAND SEREK PLASTRY SZYNKA-BRANZA TOPITA FELII SUNCA 140G RUMUNIA",
+    "Ranking": "31",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238010629",
+    "": ""
+  },
+  {
+    "INDEKS": "58510",
+    "NAZWA": "TUDIA SER CASCAVAL SUCEAVA 400G-CASCAVAL SUCEAVA RUMUNIA",
+    "Ranking": "32",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "6424453000037",
+    "": ""
+  },
+  {
+    "INDEKS": "30376",
+    "NAZWA": "HOCHLAND 140G SER TOPIONY KRAZEK MIXTETT FROMAGGI RUMUNIA",
+    "Ranking": "33",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238001542",
+    "": ""
+  },
+  {
+    "INDEKS": "30379",
+    "NAZWA": "HOCHLAND PLASTRY FELII CASCAVAL 140G RUMUNIA",
+    "Ranking": "34",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238010612",
+    "": ""
+  },
+  {
+    "INDEKS": "58509",
+    "NAZWA": "TUDIA SER CASCAVAL RUCAR OK.0,4KG-CASCAVAL RUCAR RUMUNIA",
+    "Ranking": "35",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "2805720004004",
+    "": ""
+  },
+  {
+    "INDEKS": "33087",
+    "NAZWA": "DE LA FERMA SER OWCZY - BURDUF CU GUST BLAND 350G RUMUNIA",
+    "Ranking": "36",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "FERMA CU OMENIE",
+    "Kod Ean": "5941850871097",
+    "": ""
+  },
+  {
+    "INDEKS": "30390",
+    "NAZWA": "HOCHLAND 325G SER KASZKAWAL OKRAGLY - CASCAVAL CLASIC ROTUND RUMUNIA",
+    "Ranking": "37",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238012241",
+    "": ""
+  },
+  {
+    "INDEKS": "53501",
+    "NAZWA": "HOCHLAND SER BIALY EXTRA KREMOWY-BRANZA EXTRA CREMOASA 400G RUMUNIA",
+    "Ranking": "38",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5941238014962",
+    "": ""
+  },
+  {
+    "INDEKS": "30439",
+    "NAZWA": "TUDIA SER CASCAVAL DALIA OK.0,4KG-CASCAVAL DALIA RUMUNIA",
+    "Ranking": "39",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "2805730000000",
+    "": ""
+  },
+  {
+    "INDEKS": "58501",
+    "NAZWA": "TUDIA SER CASCAVAL WARKOCZ OK.0,4KG-CASCAVAL BRADUT IMPLETIT RUMUNIA",
+    "Ranking": "40",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "2805900000000",
+    "": ""
+  },
+  {
+    "INDEKS": "58506",
+    "NAZWA": "TUDIA SER CASCAVAL PENTELEU OK.0,4KG-CASCAVAL PENTELEU RUMUNIA",
+    "Ranking": "41",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "2805750000000",
+    "": ""
+  },
+  {
+    "INDEKS": "53126",
+    "NAZWA": "HOCHLAND SEREK KANAPKOWY CREMA 200G OGOREK",
+    "Ranking": "42",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "5902899145204",
+    "": ""
+  },
+  {
+    "INDEKS": "47935",
+    "NAZWA": "CRISTIM 300G MOZZARELLA RUMUNIA",
+    "Ranking": "43",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265032403",
+    "": ""
+  },
+  {
+    "INDEKS": "33095",
+    "NAZWA": "FERMA CU OMENIE SER CASCAVAL 350G Z MLEKA KROWIEGO-CASCAVAL DE VACA PACHET DE ACAS",
+    "Ranking": "44",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "FERMA CU OMENIE",
+    "Kod Ean": "5941850870717",
+    "": ""
+  },
+  {
+    "INDEKS": "53125",
+    "NAZWA": "HOCHLAND SEREK KANAPKOWY CREMA 200G SZYNKA",
+    "Ranking": "",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "HOCHLAND RO",
+    "Kod Ean": "",
+    "": ""
+  },
+  {
+    "INDEKS": "30440",
+    "NAZWA": "TUDIA SER CASCAVAL DELIA OK.0,4KG-CASCAVAL DELIA RUMUNIA",
+    "Ranking": "",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "",
+    "": ""
+  },
+  {
+    "INDEKS": "38550",
+    "NAZWA": "FERMA CU OMENIE SER CASCAVAL 350G Z MLEKA KROWIEGO WEDZONY-CASCAVAL AFUMAT DE VACA",
+    "Ranking": "",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "FERMA CU OMENIE",
+    "Kod Ean": "",
+    "": ""
+  },
+  {
+    "INDEKS": "42074",
+    "NAZWA": "PACHET DE ACASA SER CASCAVAL WEDZONY IMPLETIT AFUMAT 38% 235G RUMUNIA",
+    "Ranking": "",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "FERMA CU OMENIE",
+    "Kod Ean": "",
+    "": ""
+  },
+  {
+    "INDEKS": "57970",
+    "NAZWA": "FERMA CU OMENIE SER TELEMEA 375G SWIEZY,LEKKO SOLONY Z MLEKA KROWIEGO-TELEMEA PUTIN",
+    "Ranking": "",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "FERMA CU OMENIE",
+    "Kod Ean": "",
+    "": ""
+  },
+  {
+    "INDEKS": "30456",
+    "NAZWA": "TUDIA SER TOPIONY GNIECIONY OK.0,4KG-BRANZA FRAMANTATA BURDUF RUMUNIA",
+    "Ranking": "",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "TUDIA",
+    "Kod Ean": "",
+    "": ""
+  },
+  {
+    "INDEKS": "57969",
+    "NAZWA": "FERMA CU OMENIE SER TELEMEA 800G SWIEZY,LEKKO SOLONY Z MLEKA KROWIEGO-TELEMEA PUTIN",
+    "Ranking": "",
+    "Grupa": "NABIAŁ RUMUNIA",
+    "Producent": "FERMA CU OMENIE",
+    "Kod Ean": "",
+    "": ""
+  }
+]
