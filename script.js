@@ -14,6 +14,8 @@ const jsonUrlProduktyPodstawowe =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Produkty%20Podstawowe%20-%20Rumunia%20Ranking.json';
 const jsonUrlKawyHerbaty =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Kawa%20i%20Herbata%20-%20Ranking%20Rumunia.json';
+const jsonUrlTopRumunia =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Top%20Rumunia.json';
 const jsonUrlSlodyczeUkraina =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/SLODYCZE%20UKRAINA%20-%20RANKING.json';
 const jsonUrlMiesoUkraina =
@@ -94,6 +96,7 @@ const przyprawyProszekContainer = document.getElementById('przyprawy-proszek-con
 const puszkiSloikiContainer = document.getElementById('puszki-sloiki-content');
 const produktyPodstawoweContainer = document.getElementById('produkty-podstawowe-content');
 const kawyHerbatyContainer = document.getElementById('kawy-herbaty-content');
+const topRumuniaContainer = document.getElementById('top-rumunia-content');
 const importDaneContainer = document.getElementById('import-dane-content');
 const ukrainaSlodyczeContainer = document.getElementById('ukraina-slodycze-content');
 const ukrainaMiesoContainer = document.getElementById('ukraina-mieso-wedliny-content');
@@ -185,6 +188,7 @@ function resetAppState(){
   puszkiSloikiContainer.innerHTML = '';
   produktyPodstawoweContainer.innerHTML = '';
   kawyHerbatyContainer.innerHTML = '';
+  if(topRumuniaContainer) topRumuniaContainer.innerHTML = '';
   if(importDaneContainer) importDaneContainer.innerHTML = '';
   if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
   if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
@@ -215,6 +219,7 @@ function clearAllContentContainers(){
   puszkiSloikiContainer.innerHTML = '';
   produktyPodstawoweContainer.innerHTML = '';
   kawyHerbatyContainer.innerHTML = '';
+  if(topRumuniaContainer) topRumuniaContainer.innerHTML = '';
   if(importDaneContainer) importDaneContainer.innerHTML = '';
   if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
   if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
@@ -433,6 +438,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     puszkiSloikiContainer.innerHTML = '';
     produktyPodstawoweContainer.innerHTML = '';
     kawyHerbatyContainer.innerHTML = '';
+    if(topRumuniaContainer) topRumuniaContainer.innerHTML = '';
     if(importDaneContainer) importDaneContainer.innerHTML = '';
     if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
     if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
@@ -614,6 +620,17 @@ document.getElementById('rumunia-kawy-herbaty').addEventListener('click', async 
   setImageBase(imageBaseUrlRumunia);
   prepareCategoryView(kawyHerbatyContainer, 'Kawy_i_herbaty', 'kawy_i_herbaty');
   const res = await fetch(jsonUrlKawyHerbaty);
+  setFullData(await res.json());
+  isLoading = false;
+  render();
+});
+
+// KLIK KAFELKA "TOP RUMUNIA"
+document.getElementById('rumunia-top-rumunia').addEventListener('click', async () => {
+  setActiveCard('rumunia-top-rumunia');
+  setImageBase(imageBaseUrlRumunia);
+  prepareCategoryView(topRumuniaContainer, 'Top_Rumunia', 'top_rumunia');
+  const res = await fetch(jsonUrlTopRumunia);
   setFullData(await res.json());
   isLoading = false;
   render();
@@ -1042,6 +1059,7 @@ async function loadListingData(){
     { name: 'Rumunia - Puszki i słoiki', type: 'json', url: jsonUrlPuszkiSloiki },
     { name: 'Rumunia - Produkty podstawowe', type: 'json', url: jsonUrlProduktyPodstawowe },
     { name: 'Rumunia - Kawy i herbaty', type: 'json', url: jsonUrlKawyHerbaty },
+    { name: 'Rumunia - Top Rumunia', type: 'json', url: jsonUrlTopRumunia },
     { name: 'Ukraina - Słodycze', type: 'json', url: jsonUrlSlodyczeUkraina },
     { name: 'Ukraina - Mięso i wędliny', type: 'json', url: jsonUrlMiesoUkraina },
     { name: 'Ukraina - Kawy i herbaty', type: 'json', url: jsonUrlKawyUkraina },
@@ -1399,6 +1417,7 @@ async function loadImportDane(){
     { name: 'Rumunia - Puszki i słoiki', type: 'json', url: jsonUrlPuszkiSloiki },
     { name: 'Rumunia - Produkty podstawowe', type: 'json', url: jsonUrlProduktyPodstawowe },
     { name: 'Rumunia - Kawy i herbaty', type: 'json', url: jsonUrlKawyHerbaty },
+    { name: 'Rumunia - Top Rumunia', type: 'json', url: jsonUrlTopRumunia },
     { name: 'Ukraina - Słodycze', type: 'json', url: jsonUrlSlodyczeUkraina },
     { name: 'Ukraina - Mięso i wędliny', type: 'json', url: jsonUrlMiesoUkraina },
     { name: 'Ukraina - Kawy i herbaty', type: 'json', url: jsonUrlKawyUkraina },
