@@ -2,8 +2,8 @@ const jsonUrl =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Slodycze%20Ranking%20Rumunia.json';
 const jsonUrlMieso =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Mieso%20Wedliny%20-%20Rumunia.json';
-const xlsxUrlNabial =
-  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Nabial%20-%20Rumunia%20Ranking.xlsx';
+const jsonUrlNabial =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Nabial%20-%20Rumunia%20Ranking.json';
 const jsonUrlNapoje =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Napoje%20-%20Ranking%20Rumunia.json';
 const jsonUrlPrzyprawyProszek =
@@ -558,7 +558,8 @@ document.getElementById('rumunia-nabial').addEventListener('click', async () => 
   setActiveCard('rumunia-nabial');
   setImageBase(imageBaseUrlRumunia);
   prepareCategoryView(nabialContainer, 'Nabial', 'nabial');
-  setFullData(await loadXlsxAsJson(xlsxUrlNabial));
+  const res = await fetch(jsonUrlNabial);
+  setFullData(await res.json());
   isLoading = false;
   render();
 });
@@ -1035,7 +1036,7 @@ async function loadListingData(){
   const sources = [
     { name: 'Rumunia - Słodycze', type: 'json', url: jsonUrl },
     { name: 'Rumunia - Mięso i wędliny', type: 'json', url: jsonUrlMieso },
-    { name: 'Rumunia - Nabiał', type: 'xlsx', url: xlsxUrlNabial },
+    { name: 'Rumunia - Nabiał', type: 'json', url: jsonUrlNabial },
     { name: 'Rumunia - Napoje', type: 'json', url: jsonUrlNapoje },
     { name: 'Rumunia - Przyprawy', type: 'json', url: jsonUrlPrzyprawyProszek },
     { name: 'Rumunia - Puszki i słoiki', type: 'json', url: jsonUrlPuszkiSloiki },
@@ -1392,7 +1393,7 @@ async function loadImportDane(){
   const sources = [
     { name: 'Rumunia - Słodycze', type: 'json', url: jsonUrl },
     { name: 'Rumunia - Mięso i wędliny', type: 'json', url: jsonUrlMieso },
-    { name: 'Rumunia - Nabiał', type: 'xlsx', url: xlsxUrlNabial },
+    { name: 'Rumunia - Nabiał', type: 'json', url: jsonUrlNabial },
     { name: 'Rumunia - Napoje', type: 'json', url: jsonUrlNapoje },
     { name: 'Rumunia - Przyprawy', type: 'json', url: jsonUrlPrzyprawyProszek },
     { name: 'Rumunia - Puszki i słoiki', type: 'json', url: jsonUrlPuszkiSloiki },
