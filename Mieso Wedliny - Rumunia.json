@@ -5,31 +5,35 @@
     "Ranking": "1",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265000396"
+    "Kod Ean": "5941265000396",
+    "": ""
   },
   {
-    "INDEKS": "26868",
-    "NAZWA": "CRISTIM 300G SALAMI RUSTIC EXTRA-CRISTIM SALAM RUSTIC EXTRA RUMUNIA",
+    "INDEKS": "35071",
+    "NAZWA": "CRISTIM OK.4KG MORTADELA CHLOPSKA WIEPRZOWA-CRISTIM PARIZER TARANESC CU PORC RUMUNIA",
     "Ranking": "2",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265001423"
+    "Kod Ean": "2524325",
+    "": ""
+  },
+  {
+    "INDEKS": "27022",
+    "NAZWA": "CRISTIM 500G SALCESON - CRISTIM TOBA RUMUNIA",
+    "Ranking": "3",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265010173",
+    "": ""
   },
   {
     "INDEKS": "26870",
     "NAZWA": "CRISTIM 350G SALAMI SASESC MINI- CRISTIM SALAM SASESC MINI RUMUNIA",
-    "Ranking": "3",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265000419"
-  },
-  {
-    "INDEKS": "28234",
-    "NAZWA": "CRISTIM 300G SALAMI LETNIE - CRISTIM SALAM DE VARA RUMUNIA",
     "Ranking": "4",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265000464"
+    "Kod Ean": "5941265000419",
+    "": ""
   },
   {
     "INDEKS": "28289",
@@ -37,159 +41,179 @@
     "Ranking": "5",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2525690"
+    "Kod Ean": "2525690",
+    "": ""
   },
   {
-    "INDEKS": "54269",
-    "NAZWA": "VALAHIA 750G MICI WIEPRZOWO-WOLOWE RUMUNIA",
+    "INDEKS": "26868",
+    "NAZWA": "CRISTIM 300G SALAMI RUSTIC EXTRA-CRISTIM SALAM RUSTIC EXTRA RUMUNIA",
     "Ranking": "6",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265001423",
+    "": ""
   },
   {
-    "INDEKS": "54265",
-    "NAZWA": "VALAHIA OK.1,3KG GOLONKA WEDZONA-CIOLAN AFUMAT RUMUNIA",
+    "INDEKS": "28234",
+    "NAZWA": "CRISTIM 300G SALAMI LETNIE - CRISTIM SALAM DE VARA RUMUNIA",
     "Ranking": "7",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "35071",
-    "NAZWA": "CRISTIM OK.4KG MORTADELA CHLOPSKA WIEPRZOWA-CRISTIM PARIZER TARANESC CU PORC RUMUNIA",
-    "Ranking": "8",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2524325"
-  },
-  {
-    "INDEKS": "27020",
-    "NAZWA": "CRISTIM 250G SALAMI SASESC-CRISTIM SALAM SASESC RUMUNIA",
-    "Ranking": "9",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265011682"
+    "Kod Ean": "5941265000464",
+    "": ""
   },
   {
     "INDEKS": "28257",
     "NAZWA": "CRISTIM 300G SALAMI LETNIE PODSUSZANE - CRISTIM SALAM DE VARA USCAT RUMUNIA",
-    "Ranking": "10",
+    "Ranking": "8",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265016526"
-  },
-  {
-    "INDEKS": "43945",
-    "NAZWA": "CRISTIM 100G SALAMI RUSTYKALNE-CRISTIM SALAM RUSTIC RUMUNIA",
-    "Ranking": "11",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265010814"
-  },
-  {
-    "INDEKS": "26869",
-    "NAZWA": "CRISTIM 450G SALAMI Z SZYNKA - CRISTIM SALAM DE SUNCA RUMUNIA",
-    "Ranking": "12",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265005742"
+    "Kod Ean": "5941265016526",
+    "": ""
   },
   {
     "INDEKS": "28231",
     "NAZWA": "CRISTIM 400G MORTADELA WIEPRZOWA - CRISTIM MINI PARIZER CU PORC RUMUNIA",
-    "Ranking": "13",
+    "Ranking": "9",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265000044"
-  },
-  {
-    "INDEKS": "41198",
-    "NAZWA": "CRISTIM 300G BOCZEK WEDZONY - CRISTIM KAIZER AFUMAT RUMUNIA",
-    "Ranking": "14",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265030416"
+    "Kod Ean": "5941265000044",
+    "": ""
   },
   {
     "INDEKS": "38536",
     "NAZWA": "TARCZYNSKI SNACK IT POULTRY KABANOS EXCLUSIVE 120G RUMUNIA",
-    "Ranking": "15",
+    "Ranking": "10",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "TARCZYNSKI RO",
-    "Kod Ean": "5908230523205"
+    "Kod Ean": "5908230523205",
+    "": ""
   },
   {
-    "INDEKS": "28235",
-    "NAZWA": "CRISTIM 400G SALAMI JAK DOMOWE -CRISTIM SALAM DIN CASA RUMUNIA",
-    "Ranking": "16",
+    "INDEKS": "27021",
+    "NAZWA": "CRISTIM 500G SALAMI TURYSTYCZNE -CRISTIM SALAM TURIST RUMUNIA",
+    "Ranking": "11",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265000501"
-  },
-  {
-    "INDEKS": "27022",
-    "NAZWA": "CRISTIM 500G SALCESON - CRISTIM TOBA RUMUNIA",
-    "Ranking": "17",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265010173"
-  },
-  {
-    "INDEKS": "53450",
-    "NAZWA": "VALAHIA USZY WIEPRZOWE-URECHI SNACKS OK.400G RUMUNIA",
-    "Ranking": "18",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "33081",
-    "NAZWA": "CRISTIM 450G SALAMI TYPU WLOSKIEGO PODSUSZANE - CRISTIM SALAM ITALIAN USCAT RUMUNIA",
-    "Ranking": "19",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265018650"
-  },
-  {
-    "INDEKS": "43948",
-    "NAZWA": "CRISTIM 100G SALAMI SUSZONE LETNIE-CRISTIM SALAM DE VARA USCAT RUMUNIA",
-    "Ranking": "20",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265031321"
-  },
-  {
-    "INDEKS": "27017",
-    "NAZWA": "CRISTIM 500G MORTADELA DROBIOWA - CRISTIM MINI PARIZER CU PUI RUMUNIA",
-    "Ranking": "21",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265030102"
-  },
-  {
-    "INDEKS": "28232",
-    "NAZWA": "CRISTIM 400G SALAMI VICTORIA MINI-CRISTIM SALAM VICTORIA MINI RUMUNIA",
-    "Ranking": "22",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265000228"
+    "Kod Ean": "5941265016960",
+    "": ""
   },
   {
     "INDEKS": "26872",
     "NAZWA": "CRISTIM 350G SALAMI PODSUSZANE - CRISTIM SALAM USCAT RUMUNIA",
-    "Ranking": "23",
+    "Ranking": "12",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265009276"
+    "Kod Ean": "5941265009276",
+    "": ""
   },
   {
     "INDEKS": "35073",
     "NAZWA": "CRISTIM 250G SKWARKI-CRISTIM JUMARI DE PORC RUMUNIA",
+    "Ranking": "13",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265021247",
+    "": ""
+  },
+  {
+    "INDEKS": "43945",
+    "NAZWA": "CRISTIM 100G SALAMI RUSTYKALNE-CRISTIM SALAM RUSTIC RUMUNIA",
+    "Ranking": "14",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265010814",
+    "": ""
+  },
+  {
+    "INDEKS": "26869",
+    "NAZWA": "CRISTIM 450G SALAMI Z SZYNKA - CRISTIM SALAM DE SUNCA RUMUNIA",
+    "Ranking": "15",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265005742",
+    "": ""
+  },
+  {
+    "INDEKS": "27020",
+    "NAZWA": "CRISTIM 250G SALAMI SASESC-CRISTIM SALAM SASESC RUMUNIA",
+    "Ranking": "16",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265011682",
+    "": ""
+  },
+  {
+    "INDEKS": "54269",
+    "NAZWA": "VALAHIA 750G MICI WIEPRZOWO-WOLOWE RUMUNIA",
+    "Ranking": "17",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "28232",
+    "NAZWA": "CRISTIM 400G SALAMI VICTORIA MINI-CRISTIM SALAM VICTORIA MINI RUMUNIA",
+    "Ranking": "18",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265000228",
+    "": ""
+  },
+  {
+    "INDEKS": "41198",
+    "NAZWA": "CRISTIM 300G BOCZEK WEDZONY - CRISTIM KAIZER AFUMAT RUMUNIA",
+    "Ranking": "19",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265030416",
+    "": ""
+  },
+  {
+    "INDEKS": "43944",
+    "NAZWA": "CRISTIM 100G SALAMI Z SZYNKA-CRISTIM SALAM DE SUNCA FELIAT RUMUNIA",
+    "Ranking": "20",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265018292",
+    "": ""
+  },
+  {
+    "INDEKS": "43948",
+    "NAZWA": "CRISTIM 100G SALAMI SUSZONE LETNIE-CRISTIM SALAM DE VARA USCAT RUMUNIA",
+    "Ranking": "21",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265031321",
+    "": ""
+  },
+  {
+    "INDEKS": "37934",
+    "NAZWA": "CRISTIM 300G SZYNKA WIEJSKA WEDZONA - CRISTIM SUNCULITA TARANEASCA AFUMATA RUMUNIA",
+    "Ranking": "22",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265030454",
+    "": ""
+  },
+  {
+    "INDEKS": "28271",
+    "NAZWA": "CRISTIM 400G MORTADELA WIEJSKA DROBIOWA - CRISTIM PARIZER TARANESC CU PUI RUMUNIA",
+    "Ranking": "23",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265025467",
+    "": ""
+  },
+  {
+    "INDEKS": "33081",
+    "NAZWA": "CRISTIM 450G SALAMI TYPU WLOSKIEGO PODSUSZANE - CRISTIM SALAM ITALIAN USCAT RUMUNIA",
     "Ranking": "24",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265021247"
+    "Kod Ean": "5941265018650",
+    "": ""
   },
   {
     "INDEKS": "33083",
@@ -197,351 +221,395 @@
     "Ranking": "25",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265019091"
-  },
-  {
-    "INDEKS": "59098",
-    "NAZWA": "CRISTIM 170G KABANOSY WIEPRZOWE-CRISTIM CARNATI STICKS RUMUNIA",
-    "Ranking": "26",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265026945"
-  },
-  {
-    "INDEKS": "27021",
-    "NAZWA": "CRISTIM 500G SALAMI TURYSTYCZNE -CRISTIM SALAM TURIST RUMUNIA",
-    "Ranking": "27",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265016960"
-  },
-  {
-    "INDEKS": "43944",
-    "NAZWA": "CRISTIM 100G SALAMI Z SZYNKA-CRISTIM SALAM DE SUNCA FELIAT RUMUNIA",
-    "Ranking": "28",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265018292"
-  },
-  {
-    "INDEKS": "27019",
-    "NAZWA": "CRISTIM 500G SALAMI WIEPRZOWE - CRISTIM SALAM DE PORC RUMUNIA",
-    "Ranking": "29",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265011439"
-  },
-  {
-    "INDEKS": "27016",
-    "NAZWA": "CRISTIM 300G KABANOSY-CRISTIM CARNATI CABANOS RUMUNIA",
-    "Ranking": "30",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265015673"
-  },
-  {
-    "INDEKS": "41195",
-    "NAZWA": "CRISTIM 500G MORTADELA DROBIOWA - CRISTIM MINI PARIZER CU PUI BETEX RUMUNIA",
-    "Ranking": "31",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265000167"
-  },
-  {
-    "INDEKS": "30231",
-    "NAZWA": "CRISTIM OK.2,4KG SALAMI RUSTIC GASTRO-SALAM RUSTIC GASTRO RUMUNIA",
-    "Ranking": "32",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2525692"
-  },
-  {
-    "INDEKS": "58746",
-    "NAZWA": "CRISTIM MATACHE MACELARU 300G KIELBASKI Z OLTENESTI-CRISTIM CARNATI OLTENESTI RUMUNIA",
-    "Ranking": "33",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265014225"
-  },
-  {
-    "INDEKS": "35074",
-    "NAZWA": "CRISTIM OK.3,4 KG SALCESON WIEPRZOWY - CRISTIM TOBA PORC GASTRO RUMUNIA",
-    "Ranking": "34",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2526157"
-  },
-  {
-    "INDEKS": "54268",
-    "NAZWA": "VALAHIA OK.1KG BOCZEK-KAIZER GASTRO RUMUNIA",
-    "Ranking": "35",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "54350",
-    "NAZWA": "VALAHIA OK 0,4KG SLONINA WEDZONA-SLANINA AFUMATA RUMUNIA",
-    "Ranking": "36",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970159"
-  },
-  {
-    "INDEKS": "43949",
-    "NAZWA": "CRISTIM 100G SALAMI VICTORIA -CRISTIM SALAM VICTORIA RUMUNIA",
-    "Ranking": "37",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265028109"
-  },
-  {
-    "INDEKS": "37934",
-    "NAZWA": "CRISTIM 300G SZYNKA WIEJSKA WEDZONA - CRISTIM SUNCULITA TARANEASCA AFUMATA RUMUNIA",
-    "Ranking": "38",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265030454"
-  },
-  {
-    "INDEKS": "37836",
-    "NAZWA": "CRISTIM 300G BOCZEK WEDZONY EXTRA - CRISTIM COSTITA AFUMATA EXTRA RUMUNIA",
-    "Ranking": "39",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265030409"
-  },
-  {
-    "INDEKS": "54353",
-    "NAZWA": "VALAHIA OK.0,4KG SLONINA TRADYCYJNA-SLANINA TARANEASCA RUMUNIA",
-    "Ranking": "40",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970180"
-  },
-  {
-    "INDEKS": "54351",
-    "NAZWA": "VALAHIA OK.0,4KG SLONINA PAPRYKOWA-SLANINA CU BOIA RUMUNIA",
-    "Ranking": "41",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970166"
-  },
-  {
-    "INDEKS": "28271",
-    "NAZWA": "CRISTIM 400G MORTADELA WIEJSKA DROBIOWA - CRISTIM PARIZER TARANESC CU PUI RUMUNIA",
-    "Ranking": "42",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265025467"
-  },
-  {
-    "INDEKS": "54352",
-    "NAZWA": "VALAHIA OK.0,4KG SLONINA CZOSNKOWA-SLANINA CU USTUROI RUMUNIA",
-    "Ranking": "43",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970173"
-  },
-  {
-    "INDEKS": "54266",
-    "NAZWA": "VALAHIA OK.1KG WEDZONE ZEBERKA-COASTA AFUMATA RUMUNIA",
-    "Ranking": "44",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "30230",
-    "NAZWA": "CRISTIM OK.2KG SALAMI SASESC GASTRO -CRISTIM SALAM SASESC GASTRO RUMUNIA",
-    "Ranking": "45",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2525693"
-  },
-  {
-    "INDEKS": "30232",
-    "NAZWA": "CRISTIM OK.2,5KG SALAMI VICTORIA GASTRO-CRISTIM SALAM VICTORIA GASTRO RUMUNIA",
-    "Ranking": "46",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2525696"
-  },
-  {
-    "INDEKS": "28233",
-    "NAZWA": "CRISTIM 100G SALAMI SASESC-CRISTIM SALAM SASESC RUMUNIA",
-    "Ranking": "47",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265000433"
-  },
-  {
-    "INDEKS": "41194",
-    "NAZWA": "CRISTIM OK.1,1KG BOCZEK WEDZONY - CRISTIM KAIZER AFUMAT RUMUNIA",
-    "Ranking": "48",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2525689"
-  },
-  {
-    "INDEKS": "57328",
-    "NAZWA": "CRISTIM 260G KIELBASKI NA GRILLA -CRISTIM CARNATI GRATARESCU RUMUNIA",
-    "Ranking": "49",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265034346"
-  },
-  {
-    "INDEKS": "33084",
-    "NAZWA": "CRISTIM MATACHE MACELARU 300G SALCESON Z GOLONKA-CRISTIM TOBA CU CIOLAN RUMUNIA",
-    "Ranking": "50",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265027577"
-  },
-  {
-    "INDEKS": "28263",
-    "NAZWA": "CRISTIM 100G SZYNKA PRAGA-CRISTIM SUNCA PRAGA RUMUNIA",
-    "Ranking": "51",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265020035"
-  },
-  {
-    "INDEKS": "28272",
-    "NAZWA": "CRISTIM 400G MORTADELA WIEJSKA WIEPRZOWA - CRISTIM PARIZER TARANESC CU PORC RUMUNIA",
-    "Ranking": "52",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265025474"
-  },
-  {
-    "INDEKS": "52224",
-    "NAZWA": "CRISTIM 400G FRANKFURTERKI DROBIOWE-CRISTIM CRENVURSTI CU PUI RUMUNIA",
-    "Ranking": "53",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265031598"
+    "Kod Ean": "5941265019091",
+    "": ""
   },
   {
     "INDEKS": "52399",
     "NAZWA": "CRISTIM 400G SZYNKA PRAGA -CRISTIM SUNCA PRAGA RUMUNIA",
-    "Ranking": "54",
+    "Ranking": "26",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265029410"
+    "Kod Ean": "5941265029410",
+    "": ""
   },
   {
-    "INDEKS": "54570",
-    "NAZWA": "VALAHIA OK.500G WEDZONE ZEBERKA WIEPRZOWE-SCARITA RUMUNIA",
-    "Ranking": "55",
+    "INDEKS": "28233",
+    "NAZWA": "CRISTIM 100G SALAMI SASESC-CRISTIM SALAM SASESC RUMUNIA",
+    "Ranking": "27",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970203"
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265000433",
+    "": ""
   },
   {
-    "INDEKS": "35865",
-    "NAZWA": "MARCEL SMAZONE MIESO WIEPRZOWE I KIELBASA W SMALCU - TOCHITURA 700G RUMUNIA",
-    "Ranking": "56",
+    "INDEKS": "30230",
+    "NAZWA": "CRISTIM OK.2KG SALAMI SASESC GASTRO -CRISTIM SALAM SASESC GASTRO RUMUNIA",
+    "Ranking": "28",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "5941772000452"
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2525693",
+    "": ""
   },
   {
     "INDEKS": "42522",
     "NAZWA": "CRISTIM 330G KIELBASKI PODWEDZANE WIEPRZOWE-CRISTIM CARNATI SEMIAFUMATI RUMUNIA",
-    "Ranking": "57",
+    "Ranking": "29",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265031376"
+    "Kod Ean": "5941265031376",
+    "": ""
   },
   {
-    "INDEKS": "54267",
-    "NAZWA": "VALAHIA OK 0,5KG BOCZEK-KAIZER RUMUNIA",
-    "Ranking": "58",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "35077",
-    "NAZWA": "CRISTIM OK. 2KG SALAMI WIEPRZOWE - CRISTIM SALAM PORC GASTRO RUMUNIA",
-    "Ranking": "59",
+    "INDEKS": "30231",
+    "NAZWA": "CRISTIM OK.2,4KG SALAMI RUSTIC GASTRO-SALAM RUSTIC GASTRO RUMUNIA",
+    "Ranking": "30",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2525652"
+    "Kod Ean": "2525692",
+    "": ""
   },
   {
-    "INDEKS": "55550",
-    "NAZWA": "VALAHIA OK.0,9KG RUSTIC SALAMI-SALAM RUSTIC RUMUNIA",
-    "Ranking": "60",
+    "INDEKS": "35074",
+    "NAZWA": "CRISTIM OK.3,4 KG SALCESON WIEPRZOWY - CRISTIM TOBA PORC GASTRO RUMUNIA",
+    "Ranking": "31",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2526157",
+    "": ""
+  },
+  {
+    "INDEKS": "53450",
+    "NAZWA": "VALAHIA USZY WIEPRZOWE-URECHI SNACKS OK.400G RUMUNIA",
+    "Ranking": "32",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "VALAHIA",
-    "Kod Ean": ""
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "27017",
+    "NAZWA": "CRISTIM 500G MORTADELA DROBIOWA - CRISTIM MINI PARIZER CU PUI RUMUNIA",
+    "Ranking": "33",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265030102",
+    "": ""
+  },
+  {
+    "INDEKS": "28235",
+    "NAZWA": "CRISTIM 300G SALAMI JAK DOMOWE -CRISTIM SALAM DIN CASA RUMUNIA",
+    "Ranking": "34",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265000501",
+    "": ""
+  },
+  {
+    "INDEKS": "54570",
+    "NAZWA": "VALAHIA OK.500G WEDZONE ZEBERKA WIEPRZOWE-SCARITA RUMUNIA",
+    "Ranking": "35",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970203",
+    "": ""
+  },
+  {
+    "INDEKS": "54265",
+    "NAZWA": "VALAHIA OK.1,3KG GOLONKA WEDZONA-CIOLAN AFUMAT RUMUNIA",
+    "Ranking": "36",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "54266",
+    "NAZWA": "VALAHIA OK.1KG WEDZONE ZEBERKA-COASTA AFUMATA RUMUNIA",
+    "Ranking": "37",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "27019",
+    "NAZWA": "CRISTIM 500G SALAMI WIEPRZOWE - CRISTIM SALAM DE PORC RUMUNIA",
+    "Ranking": "38",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265011439",
+    "": ""
+  },
+  {
+    "INDEKS": "28272",
+    "NAZWA": "CRISTIM 400G MORTADELA WIEJSKA WIEPRZOWA - CRISTIM PARIZER TARANESC CU PORC RUMUNIA",
+    "Ranking": "39",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265025474",
+    "": ""
+  },
+  {
+    "INDEKS": "30232",
+    "NAZWA": "CRISTIM OK.2,5KG SALAMI VICTORIA GASTRO-CRISTIM SALAM VICTORIA GASTRO RUMUNIA",
+    "Ranking": "40",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2525696",
+    "": ""
+  },
+  {
+    "INDEKS": "52224",
+    "NAZWA": "CRISTIM 400G FRANKFURTERKI DROBIOWE-CRISTIM CRENVURSTI CU PUI RUMUNIA",
+    "Ranking": "41",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265031598",
+    "": ""
+  },
+  {
+    "INDEKS": "43949",
+    "NAZWA": "CRISTIM 100G SALAMI VICTORIA -CRISTIM SALAM VICTORIA RUMUNIA",
+    "Ranking": "42",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265028109",
+    "": ""
+  },
+  {
+    "INDEKS": "35860",
+    "NAZWA": "MARCEL SLONINA PODWEDZANA - SLANINA AFUMATA VID OK. 250G RUMUNIA",
+    "Ranking": "43",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2888219",
+    "": ""
+  },
+  {
+    "INDEKS": "58746",
+    "NAZWA": "CRISTIM MATACHE MACELARU 300G KIELBASKI Z OLTENESTI-CRISTIM CARNATI OLTENESTI RUMUNIA",
+    "Ranking": "44",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265014225",
+    "": ""
+  },
+  {
+    "INDEKS": "54350",
+    "NAZWA": "VALAHIA OK 0,4KG SLONINA WEDZONA-SLANINA AFUMATA RUMUNIA",
+    "Ranking": "45",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970159",
+    "": ""
+  },
+  {
+    "INDEKS": "37836",
+    "NAZWA": "CRISTIM 300G BOCZEK WEDZONY EXTRA - CRISTIM COSTITA AFUMATA EXTRA RUMUNIA",
+    "Ranking": "46",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265030409",
+    "": ""
+  },
+  {
+    "INDEKS": "54351",
+    "NAZWA": "VALAHIA OK.0,4KG SLONINA PAPRYKOWA-SLANINA CU BOIA RUMUNIA",
+    "Ranking": "47",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970166",
+    "": ""
   },
   {
     "INDEKS": "28262",
     "NAZWA": "CRISTIM 100G BACON RUMUNIA",
-    "Ranking": "61",
+    "Ranking": "48",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265020028"
+    "Kod Ean": "5941265020028",
+    "": ""
   },
   {
-    "INDEKS": "52392",
-    "NAZWA": "CRISTIM 460G KIELBASKI WIEPRZOWE-CRISTIM CARNATI DE PORC GROSI RUMUNIA",
-    "Ranking": "62",
+    "INDEKS": "54268",
+    "NAZWA": "VALAHIA OK.1KG BOCZEK-KAIZER GASTRO RUMUNIA",
+    "Ranking": "49",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "41195",
+    "NAZWA": "CRISTIM 500G MORTADELA DROBIOWA - CRISTIM MINI PARIZER CU PUI BETEX RUMUNIA",
+    "Ranking": "50",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265032984"
+    "Kod Ean": "5941265000167",
+    "": ""
   },
   {
-    "INDEKS": "52229",
-    "NAZWA": "CRISTIM OK.2KG MORTADELA Z FILETEM Z KURCZAKA-CRISTIM PARIZER CU PIEPT PUI GALINA RUMUNIA",
-    "Ranking": "63",
+    "INDEKS": "27016",
+    "NAZWA": "CRISTIM 300G KABANOSY-CRISTIM CARNATI CABANOS RUMUNIA",
+    "Ranking": "51",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2527282"
+    "Kod Ean": "5941265015673",
+    "": ""
   },
   {
-    "INDEKS": "58539",
-    "NAZWA": "MARCEL BOCZEK WIEPRZOWY OK.500G-KAIZER RUMUNIA",
-    "Ranking": "64",
+    "INDEKS": "54352",
+    "NAZWA": "VALAHIA OK.0,4KG SLONINA CZOSNKOWA-SLANINA CU USTUROI RUMUNIA",
+    "Ranking": "52",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2549435"
-  },
-  {
-    "INDEKS": "52221",
-    "NAZWA": "CRISTIM OK.3 KG SALCESON Z INDYKA-CRISTIM TOBA DE CURCAN RUMUNIA",
-    "Ranking": "65",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2535512"
-  },
-  {
-    "INDEKS": "58841",
-    "NAZWA": "CRISTIM MATACHE MACELARU 650G SZYNKA PRAGA-CRISTIM SUNCA PRAGA RUMUNIA",
-    "Ranking": "66",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265034278"
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970173",
+    "": ""
   },
   {
     "INDEKS": "41193",
     "NAZWA": "CRISTIM MATACHE MACELARU OK.3KG MORTADELA WIEJSKA Z SZYNKA-CRISTIM PARIZER TARANESC CU SUNCA RUMUNIA",
-    "Ranking": "67",
+    "Ranking": "53",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2530910"
+    "Kod Ean": "2530910",
+    "": ""
+  },
+  {
+    "INDEKS": "54353",
+    "NAZWA": "VALAHIA OK.0,4KG SLONINA TRADYCYJNA-SLANINA TARANEASCA RUMUNIA",
+    "Ranking": "54",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970180",
+    "": ""
+  },
+  {
+    "INDEKS": "41194",
+    "NAZWA": "CRISTIM OK.1,1KG BOCZEK WEDZONY - CRISTIM KAIZER AFUMAT RUMUNIA",
+    "Ranking": "55",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2525689",
+    "": ""
+  },
+  {
+    "INDEKS": "33084",
+    "NAZWA": "CRISTIM MATACHE MACELARU 300G SALCESON Z GOLONKA-CRISTIM TOBA CU CIOLAN RUMUNIA",
+    "Ranking": "56",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265027577",
+    "": ""
   },
   {
     "INDEKS": "28261",
     "NAZWA": "CRISTIM 100G FILET AZUGA-CRISTIM MUSCHI AZUGA RUMUNIA",
+    "Ranking": "57",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265020011",
+    "": ""
+  },
+  {
+    "INDEKS": "52392",
+    "NAZWA": "CRISTIM 460G KIELBASKI WIEPRZOWE-CRISTIM CARNATI DE PORC GROSI RUMUNIA",
+    "Ranking": "58",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265032984",
+    "": ""
+  },
+  {
+    "INDEKS": "58539",
+    "NAZWA": "MARCEL BOCZEK WIEPRZOWY OK.500G-KAIZER RUMUNIA",
+    "Ranking": "59",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2549435",
+    "": ""
+  },
+  {
+    "INDEKS": "55551",
+    "NAZWA": "VALAHIA OK.0,9KG WIEPRZOWE SALAMI-SALAM DE PORC RUMUNIA",
+    "Ranking": "60",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "54267",
+    "NAZWA": "VALAHIA OK 0,5KG BOCZEK-KAIZER RUMUNIA",
+    "Ranking": "61",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "35077",
+    "NAZWA": "CRISTIM OK. 2KG SALAMI WIEPRZOWE - CRISTIM SALAM PORC GASTRO RUMUNIA",
+    "Ranking": "62",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2525652",
+    "": ""
+  },
+  {
+    "INDEKS": "55550",
+    "NAZWA": "VALAHIA OK.0,9KG RUSTIC SALAMI-SALAM RUSTIC RUMUNIA",
+    "Ranking": "63",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "56675",
+    "NAZWA": "CRISTIM MATACHE MACELARU OK.3,5KG SZYNKA Z PIERSI KURCZAKA-CRISTIM SUNCA DIN PIEPT DE PUI RUMUNIA",
+    "Ranking": "64",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2511962",
+    "": ""
+  },
+  {
+    "INDEKS": "30234",
+    "NAZWA": "CRISTIM OK.1KG KABANOSY-CRISTIM CARNATI CABANOS GASTRO RUMUNIA",
+    "Ranking": "65",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2526162",
+    "": ""
+  },
+  {
+    "INDEKS": "35865",
+    "NAZWA": "MARCEL SMAZONE MIESO WIEPRZOWE I KIELBASA W SMALCU - TOCHITURA 700G RUMUNIA",
+    "Ranking": "66",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "5941772000452",
+    "": ""
+  },
+  {
+    "INDEKS": "58841",
+    "NAZWA": "CRISTIM MATACHE MACELARU 650G SZYNKA PRAGA-CRISTIM SUNCA PRAGA RUMUNIA",
+    "Ranking": "67",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "5941265034278",
+    "": ""
+  },
+  {
+    "INDEKS": "52221",
+    "NAZWA": "CRISTIM OK.3 KG SALCESON Z INDYKA-CRISTIM TOBA DE CURCAN RUMUNIA",
     "Ranking": "68",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "5941265020011"
+    "Kod Ean": "2535512",
+    "": ""
   },
   {
     "INDEKS": "54272",
@@ -549,438 +617,394 @@
     "Ranking": "69",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "30234",
-    "NAZWA": "CRISTIM OK.1KG KABANOSY-CRISTIM CARNATI CABANOS GASTRO RUMUNIA",
-    "Ranking": "70",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2526162"
-  },
-  {
-    "INDEKS": "54274",
-    "NAZWA": "VALAHIA OK 0,5KG WEDZONY BEKON-SUNCULITA BOIERULUI RUMUNIA",
-    "Ranking": "71",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "58476",
-    "NAZWA": "MARCEL KABANOSY MALE 500G-CARNACIORI CABANOS RUMUNIA",
-    "Ranking": "72",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "5941772002647"
-  },
-  {
-    "INDEKS": "58540",
-    "NAZWA": "MARCEL ZEBERKA WEDZONE OK. 300G-COSTITA AFUMATA RUMUNIA",
-    "Ranking": "73",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2547087"
-  },
-  {
-    "INDEKS": "54564",
-    "NAZWA": "VALAHIA OK.900G SALAMI Z SZYNKA-SALAM CU SUNCA TARANESC RUMUNIA",
-    "Ranking": "74",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970210"
-  },
-  {
-    "INDEKS": "58483",
-    "NAZWA": "MARCEL KIELBASKI CLUJ 500G-CARNACIORI CLUJ RUMUNIA",
-    "Ranking": "75",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "5941772000318"
-  },
-  {
-    "INDEKS": "54574",
-    "NAZWA": "VALAHIA OK.3KG MORTADELA WIEPRZOWA-PARIZER TARANESC PORC RUMUNIA",
-    "Ranking": "76",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970258"
-  },
-  {
-    "INDEKS": "57327",
-    "NAZWA": "CRISTIM MATACHE MACELARU OK.1KG KIELBASKI OLTENESTI-CRISTIM CARNATI OLTENESTI RUMUNIA",
-    "Ranking": "77",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2553972"
-  },
-  {
-    "INDEKS": "27023",
-    "NAZWA": "CRISTIM OK.0,3KG SLONINA WEDZONA - SLANINA FIARTA SI AFUMATA RUMUNIA",
-    "Ranking": "78",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2559442"
-  },
-  {
-    "INDEKS": "58462",
-    "NAZWA": "MARCEL SALAMI WIEPRZOWE 700G-SALAM DE PURCEL RUMUNIA",
-    "Ranking": "79",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "5941772000391"
-  },
-  {
-    "INDEKS": "54566",
-    "NAZWA": "VALAHIA OK.1,2KG KIELBASKI Z SZYNKA-CARNATI CU SUNCA RUMUNIA",
-    "Ranking": "80",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970050"
-  },
-  {
-    "INDEKS": "55551",
-    "NAZWA": "VALAHIA OK.0,9KG WIEPRZOWE SALAMI-SALAM DE PORC RUMUNIA",
-    "Ranking": "81",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "58480",
-    "NAZWA": "MARCEL SALAMI BUCOVINA 800G-SALAM BUCOVINEAN RUMUNIA",
-    "Ranking": "82",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "5941772003125"
-  },
-  {
-    "INDEKS": "54567",
-    "NAZWA": "VALAHIA OK.1,2KG KIELBASKI ROZA-CARNATI TRANDAFIR RUMUNIA",
-    "Ranking": "83",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970043"
-  },
-  {
-    "INDEKS": "30233",
-    "NAZWA": "CRISTIM OK.1KG FRANKFURTERKI Z PIERSI Z KURCZAKA-CRISTIM CREMWURSTI DIN PIEPT PUI EXTRA RUMUNIA",
-    "Ranking": "84",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2525687"
-  },
-  {
-    "INDEKS": "58541",
-    "NAZWA": "MARCEL SZYNKA TRADYCYJNA OK.600G-SUNCULITA TARANEASCA RUMUNIA",
-    "Ranking": "85",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2680259"
-  },
-  {
-    "INDEKS": "53451",
-    "NAZWA": "VALAHIA FRANKFURTERKI DROBIOWE-CRENVURSTI PIEPT PUI OK.450G RUMUNIA",
-    "Ranking": "86",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "54573",
-    "NAZWA": "VALAHIA OK.3KG MORTADELA DROBIOWA-PARIZER TARANESC PUI RUMUNIA",
-    "Ranking": "87",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970241"
-  },
-  {
-    "INDEKS": "35868",
-    "NAZWA": "MARCEL BEKON EXTRA OK. 500G-BACON EXTRA RUMUNIA",
-    "Ranking": "88",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2541745"
-  },
-  {
-    "INDEKS": "35862",
-    "NAZWA": "MARCEL SKORA WIEPRZOWA PAPRYKOWA OK.350G-SLANINUTA PAPRICATA RUMUNIA",
-    "Ranking": "89",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2548837"
-  },
-  {
-    "INDEKS": "54571",
-    "NAZWA": "VALAHIA OK.500G MORTADELA DROBIOWA-PARIZER TARANESC PUI RUMUNIA",
-    "Ranking": "90",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970265"
-  },
-  {
-    "INDEKS": "54572",
-    "NAZWA": "VALAHIA OK.500G MORTADELA WIEPRZOWA-PARIZER TARANESC PORC RUMUNIA",
-    "Ranking": "91",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970272"
-  },
-  {
-    "INDEKS": "30108",
-    "NAZWA": "CAROLI 800G SALAMI- SALAM VICTORIA",
-    "Ranking": "92",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CAROLI",
-    "Kod Ean": "5941348000725"
-  },
-  {
-    "INDEKS": "58452",
-    "NAZWA": "MARCEL SALAMI FRANCUSKA 1KG-SALAM FRANTUZESC RUMUNIA",
-    "Ranking": "93",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2544312012149"
-  },
-  {
-    "INDEKS": "53447",
-    "NAZWA": "VALAHIA KABANOSY WIEPRZOWE-CARNATI CABANOS OK.1,3KG RUMUNIA",
-    "Ranking": "94",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "54349",
-    "NAZWA": "VALAHIA OK.1,3KG KIELBASKI HAIDUCESTI-CARNATI HAIDUCESTI RUMUNIA",
-    "Ranking": "95",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970067"
-  },
-  {
-    "INDEKS": "52242",
-    "NAZWA": "CRISTIM OK.1 KG KIELBASKI WIEPRZOWE-CRISTIM CARNATI DE PORC RUMUNIA",
-    "Ranking": "96",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2526154"
-  },
-  {
-    "INDEKS": "54541",
-    "NAZWA": "VALAHIA OK.560G KIELBASA TRADYCYJNA-CARNATI DE CASA TRADITIONAL RUMUNIA",
-    "Ranking": "97",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970302"
-  },
-  {
-    "INDEKS": "56675",
-    "NAZWA": "CRISTIM MATACHE MACELARU OK.3,5KG SZYNKA Z PIERSI KURCZAKA-CRISTIM SUNCA DIN PIEPT DE PUI RUMUNIA",
-    "Ranking": "98",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2511962"
-  },
-  {
-    "INDEKS": "35686",
-    "NAZWA": "ANA SI CORNEL SALAMI Z SZYNKA - SALAM SUNCA 600G",
-    "Ranking": "99",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "ANA SI CORNEL",
-    "Kod Ean": "5941879200939"
-  },
-  {
-    "INDEKS": "35685",
-    "NAZWA": "ANA SI CORNEL MORTADELA WIEPRZOWA - PARIZER PORC 500G",
-    "Ranking": "100",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "ANA SI CORNEL",
-    "Kod Ean": "5941879201868"
-  },
-  {
-    "INDEKS": "35687",
-    "NAZWA": "ANA SI CORNEL MORTADELA DROBIOWA - PARIZER PASARE 500G",
-    "Ranking": "101",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "ANA SI CORNEL",
-    "Kod Ean": "5941879201899"
-  },
-  {
-    "INDEKS": "28334",
-    "NAZWA": "CRISTIM MATACHE MACELARU OK.1,2 KG SALCESON-CRISTIM TOBA MATACHE MACELARU RUMUNIA",
-    "Ranking": "102",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2530919"
-  },
-  {
-    "INDEKS": "58465",
-    "NAZWA": "MARCEL PODGARDLE WIEPRZOWE Z PAPRYKA OK.550G-GUSA DE PORC CU BOIA RUMUNIA",
-    "Ranking": "103",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2545261"
-  },
-  {
-    "INDEKS": "54261",
-    "NAZWA": "VALAHIA OK.0,8KG KARKOWKA BBQ-CEAFA BARBEQUE RUMUNIA",
-    "Ranking": "104",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "53448",
-    "NAZWA": "VALAHIA KIELBASKI WIEPRZOWE NA GRILLA-CARNATI GRATAREL GASTRO OK.1,3KG RUMUNIA",
-    "Ranking": "105",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "30109",
-    "NAZWA": "CAROLI 400G SALAMI- SALAM VICTORIA",
-    "Ranking": "106",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CAROLI",
-    "Kod Ean": "5941348000084"
-  },
-  {
-    "INDEKS": "54569",
-    "NAZWA": "VALAHIA OK.700G SALAMI WLOSKIE-SALAM ITALIAN RUMUNIA",
-    "Ranking": "107",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970500"
-  },
-  {
-    "INDEKS": "54565",
-    "NAZWA": "VALAHIA OK.500G SALAMI LETNIE-SALAM DE VARA RUMUNIA",
-    "Ranking": "108",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970494"
-  },
-  {
-    "INDEKS": "58463",
-    "NAZWA": "MARCEL BEKON TRANSYLWANSKI OK.600G-FLEICA ARDELENEASCA RUMUNIA",
-    "Ranking": "109",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2542091"
-  },
-  {
-    "INDEKS": "58489",
-    "NAZWA": "MARCEL POLEDWICA W STYLU WIEJSKIM OK.500G-MUSCHI TIGANESC MARCEL RUMUNIA",
-    "Ranking": "110",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2821977"
-  },
-  {
-    "INDEKS": "33082",
-    "NAZWA": "CRISTIM MATACHE MACELARU OK.0,6KG GOLONKA PODWEDZANA-CRISTIM CIOLAN AFUMAT RUMUNIA",
-    "Ranking": "111",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2530914"
-  },
-  {
-    "INDEKS": "30104",
-    "NAZWA": "CAROLI 500G SALAMI -SALAM CU SUNCA EXTRA VID",
-    "Ranking": "112",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CAROLI",
-    "Kod Ean": "5941348026596"
-  },
-  {
-    "INDEKS": "53449",
-    "NAZWA": "VALAHIA KIELBASKI Z PLESCOI-CARNATI PLESCOI OK.1,1KG RUMUNIA",
-    "Ranking": "113",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": ""
-  },
-  {
-    "INDEKS": "30102",
-    "NAZWA": "CAROLI 500G SALAMI- SALAM DE VARA",
-    "Ranking": "114",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CAROLI",
-    "Kod Ean": "5941348024929"
-  },
-  {
-    "INDEKS": "30115",
-    "NAZWA": "CAROLI 650G SZYNKA -SUNCA PRAGA",
-    "Ranking": "115",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CAROLI",
-    "Kod Ean": "5941348028996"
-  },
-  {
-    "INDEKS": "58477",
-    "NAZWA": "MARCEL MORTADELA WIEPRZOWA OK.400G-PARIZER DE PORC RUMUNIA",
-    "Ranking": "116",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "MARCEL",
-    "Kod Ean": "2815893"
-  },
-  {
-    "INDEKS": "54568",
-    "NAZWA": "VALAHIA OK.1,2KG KIELBASKI POLSKIE-POLONEZI PORC RUMUNIA",
-    "Ranking": "117",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "VALAHIA",
-    "Kod Ean": "5061038970517"
-  },
-  {
-    "INDEKS": "30120",
-    "NAZWA": "CAROLI PARIZER CU PASARE OK 1KG P629",
-    "Ranking": "118",
-    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
-    "Producent": "CAROLI",
-    "Kod Ean": "5941348000336"
+    "Kod Ean": "0",
+    "": ""
   },
   {
     "INDEKS": "58486",
     "NAZWA": "MARCEL SALAMI VICTORIA 1KG-SALAM VICTORIA RUMUNIA",
-    "Ranking": "119",
+    "Ranking": "70",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "MARCEL",
-    "Kod Ean": "5941772000445"
+    "Kod Ean": "5941772000445",
+    "": ""
+  },
+  {
+    "INDEKS": "53451",
+    "NAZWA": "VALAHIA FRANKFURTERKI DROBIOWE-CRENVURSTI PIEPT PUI OK.450G RUMUNIA",
+    "Ranking": "71",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "30233",
+    "NAZWA": "CRISTIM OK.1KG FRANKFURTERKI Z PIERSI Z KURCZAKA-CRISTIM CREMWURSTI DIN PIEPT PUI EXTRA RUMUNIA",
+    "Ranking": "72",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2525687",
+    "": ""
+  },
+  {
+    "INDEKS": "54274",
+    "NAZWA": "VALAHIA OK 0,5KG WEDZONY BEKON-SUNCULITA BOIERULUI RUMUNIA",
+    "Ranking": "73",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "58462",
+    "NAZWA": "MARCEL SALAMI WIEPRZOWE 700G-SALAM DE PURCEL RUMUNIA",
+    "Ranking": "74",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "5941772000391",
+    "": ""
+  },
+  {
+    "INDEKS": "58463",
+    "NAZWA": "MARCEL BEKON TRANSYLWANSKI OK.600G-FLEICA ARDELENEASCA RUMUNIA",
+    "Ranking": "75",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2542091",
+    "": ""
+  },
+  {
+    "INDEKS": "58540",
+    "NAZWA": "MARCEL ZEBERKA WEDZONE OK. 300G-COSTITA AFUMATA RUMUNIA",
+    "Ranking": "76",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2547087",
+    "": ""
+  },
+  {
+    "INDEKS": "35862",
+    "NAZWA": "MARCEL SKORA WIEPRZOWA PAPRYKOWA OK.350G-SLANINUTA PAPRICATA RUMUNIA",
+    "Ranking": "77",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2548837",
+    "": ""
+  },
+  {
+    "INDEKS": "58476",
+    "NAZWA": "MARCEL KABANOSY MALE 500G-CARNACIORI CABANOS RUMUNIA",
+    "Ranking": "78",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "5941772002647",
+    "": ""
+  },
+  {
+    "INDEKS": "58490",
+    "NAZWA": "MARCEL SALAMI RUSTYKALNE OK. 1,6KG-SALAM RUSTIC RUMUNIA",
+    "Ranking": "79",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2874436",
+    "": ""
+  },
+  {
+    "INDEKS": "58489",
+    "NAZWA": "MARCEL POLEDWICA W STYLU WIEJSKIM OK.500G-MUSCHI TIGANESC MARCEL RUMUNIA",
+    "Ranking": "80",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2821977",
+    "": ""
+  },
+  {
+    "INDEKS": "54574",
+    "NAZWA": "VALAHIA OK.3KG MORTADELA WIEPRZOWA-PARIZER TARANESC PORC RUMUNIA",
+    "Ranking": "81",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970258",
+    "": ""
+  },
+  {
+    "INDEKS": "52229",
+    "NAZWA": "CRISTIM OK.2KG MORTADELA Z FILETEM Z KURCZAKA-CRISTIM PARIZER CU PIEPT PUI GALINA RUMUNIA",
+    "Ranking": "82",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2527282",
+    "": ""
+  },
+  {
+    "INDEKS": "58483",
+    "NAZWA": "MARCEL KIELBASKI CLUJ 500G-CARNACIORI CLUJ RUMUNIA",
+    "Ranking": "83",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "5941772000318",
+    "": ""
+  },
+  {
+    "INDEKS": "33082",
+    "NAZWA": "CRISTIM MATACHE MACELARU OK.0,6KG GOLONKA PODWEDZANA-CRISTIM CIOLAN AFUMAT RUMUNIA",
+    "Ranking": "84",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2530914",
+    "": ""
+  },
+  {
+    "INDEKS": "58452",
+    "NAZWA": "MARCEL SALAMI FRANCUSKA 1KG-SALAM FRANTUZESC RUMUNIA",
+    "Ranking": "85",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2544312012149",
+    "": ""
+  },
+  {
+    "INDEKS": "54566",
+    "NAZWA": "VALAHIA OK.1,2KG KIELBASKI Z SZYNKA-CARNATI CU SUNCA RUMUNIA",
+    "Ranking": "86",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970050",
+    "": ""
+  },
+  {
+    "INDEKS": "58480",
+    "NAZWA": "MARCEL SALAMI BUCOVINA 800G-SALAM BUCOVINEAN RUMUNIA",
+    "Ranking": "87",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "5941772003125",
+    "": ""
+  },
+  {
+    "INDEKS": "58465",
+    "NAZWA": "MARCEL PODGARDLE WIEPRZOWE Z PAPRYKA OK.550G-GUSA DE PORC CU BOIA RUMUNIA",
+    "Ranking": "88",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2545261",
+    "": ""
   },
   {
     "INDEKS": "41199",
     "NAZWA": "CRISTIM OK.2KG SKWARKI - CRISTIM JUMARI DE PORC RUMUNIA",
-    "Ranking": "120",
+    "Ranking": "89",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2538084"
+    "Kod Ean": "2538084",
+    "": ""
   },
   {
-    "INDEKS": "54255",
-    "NAZWA": "VALAHIA OK 0,8KG SWIEZA KIELBASA-CARNATI PROASPETI RUMUNIA",
-    "Ranking": "121",
+    "INDEKS": "54569",
+    "NAZWA": "VALAHIA OK.700G SALAMI WLOSKIE-SALAM ITALIAN RUMUNIA",
+    "Ranking": "90",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "VALAHIA",
-    "Kod Ean": ""
+    "Kod Ean": "5061038970500",
+    "": ""
+  },
+  {
+    "INDEKS": "54571",
+    "NAZWA": "VALAHIA OK.500G MORTADELA DROBIOWA-PARIZER TARANESC PUI RUMUNIA",
+    "Ranking": "91",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970265",
+    "": ""
+  },
+  {
+    "INDEKS": "58541",
+    "NAZWA": "MARCEL SZYNKA TRADYCYJNA OK.600G-SUNCULITA TARANEASCA RUMUNIA",
+    "Ranking": "92",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2680259",
+    "": ""
+  },
+  {
+    "INDEKS": "54572",
+    "NAZWA": "VALAHIA OK.500G MORTADELA WIEPRZOWA-PARIZER TARANESC PORC RUMUNIA",
+    "Ranking": "93",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970272",
+    "": ""
+  },
+  {
+    "INDEKS": "54573",
+    "NAZWA": "VALAHIA OK.3KG MORTADELA DROBIOWA-PARIZER TARANESC PUI RUMUNIA",
+    "Ranking": "94",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970241",
+    "": ""
+  },
+  {
+    "INDEKS": "54564",
+    "NAZWA": "VALAHIA OK.900G SALAMI Z SZYNKA-SALAM CU SUNCA TARANESC RUMUNIA",
+    "Ranking": "95",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970210",
+    "": ""
+  },
+  {
+    "INDEKS": "58477",
+    "NAZWA": "MARCEL MORTADELA WIEPRZOWA OK.400G-PARIZER DE PORC RUMUNIA",
+    "Ranking": "96",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2815893",
+    "": ""
+  },
+  {
+    "INDEKS": "54567",
+    "NAZWA": "VALAHIA OK.1,2KG KIELBASKI ROZA-CARNATI TRANDAFIR RUMUNIA",
+    "Ranking": "97",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970043",
+    "": ""
+  },
+  {
+    "INDEKS": "54349",
+    "NAZWA": "VALAHIA OK.1,3KG KIELBASKI HAIDUCESTI-CARNATI HAIDUCESTI RUMUNIA",
+    "Ranking": "98",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970067",
+    "": ""
+  },
+  {
+    "INDEKS": "58487",
+    "NAZWA": "MARCEL KIELBASKI WEDZONE NA GRILL OK.500G-CARNACIORI PENTRU GRATAR AFUMATI RUMUNIA",
+    "Ranking": "99",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2843360",
+    "": ""
+  },
+  {
+    "INDEKS": "35868",
+    "NAZWA": "MARCEL BEKON EXTRA OK. 500G-BACON EXTRA RUMUNIA",
+    "Ranking": "100",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "MARCEL",
+    "Kod Ean": "2541745",
+    "": ""
+  },
+  {
+    "INDEKS": "52242",
+    "NAZWA": "CRISTIM OK.1 KG KIELBASKI WIEPRZOWE-CRISTIM CARNATI DE PORC RUMUNIA",
+    "Ranking": "101",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2526154",
+    "": ""
+  },
+  {
+    "INDEKS": "53447",
+    "NAZWA": "VALAHIA KABANOSY WIEPRZOWE-CARNATI CABANOS OK.1,3KG RUMUNIA",
+    "Ranking": "102",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "28334",
+    "NAZWA": "CRISTIM MATACHE MACELARU OK.1,2 KG SALCESON-CRISTIM TOBA MATACHE MACELARU RUMUNIA",
+    "Ranking": "103",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "CRIS-TIM FAMILY HOLDING",
+    "Kod Ean": "2530919",
+    "": ""
+  },
+  {
+    "INDEKS": "53449",
+    "NAZWA": "VALAHIA KIELBASKI Z PLESCOI-CARNATI PLESCOI OK.1,1KG RUMUNIA",
+    "Ranking": "104",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "54261",
+    "NAZWA": "VALAHIA OK.0,8KG KARKOWKA BBQ-CEAFA BARBEQUE RUMUNIA",
+    "Ranking": "105",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "54565",
+    "NAZWA": "VALAHIA OK.500G SALAMI LETNIE-SALAM DE VARA RUMUNIA",
+    "Ranking": "106",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970494",
+    "": ""
+  },
+  {
+    "INDEKS": "54568",
+    "NAZWA": "VALAHIA OK.1,2KG KIELBASKI POLSKIE-POLONEZI PORC RUMUNIA",
+    "Ranking": "107",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970517",
+    "": ""
   },
   {
     "INDEKS": "58492",
     "NAZWA": "MARCEL KIELBASKI Z BAZYLIA OK 400G-CARNATI CU BUSUIOC RUMUNIA",
-    "Ranking": "122",
+    "Ranking": "108",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "MARCEL",
-    "Kod Ean": "2544121"
+    "Kod Ean": "2544121",
+    "": ""
   },
   {
-    "INDEKS": "52231",
-    "NAZWA": "CRISTIM OK.1KG KIELBASKI RZEZNIKA- CRISTIM CARNATI MACELARESTI RUMUNIA",
-    "Ranking": "123",
+    "INDEKS": "53448",
+    "NAZWA": "VALAHIA KIELBASKI WIEPRZOWE NA GRILLA-CARNATI GRATAREL GASTRO OK.1,3KG RUMUNIA",
+    "Ranking": "109",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "57327",
+    "NAZWA": "CRISTIM MATACHE MACELARU OK.1KG KIELBASKI OLTENESTI-CRISTIM CARNATI OLTENESTI RUMUNIA",
+    "Ranking": "110",
     "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
     "Producent": "CRIS-TIM FAMILY HOLDING",
-    "Kod Ean": "2542501"
+    "Kod Ean": "2553972",
+    "": ""
+  },
+  {
+    "INDEKS": "54255",
+    "NAZWA": "VALAHIA OK 0,8KG SWIEZA KIELBASA-CARNATI PROASPETI RUMUNIA",
+    "Ranking": "111",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "0",
+    "": ""
+  },
+  {
+    "INDEKS": "54541",
+    "NAZWA": "VALAHIA OK.560G KIELBASA TRADYCYJNA-CARNATI DE CASA TRADITIONAL RUMUNIA",
+    "Ranking": "112",
+    "Grupa": "MIĘSO I WĘDLINY RUMUNIA",
+    "Producent": "VALAHIA",
+    "Kod Ean": "5061038970302",
+    "": ""
   }
 ]
