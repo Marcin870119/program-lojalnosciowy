@@ -12,36 +12,44 @@
 
   async function loadImageAsJpeg(url, maxDim){
     if(imageCache.has(url)) return imageCache.get(url);
-    const res = await fetch(url);
-    if(!res.ok) throw new Error('Image not found');
-    const blob = await res.blob();
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    const objectUrl = URL.createObjectURL(blob);
-    const loadedImg = await new Promise((resolve, reject) => {
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = objectUrl;
+    const pending = (async () => {
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('Image not found');
+      const blob = await res.blob();
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      const objectUrl = URL.createObjectURL(blob);
+      try{
+        const loadedImg = await new Promise((resolve, reject) => {
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = objectUrl;
+        });
+        const canvas = document.createElement('canvas');
+        let w = loadedImg.naturalWidth;
+        let h = loadedImg.naturalHeight;
+        if(maxDim && (w > maxDim || h > maxDim)){
+          const scale = Math.min(maxDim / w, maxDim / h);
+          w = Math.round(w * scale);
+          h = Math.round(h * scale);
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(loadedImg, 0, 0, w, h);
+        const jpg = canvas.toDataURL('image/jpeg', 0.75);
+        return { dataUrl: jpg, width: canvas.width, height: canvas.height };
+      }finally{
+        URL.revokeObjectURL(objectUrl);
+      }
+    })().catch(error => {
+      imageCache.delete(url);
+      throw error;
     });
-    const canvas = document.createElement('canvas');
-    let w = loadedImg.naturalWidth;
-    let h = loadedImg.naturalHeight;
-    if(maxDim && (w > maxDim || h > maxDim)){
-      const scale = Math.min(maxDim / w, maxDim / h);
-      w = Math.round(w * scale);
-      h = Math.round(h * scale);
-    }
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(loadedImg, 0, 0, w, h);
-    const jpg = canvas.toDataURL('image/jpeg', 0.75);
-    URL.revokeObjectURL(objectUrl);
-    const result = { dataUrl: jpg, width: canvas.width, height: canvas.height };
-    imageCache.set(url, result);
-    return result;
+    imageCache.set(url, pending);
+    return pending;
   }
 
   async function getProductImage(index, baseOverride){
@@ -60,28 +68,36 @@
 
   async function loadImageAsPng(url){
     if(imageCache.has(url)) return imageCache.get(url);
-    const res = await fetch(url);
-    if(!res.ok) throw new Error('Image not found');
-    const blob = await res.blob();
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    const objectUrl = URL.createObjectURL(blob);
-    const loadedImg = await new Promise((resolve, reject) => {
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = objectUrl;
+    const pending = (async () => {
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('Image not found');
+      const blob = await res.blob();
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      const objectUrl = URL.createObjectURL(blob);
+      try{
+        const loadedImg = await new Promise((resolve, reject) => {
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = objectUrl;
+        });
+        const canvas = document.createElement('canvas');
+        canvas.width = loadedImg.naturalWidth;
+        canvas.height = loadedImg.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(loadedImg, 0, 0);
+        const png = canvas.toDataURL('image/png');
+        return { dataUrl: png, width: canvas.width, height: canvas.height };
+      }finally{
+        URL.revokeObjectURL(objectUrl);
+      }
+    })().catch(error => {
+      imageCache.delete(url);
+      throw error;
     });
-    const canvas = document.createElement('canvas');
-    canvas.width = loadedImg.naturalWidth;
-    canvas.height = loadedImg.naturalHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(loadedImg, 0, 0);
-    const png = canvas.toDataURL('image/png');
-    URL.revokeObjectURL(objectUrl);
-    const result = { dataUrl: png, width: canvas.width, height: canvas.height };
-    imageCache.set(url, result);
-    return result;
+    imageCache.set(url, pending);
+    return pending;
   }
 
   window.createCatalogPdf = async function(products, options = {}){
@@ -93,8 +109,9 @@
     const gap = 16;
     const cols = 2;
     const rows = 3;
+    const sectionHeaderH = options.groupByField ? 64 : 0;
     const cardW = (pageW - margin * 2 - gap * (cols - 1)) / cols;
-    const cardH = (pageH - margin * 2 - gap * (rows - 1)) / rows;
+    const cardH = (pageH - margin * 2 - sectionHeaderH - gap * (rows - 1)) / rows;
 
     const pdf = new jsPDF({
       orientation: 'p',
@@ -111,9 +128,54 @@
     const priceMap = options.priceMap || null;
     const currency = options.currency || 'EUR';
     const priceColor = options.priceColor || '#000000';
+    const groupByField = options.groupByField || '';
 
     const hasCover = !!options.coverDataUrl;
-    const totalPages = Math.ceil(products.length / (cols * rows)) + (hasCover ? 1 : 0);
+    const watermarkPromise = loadImageAsPng(watermarkUrl).catch(() => null);
+    const groupedSections = groupByField
+      ? products.reduce((acc, product) => {
+          const groupName = String(getValueByVariants(product, [groupByField, 'grupa', 'group', 'grupa produktowa']) || product[groupByField] || '').trim();
+          if(!groupName) return acc;
+          let section = acc.find(item => item.name === groupName);
+          if(!section){
+            section = { name: groupName, items: [] };
+            acc.push(section);
+          }
+          section.items.push(product);
+          return acc;
+        }, [])
+      : [{ name: '', items: products }];
+    const contentPageCount = groupedSections.reduce((sum, section) => sum + Math.ceil(section.items.length / (cols * rows)), 0);
+    const totalPages = contentPageCount + (hasCover ? 1 : 0);
+
+    const preloadTasks = [];
+    const seenProductImages = new Set();
+    const seenBadges = new Set();
+
+    products.forEach(product => {
+      const indexVal = String(getValueByVariants(product, ['indeks', 'index', 'id']) || product[indexKey] || '').trim();
+      if(indexVal){
+        const sourceHint = String(product.__country || product.__source || product[countryKey] || '').toLowerCase();
+        const baseOverride = sourceHint.includes('ukraina')
+          ? (window.imageBaseUrlUkraina || window.imageBaseUrl || '')
+          : (window.imageBaseUrlRumunia || window.imageBaseUrl || '');
+        const cacheKey = `${baseOverride}::${indexVal}`;
+        if(!seenProductImages.has(cacheKey)){
+          seenProductImages.add(cacheKey);
+          preloadTasks.push(getProductImage(indexVal, baseOverride).catch(() => null));
+        }
+      }
+
+      const countryVal = String(product[countryKey] || 'Rumunia').trim().toLowerCase();
+      const badgeUrl = getCountryBadgeUrl(countryVal);
+      if(badgeUrl && !seenBadges.has(badgeUrl)){
+        seenBadges.add(badgeUrl);
+        preloadTasks.push(loadImageAsJpeg(badgeUrl).catch(() => null));
+      }
+    });
+
+    preloadTasks.push(watermarkPromise);
+    await Promise.all(preloadTasks);
 
     if(hasCover){
       const coverImg = await loadCoverImage(options.coverDataUrl);
@@ -133,59 +195,81 @@
       pdf.addPage();
     }
 
-    for(let i = 0; i < products.length; i++){
-      if(i > 0 && i % (cols * rows) === 0){
-        pdf.addPage();
-      }
+    let pageNumber = hasCover ? 2 : 1;
+    let hasRenderedAnyContentPage = false;
 
-      const p = products[i];
-      const pageIndex = i % (cols * rows);
-      const pageNumber = Math.floor(i / (cols * rows)) + 1 + (hasCover ? 1 : 0);
-      // no global watermark; we will add small logo per card
-      const col = pageIndex % cols;
-      const row = Math.floor(pageIndex / cols);
-      const x = margin + col * (cardW + gap);
-      const y = margin + row * (cardH + gap);
+    for(const section of groupedSections){
+      const sectionItems = section.items || [];
+      for(let i = 0; i < sectionItems.length; i++){
+        const pageIndex = i % (cols * rows);
+        const isNewSectionPage = i === 0;
+        const isPageBreakWithinSection = i > 0 && pageIndex === 0;
 
-      pdf.setDrawColor(220);
-      pdf.setFillColor(255, 255, 255);
-      pdf.roundedRect(x, y, cardW, cardH, 12, 12, 'FD');
+        if(hasRenderedAnyContentPage && (isNewSectionPage || isPageBreakWithinSection)){
+          pdf.addPage();
+          pageNumber += 1;
+        }
+        if(!hasRenderedAnyContentPage){
+          hasRenderedAnyContentPage = true;
+        }
 
-      const name = String(getValueByVariants(p, ['nazwa', 'name']) || p[nameKey] || '').trim();
-      pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(12);
-      const nameLines = pdf.splitTextToSize(name, cardW - 20).slice(0, 2);
-      pdf.text(nameLines, x + 10, y + 20);
+        const p = sectionItems[i];
+        // no global watermark; we will add small logo per card
+        const col = pageIndex % cols;
+        const row = Math.floor(pageIndex / cols);
+        const x = margin + col * (cardW + gap);
+        const y = margin + sectionHeaderH + row * (cardH + gap);
 
-      const countryVal = String(p[countryKey] || 'Rumunia').trim().toLowerCase();
-      const badgeUrl = getCountryBadgeUrl(countryVal);
-      if(badgeUrl){
-        try{
-          const badge = await loadImageAsJpeg(badgeUrl);
-          const bw = 68;
-          const bh = 44;
-          const bx = x + 4;
-          const by = y + cardH - bh - 36;
-          pdf.addImage(badge.dataUrl, 'JPEG', bx, by, bw, bh, undefined, 'FAST');
-        }catch(_){}
-      }
+        if(pageIndex === 0 && section.name){
+          pdf.setFont('helvetica', 'bold');
+          pdf.setFontSize(22);
+          pdf.setTextColor(15, 27, 45);
+          pdf.text(section.name, margin, margin + 22);
+          pdf.setDrawColor(22, 138, 63);
+          pdf.setLineWidth(2);
+          pdf.line(margin, margin + 34, pageW - margin, margin + 34);
+          pdf.setTextColor(0);
+        }
 
-      const indexVal = String(getValueByVariants(p, ['indeks', 'index', 'id']) || p[indexKey] || '').trim();
-      let imgData = null;
-      if(indexVal){
-        try{
-          const sourceHint = String(p.__country || p.__source || p[countryKey] || '').toLowerCase();
-          const baseOverride = sourceHint.includes('ukraina')
-            ? (window.imageBaseUrlUkraina || window.imageBaseUrl || '')
-            : (window.imageBaseUrlRumunia || window.imageBaseUrl || '');
-          imgData = await getProductImage(indexVal, baseOverride);
-        }catch(_){}
-      }
+        pdf.setDrawColor(220);
+        pdf.setFillColor(255, 255, 255);
+        pdf.roundedRect(x, y, cardW, cardH, 12, 12, 'FD');
 
-      if(imgData){
-        const maxW = cardW - 90;
-        const maxH = cardH - 150;
-        const scale = Math.min(maxW / imgData.width, maxH / imgData.height, 1);
+        const name = String(getValueByVariants(p, ['nazwa', 'name']) || p[nameKey] || '').trim();
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(12);
+        const nameLines = pdf.splitTextToSize(name, cardW - 20).slice(0, 2);
+        pdf.text(nameLines, x + 10, y + 20);
+
+        const countryVal = String(p[countryKey] || 'Rumunia').trim().toLowerCase();
+        const badgeUrl = getCountryBadgeUrl(countryVal);
+        if(badgeUrl){
+          try{
+            const badge = await loadImageAsJpeg(badgeUrl);
+            const bw = 68;
+            const bh = 44;
+            const bx = x + 4;
+            const by = y + cardH - bh - 36;
+            pdf.addImage(badge.dataUrl, 'JPEG', bx, by, bw, bh, undefined, 'FAST');
+          }catch(_){}
+        }
+
+        const indexVal = String(getValueByVariants(p, ['indeks', 'index', 'id']) || p[indexKey] || '').trim();
+        let imgData = null;
+        if(indexVal){
+          try{
+            const sourceHint = String(p.__country || p.__source || p[countryKey] || '').toLowerCase();
+            const baseOverride = sourceHint.includes('ukraina')
+              ? (window.imageBaseUrlUkraina || window.imageBaseUrl || '')
+              : (window.imageBaseUrlRumunia || window.imageBaseUrl || '');
+            imgData = await getProductImage(indexVal, baseOverride);
+          }catch(_){}
+        }
+
+        if(imgData){
+          const maxW = cardW - 90;
+          const maxH = cardH - 150;
+          const scale = Math.min(maxW / imgData.width, maxH / imgData.height, 1);
         const iw = imgData.width * scale;
         const ih = imgData.height * scale;
         const ix = x + (cardW - iw) / 2;
@@ -194,19 +278,21 @@
 
         // small logo near each image
         try{
-          const wm = await loadImageAsPng(watermarkUrl);
-          const wmW = 48;
-          const wmH = (wm.height / wm.width) * wmW;
-          const wmX = x + cardW - wmW - 20;
-          const wmY = y + cardH - 94;
-          pdf.setGState(new pdf.GState({ opacity: 0.5 }));
-          pdf.addImage(wm.dataUrl, 'PNG', wmX, wmY, wmW, wmH, undefined, 'FAST');
-          pdf.setGState(new pdf.GState({ opacity: 1 }));
+          const wm = await watermarkPromise;
+          if(wm){
+            const wmW = 48;
+            const wmH = (wm.height / wm.width) * wmW;
+            const wmX = x + cardW - wmW - 20;
+            const wmY = y + cardH - 94;
+            pdf.setGState(new pdf.GState({ opacity: 0.5 }));
+            pdf.addImage(wm.dataUrl, 'PNG', wmX, wmY, wmW, wmH, undefined, 'FAST');
+            pdf.setGState(new pdf.GState({ opacity: 1 }));
+          }
         }catch(_){}
-      }
+        }
 
       // price from excel
-      if(priceMap && indexVal && priceMap.get(indexVal)){
+        if(priceMap && indexVal && priceMap.get(indexVal)){
         const priceInfo = priceMap.get(indexVal);
         const priceText = String(priceInfo.price || '').replace(',', '.');
         const unitRaw = String(priceInfo.unit || '').toUpperCase();
@@ -231,31 +317,32 @@
         pdf.setFontSize(12);
         pdf.text(`${symbol} / ${unit}`, px + 24, py + 4);
         pdf.setTextColor(0);
-      }
-
-      pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(12);
-      if(indexVal){
-        pdf.text(`Indeks: ${indexVal}`, x + 10, y + cardH - 22);
-      }
-      const eanVal = String(getValueByVariants(p, ['kod ean', 'ean']) || p[eanKey] || '').trim();
-      if(eanVal){
-        const barcode = buildBarcodeImage(eanVal);
-        if(barcode){
-          const bw = 220;
-          const bh = 60;
-          const bx = x + cardW - bw - 12;
-          const by = y + cardH - bh - 14;
-          pdf.addImage(barcode, 'PNG', bx, by, bw, bh, undefined, 'FAST');
         }
-      }
 
-      if(pageIndex === 0){
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(10);
-        pdf.setTextColor(120);
-        pdf.text(`Strona ${pageNumber} / ${totalPages}`, pageW - 110, pageH - 12);
-        pdf.setTextColor(0);
+        pdf.setFontSize(12);
+        if(indexVal){
+          pdf.text(`Indeks: ${indexVal}`, x + 10, y + cardH - 22);
+        }
+        const eanVal = String(getValueByVariants(p, ['kod ean', 'ean']) || p[eanKey] || '').trim();
+        if(eanVal){
+          const barcode = buildBarcodeImage(eanVal);
+          if(barcode){
+            const bw = 220;
+            const bh = 60;
+            const bx = x + cardW - bw - 12;
+            const by = y + cardH - bh - 14;
+            pdf.addImage(barcode, 'PNG', bx, by, bw, bh, undefined, 'FAST');
+          }
+        }
+
+        if(pageIndex === 0){
+          pdf.setFont('helvetica', 'normal');
+          pdf.setFontSize(10);
+          pdf.setTextColor(120);
+          pdf.text(`Strona ${pageNumber} / ${totalPages}`, pageW - 110, pageH - 12);
+          pdf.setTextColor(0);
+        }
       }
     }
 
