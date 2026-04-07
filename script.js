@@ -46,6 +46,8 @@ const imageBaseUrlRumunia =
   'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/zdjecia%20-%20World%20food%2F';
 const imageBaseUrlUkraina =
   'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/zdjecia%20-%20World%20food%2FUkraina%2F';
+const maspoLogoUrl =
+  'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/szablony%20maspo%2Fmaspo%20logo.png?alt=media&token=a5786f0b-19a7-4c01-a5bb-4b8d0cc9f583';
 let currentImageBaseUrl = imageBaseUrlRumunia;
 window.imageBaseUrl = currentImageBaseUrl;
 window.imageBaseUrlRumunia = imageBaseUrlRumunia;
@@ -57,6 +59,8 @@ const firebaseConfig = {
   projectId: 'pdf-creator-f7a8b',
   appId: '1:606744201676:web:6f8c1b2c323fbaf6f3b569'
 };
+
+const ADMIN_EMAILS = ['admin@admin.info', 'admin@admin.com'];
 
 const loginView = document.getElementById('login-view');
 const appView = document.getElementById('app-view');
@@ -98,12 +102,14 @@ const produktyPodstawoweContainer = document.getElementById('produkty-podstawowe
 const kawyHerbatyContainer = document.getElementById('kawy-herbaty-content');
 const topRumuniaContainer = document.getElementById('top-rumunia-content');
 const importDaneContainer = document.getElementById('import-dane-content');
+const reportsContainer = document.getElementById('reports-content');
 const ukrainaSlodyczeContainer = document.getElementById('ukraina-slodycze-content');
 const ukrainaMiesoContainer = document.getElementById('ukraina-mieso-wedliny-content');
 const ukrainaKawyContainer = document.getElementById('ukraina-kawy-herbaty-content');
 const ukrainaPuszkiContainer = document.getElementById('ukraina-puszki-sloiki-content');
 const ukrainaNapojeContainer = document.getElementById('ukraina-napoje-content');
 const ukrainaPrzyprawyContainer = document.getElementById('ukraina-przyprawy-proszek-content');
+const reportsCard = document.getElementById('reports-card');
 
 var fullData = [];
 let fullDataColumns = null;
@@ -126,6 +132,7 @@ let catalogLoading = false;
 let catalogCoverDataUrl = null;
 let catalogPriceMap = null;
 let catalogPriceRows = null;
+let catalogOptionsOverride = null;
 const LIMIT = 25;
 const barcodeCache = new Map();
 let importedIndexSet = null;
@@ -138,12 +145,95 @@ let listingScannedCodes = new Set();
 let listingCooldown = false;
 let listingMarionCache = null;
 let importDaneCache = null;
+let reportsSourceRows = [];
+let reportsGeneratedRows = [];
+let reportsImportFile = '';
+let reportsSummary = [];
+let reportsMode = 'top-sales';
+let clientReportSourceRows = [];
+let clientReportImportFile = '';
+let clientReportSelectedRepresentative = '';
+let clientReportSelectedCustomer = '';
+let clientReportPurchasedRows = [];
+let clientReportMissingRows = [];
+let clientReportSummary = [];
+let clientReportSelectedMissingIndexes = new Set();
+let clientReportPurchasedFilters = {
+  ranking: '',
+  group: ''
+};
+let clientReportMissingFilters = {
+  ranking: '',
+  group: ''
+};
+let clientRecommendationIncludeCover = true;
+let reportOfferRowsCache = new Map();
 let isLoading = false;
 
 let auth = null;
 let authReady = false;
 let lastLoginEmail = '';
 let lastLoginPassword = '';
+
+const REPORT_GROUP_CONFIGS = [
+  {
+    id: 'slodycze',
+    label: 'SLODYCZE I PRZEKASKI RUMUNIA - SLODYCZE RUMUNIA',
+    groups: ['SŁODYCZE I PRZEKĄSKI RUMUNIA', 'SŁODYCZE RUMUNIA'],
+    sources: [jsonUrl]
+  },
+  {
+    id: 'puszki',
+    label: 'PUSZKI I SLOIKI CHLODZONE RUMUNIA - PUSZKI I SLOIKI RUMUNIA',
+    groups: ['PUSZKI I SŁOIKI CHŁODZONE RUMUNIA', 'PUSZKI I SŁOIKI RUMUNIA'],
+    sources: [jsonUrlPuszkiSloiki]
+  },
+  {
+    id: 'kawa',
+    label: 'HERBATA I KAWA RUMUNIA',
+    groups: ['HERBATA I KAWA RUMUNIA'],
+    sources: [jsonUrlKawyHerbaty]
+  },
+  {
+    id: 'mieso',
+    label: 'MIESO I WEDLINY RUMUNIA',
+    groups: ['MIĘSO I WĘDLINY RUMUNIA'],
+    sources: [jsonUrlMieso]
+  },
+  {
+    id: 'nabial',
+    label: 'NABIAL RUMUNIA - RUMUNIA CHLODNIA POZOSTALE',
+    groups: ['NABIAŁ RUMUNIA', 'RUMUNIA CHŁODNIA POZOSTAŁE'],
+    sources: [jsonUrlNabial]
+  },
+  {
+    id: 'napoje',
+    label: 'NAPOJE BEZALKOHOLOWE RUMUNIA',
+    groups: ['NAPOJE BEZALKOHOLOWE RUMUNIA'],
+    sources: [jsonUrlNapoje]
+  },
+  {
+    id: 'podstawowe',
+    label: 'PRODUKTY PODSTAWOWE RUMUNIA',
+    groups: ['PRODUKTY PODSTAWOWE RUMUNIA'],
+    sources: [jsonUrlProduktyPodstawowe]
+  },
+  {
+    id: 'przyprawy',
+    label: 'PRZYPRAWY I DODATKI W PROSZKU RUMUNIA',
+    groups: ['PRZYPRAWY I DODATKI W PROSZKU RUMUNIA'],
+    sources: [jsonUrlPrzyprawyProszek]
+  }
+];
+
+function createDefaultReportLimits(){
+  return REPORT_GROUP_CONFIGS.reduce((acc, group) => {
+    acc[group.id] = 25;
+    return acc;
+  }, {});
+}
+
+let reportsGroupLimits = createDefaultReportLimits();
 
 function showApp(){
   if(loginView) loginView.classList.add('hidden');
@@ -175,9 +265,27 @@ function resetAppState(){
   catalogLoading = false;
   catalogCoverDataUrl = null;
   catalogPriceMap = null;
+  catalogOptionsOverride = null;
   importedIndexSet = null;
   importedIndexCount = 0;
   importedIndexFile = '';
+  reportsSourceRows = [];
+  reportsGeneratedRows = [];
+  reportsImportFile = '';
+  reportsSummary = [];
+  reportsMode = 'top-sales';
+  clientReportSourceRows = [];
+  clientReportImportFile = '';
+  clientReportSelectedRepresentative = '';
+  clientReportSelectedCustomer = '';
+  clientReportPurchasedRows = [];
+  clientReportMissingRows = [];
+  clientReportSummary = [];
+  clientReportSelectedMissingIndexes = new Set();
+  clientReportPurchasedFilters = { ranking:'', group:'' };
+  clientReportMissingFilters = { ranking:'', group:'' };
+  clientRecommendationIncludeCover = true;
+  reportsGroupLimits = createDefaultReportLimits();
   resetFilters();
 
   slodyczeContainer.innerHTML = '';
@@ -190,6 +298,7 @@ function resetAppState(){
   kawyHerbatyContainer.innerHTML = '';
   if(topRumuniaContainer) topRumuniaContainer.innerHTML = '';
   if(importDaneContainer) importDaneContainer.innerHTML = '';
+  if(reportsContainer) reportsContainer.innerHTML = '';
   if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
   if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
   if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
@@ -221,6 +330,7 @@ function clearAllContentContainers(){
   kawyHerbatyContainer.innerHTML = '';
   if(topRumuniaContainer) topRumuniaContainer.innerHTML = '';
   if(importDaneContainer) importDaneContainer.innerHTML = '';
+  if(reportsContainer) reportsContainer.innerHTML = '';
   if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
   if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
   if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
@@ -440,6 +550,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     kawyHerbatyContainer.innerHTML = '';
     if(topRumuniaContainer) topRumuniaContainer.innerHTML = '';
     if(importDaneContainer) importDaneContainer.innerHTML = '';
+    if(reportsContainer) reportsContainer.innerHTML = '';
     if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
     if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
     if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
@@ -649,6 +760,988 @@ if(importDaneCard){
   });
 }
 
+if(reportsCard){
+  reportsCard.addEventListener('click', () => {
+    openReportsView();
+  });
+}
+
+function normalizeHeaderKey(value){
+  return String(value ?? '')
+    .toLowerCase()
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function findHeaderKey(headers, variants){
+  const map = new Map();
+  headers.forEach(header => {
+    map.set(normalizeHeaderKey(header), header);
+  });
+  for(const variant of variants){
+    const found = map.get(normalizeHeaderKey(variant));
+    if(found) return found;
+  }
+  return '';
+}
+
+function normalizeReportRow(row, headers){
+  const indexKey = findHeaderKey(headers, ['indeks', 'index', 'id', 'numer katalogowy', 'sku number']);
+  const nameKey = findHeaderKey(headers, ['nazwa', 'name']);
+  const producerKey = findHeaderKey(headers, ['skrot producenta', 'skrót producenta', 'producent', 'producer']);
+  const groupNameKey = findHeaderKey(headers, ['nazwa grupa', 'nazwa_grupa', 'grupa', 'group']);
+  const rankingKey = findHeaderKey(headers, ['sprzedaż ilościowa', 'sprzedaz ilosciowa', 'ranking']);
+  const productGroupKey = findHeaderKey(headers, ['grupa produktowa', 'grupa produktowa ']);
+
+  const rankingRaw = row[rankingKey];
+  const rankingNumber = Number(String(rankingRaw ?? '').replace(',', '.'));
+
+  return {
+    index: String(row[indexKey] ?? '').trim(),
+    name: String(row[nameKey] ?? '').trim(),
+    producer: String(row[producerKey] ?? '').trim(),
+    groupName: String(row[groupNameKey] ?? '').trim(),
+    ranking: Number.isFinite(rankingNumber) ? rankingNumber : Number.POSITIVE_INFINITY,
+    rankingLabel: String(rankingRaw ?? '').trim(),
+    productGroup: String(row[productGroupKey] ?? '').trim()
+  };
+}
+
+function dedupeReportRows(rows){
+  const bestByIndex = new Map();
+  rows.forEach(row => {
+    const key = normalizeIndexValue(row.index);
+    if(!key) return;
+    const current = bestByIndex.get(key);
+    if(!current || row.ranking < current.ranking){
+      bestByIndex.set(key, row);
+    }
+  });
+  return Array.from(bestByIndex.values());
+}
+
+function generateReportsData(){
+  const generated = [];
+  reportsSummary = [];
+
+  REPORT_GROUP_CONFIGS.forEach(group => {
+    const limitRaw = Number(reportsGroupLimits[group.id]);
+    const limit = Number.isFinite(limitRaw) && limitRaw >= 0 ? Math.floor(limitRaw) : 25;
+    const sourceRows = reportsSourceRows.filter(row => group.groups.includes(row.productGroup));
+    const uniqueRows = dedupeReportRows(sourceRows).sort((a, b) => {
+      if(a.ranking !== b.ranking) return a.ranking - b.ranking;
+      return String(a.name).localeCompare(String(b.name), 'pl');
+    });
+    const pickedRows = uniqueRows.slice(0, limit);
+
+    reportsSummary.push({
+      id: group.id,
+      label: group.label,
+      available: uniqueRows.length,
+      selected: pickedRows.length,
+      requested: limit
+    });
+
+    pickedRows.forEach(row => {
+      generated.push({
+        INDEKS: row.index,
+        NAZWA: row.name,
+        SKROT_PRODUCENTA: row.producer,
+        NAZWA_GRUPA: row.groupName,
+        Ranking: row.rankingLabel || (Number.isFinite(row.ranking) ? String(row.ranking) : ''),
+        'Grupa produktowa': group.label
+      });
+    });
+  });
+
+  reportsGeneratedRows = generated;
+}
+
+function renderReportLimits(){
+  return REPORT_GROUP_CONFIGS.map(group => `
+    <label class="reports-limit-card">
+      <span class="reports-limit-title">${escapeHtml(group.label)}</span>
+      <input
+        type="number"
+        min="0"
+        value="${escapeAttr(reportsGroupLimits[group.id] ?? 25)}"
+        onchange="setReportGroupLimit('${group.id}', this.value)"
+      >
+    </label>
+  `).join('');
+}
+
+function renderTopSalesReportContent(){
+  const summary = reportsSummary.length
+    ? `<div class="reports-summary">
+        ${reportsSummary.map(item => `
+          <div class="reports-summary-card">
+            <div class="reports-summary-title">${escapeHtml(item.label)}</div>
+            <div class="reports-summary-meta">Wybrano ${item.selected} z ${item.available} pozycji</div>
+          </div>
+        `).join('')}
+      </div>`
+    : '';
+
+  const rowsHtml = reportsGeneratedRows.map((row, index) => {
+    const idx = String(row.INDEKS ?? '').trim();
+    const imgUrl = idx ? buildImageUrl(idx, 'png', imageBaseUrlRumunia) : '';
+    return `
+      <tr>
+        <td>${index + 1}</td>
+        <td class="reports-image-cell">
+          ${imgUrl ? `<img class="reports-image" src="${imgUrl}" data-index="${escapeAttr(idx)}" data-base="${escapeAttr(imageBaseUrlRumunia)}" data-tried="png" onerror="imageFallback(this)" alt="">` : ''}
+        </td>
+        <td>${escapeHtml(row.INDEKS ?? '')}</td>
+        <td>${escapeHtml(row.NAZWA ?? '')}</td>
+        <td>${escapeHtml(row.SKROT_PRODUCENTA ?? '')}</td>
+        <td>${escapeHtml(row.NAZWA_GRUPA ?? '')}</td>
+        <td>${escapeHtml(row.Ranking ?? '')}</td>
+        <td>${escapeHtml(row['Grupa produktowa'] ?? '')}</td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+    <div class="reports-toolbar">
+      <div>
+        <div class="import-title">Top sprzedaż</div>
+        <div class="import-sub">Importuj Excel i generuj top indeksy według grup produktowych.</div>
+      </div>
+      <div class="reports-actions">
+        <input id="reports-excel-input" class="import-input" type="file" accept=".xlsx,.xls">
+        <button class="btn-outline" onclick="importReportsExcel()">Importuj Excel</button>
+        <button class="btn-outline" onclick="exportReportsXlsx()" ${reportsGeneratedRows.length ? '' : 'disabled'}>Zapisz XLSX</button>
+      </div>
+      <div class="import-info">
+        ${reportsImportFile ? `Źródło: ${escapeHtml(reportsImportFile)}` : 'Brak zaimportowanego pliku'}
+      </div>
+    </div>
+
+    <div class="reports-limits">
+      ${renderReportLimits()}
+    </div>
+
+    ${summary}
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            <th>Zdjęcie</th>
+            <th>INDEKS</th>
+            <th>NAZWA</th>
+            <th>SKROT_PRODUCENTA</th>
+            <th>NAZWA_GRUPA</th>
+            <th>Ranking</th>
+            <th>Grupa produktowa</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml || `<tr><td colspan="8" class="reports-empty">Zaimportuj plik Excel, aby wygenerować raport.</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function normalizeClientReportRow(row, headers){
+  const indexKey = findHeaderKey(headers, ['indeks', 'index', 'id']);
+  const nameKey = findHeaderKey(headers, ['nazwa', 'name']);
+  const groupNameKey = findHeaderKey(headers, ['nazwa grupa', 'nazwa_grupa']);
+  const repKey = findHeaderKey(headers, ['opiekun klienta', 'opiekun_klienta', 'przedstawiciel handlowy']);
+  const customerCodeKey = findHeaderKey(headers, ['kod kh', 'kod_kh', 'numer klienta']);
+  const customerNameKey = findHeaderKey(headers, ['nazwa kh', 'nazwa_kh', 'nazwa klienta']);
+
+  return {
+    index: String(row[indexKey] ?? '').trim(),
+    name: String(row[nameKey] ?? '').trim(),
+    groupName: String(row[groupNameKey] ?? '').trim(),
+    representative: String(row[repKey] ?? '').trim(),
+    customerCode: String(row[customerCodeKey] ?? '').trim(),
+    customerName: String(row[customerNameKey] ?? '').trim()
+  };
+}
+
+async function loadOfferRowsForGroup(group){
+  if(reportOfferRowsCache.has(group.id)) return reportOfferRowsCache.get(group.id);
+
+  const allRows = [];
+  for(const url of group.sources || []){
+    const res = await fetch(url);
+    const data = await res.json();
+    (data || []).forEach(row => {
+      const rankingRaw = getValueByVariants(row, ['ranking']);
+      const rankingValue = Number(String(rankingRaw ?? '').replace(',', '.'));
+      const normalized = {
+        index: String(getValueByVariants(row, ['indeks', 'index', 'id', 'numer katalogowy', 'sku number']) || '').trim(),
+        name: String(getValueByVariants(row, ['nazwa', 'name']) || '').trim(),
+        producer: String(getValueByVariants(row, ['producent', 'producer']) || '').trim(),
+        ean: String(getValueByVariants(row, ['kod ean', 'ean']) || '').trim(),
+        ranking: Number.isFinite(rankingValue) ? rankingValue : Number.POSITIVE_INFINITY,
+        rankingLabel: String(rankingRaw ?? '').trim(),
+        productGroup: group.label
+      };
+      if(normalized.index) allRows.push(normalized);
+    });
+  }
+
+  reportOfferRowsCache.set(group.id, allRows);
+  return allRows;
+}
+
+function getClientReportRepresentatives(){
+  return Array.from(new Set(clientReportSourceRows.map(row => row.representative).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'pl'));
+}
+
+function getClientReportCustomers(){
+  if(!clientReportSelectedRepresentative) return [];
+  const map = new Map();
+  clientReportSourceRows
+    .filter(row => row.representative === clientReportSelectedRepresentative)
+    .forEach(row => {
+      const key = `${row.customerCode}|||${row.customerName}`;
+      if(!map.has(key)){
+        map.set(key, { code: row.customerCode, name: row.customerName });
+      }
+    });
+  return Array.from(map.values()).sort((a, b) => {
+    const nameCompare = a.name.localeCompare(b.name, 'pl');
+    return nameCompare || a.code.localeCompare(b.code, 'pl');
+  });
+}
+
+async function generateClientComparisonReport(){
+  if(!clientReportSelectedRepresentative || !clientReportSelectedCustomer){
+    clientReportPurchasedRows = [];
+    clientReportMissingRows = [];
+    clientReportSummary = [];
+    clientReportSelectedMissingIndexes = new Set();
+    return;
+  }
+
+  const [customerCode, customerName] = clientReportSelectedCustomer.split('|||');
+  const clientRows = clientReportSourceRows.filter(row =>
+    row.representative === clientReportSelectedRepresentative &&
+    row.customerCode === customerCode &&
+    row.customerName === customerName
+  );
+  const purchasedIndexSet = new Set(clientRows.map(row => normalizeIndexValue(row.index)).filter(Boolean));
+  const purchased = [];
+  const missing = [];
+  const summary = [];
+
+  for(const group of REPORT_GROUP_CONFIGS){
+    const limitRaw = Number(reportsGroupLimits[group.id]);
+    const limit = Number.isFinite(limitRaw) && limitRaw >= 0 ? Math.floor(limitRaw) : 25;
+    const offerSourceRows = await loadOfferRowsForGroup(group);
+    const offerRows = dedupeReportRows(
+      offerSourceRows.map(row => ({
+        index: row.index,
+        name: row.name,
+        producer: row.producer,
+        ean: row.ean,
+        ranking: Number.isFinite(row.ranking) ? row.ranking : Number.POSITIVE_INFINITY,
+        rankingLabel: row.rankingLabel,
+        productGroup: group.label
+      }))
+    ).sort((a, b) => {
+      if(a.ranking !== b.ranking) return a.ranking - b.ranking;
+      return String(a.name).localeCompare(String(b.name), 'pl');
+    });
+
+    const purchasedFromOffer = offerRows.filter(row => purchasedIndexSet.has(normalizeIndexValue(row.index)));
+    const missingTopRows = offerRows.filter(row => !purchasedIndexSet.has(normalizeIndexValue(row.index))).slice(0, limit);
+
+    let purchasedCount = 0;
+    let missingCount = 0;
+
+    purchasedFromOffer.forEach(row => {
+      const enrichedRow = {
+        INDEKS: row.index,
+        NAZWA: row.name,
+        SKROT_PRODUCENTA: row.producer,
+        'KOD EAN': row.ean || '',
+        Ranking: row.rankingLabel || (Number.isFinite(row.ranking) ? String(row.ranking) : ''),
+        'Grupa produktowa': group.label
+      };
+      purchased.push(enrichedRow);
+      purchasedCount += 1;
+    });
+
+    missingTopRows.forEach(row => {
+      const enrichedRow = {
+        INDEKS: row.index,
+        NAZWA: row.name,
+        SKROT_PRODUCENTA: row.producer,
+        'KOD EAN': row.ean || '',
+        Ranking: row.rankingLabel || (Number.isFinite(row.ranking) ? String(row.ranking) : ''),
+        'Grupa produktowa': group.label
+      };
+      missing.push(enrichedRow);
+      missingCount += 1;
+    });
+
+    summary.push({
+      label: group.label,
+      purchased: purchasedCount,
+      missing: missingCount,
+      total: missingTopRows.length,
+      offerTotal: offerRows.length
+    });
+  }
+
+  clientReportPurchasedRows = purchased;
+  clientReportMissingRows = missing;
+  clientReportSummary = summary;
+  clientReportSelectedMissingIndexes = new Set(
+    clientReportMissingRows.map(row => normalizeIndexValue(row.INDEKS)).filter(Boolean)
+  );
+}
+
+function renderClientRowsTable(rows, emptyText, options = {}){
+  const { selectable = false } = options;
+  const html = rows.map((row, index) => {
+    const idx = String(row.INDEKS ?? '').trim();
+    const imgUrl = idx ? buildImageUrl(idx, 'png', imageBaseUrlRumunia) : '';
+    const normalizedIndex = normalizeIndexValue(idx);
+    const checked = selectable && clientReportSelectedMissingIndexes.has(normalizedIndex) ? 'checked' : '';
+    return `
+      <tr>
+        <td>${index + 1}</td>
+        ${selectable ? `<td><input type="checkbox" data-index="${escapeAttr(idx)}" onchange="toggleClientMissingSelection(this)" ${checked}></td>` : ''}
+        <td class="reports-image-cell">
+          ${imgUrl ? `<img class="reports-image" src="${imgUrl}" data-index="${escapeAttr(idx)}" data-base="${escapeAttr(imageBaseUrlRumunia)}" data-tried="png" onerror="imageFallback(this)" alt="">` : ''}
+        </td>
+        <td>${escapeHtml(row.INDEKS ?? '')}</td>
+        <td>${escapeHtml(row.NAZWA ?? '')}</td>
+        <td>${escapeHtml(row.SKROT_PRODUCENTA ?? '')}</td>
+        <td>${escapeHtml(row.Ranking ?? '')}</td>
+        <td>${escapeHtml(row['Grupa produktowa'] ?? '')}</td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            ${selectable ? '<th>Wybór</th>' : ''}
+            <th>Zdjęcie</th>
+            <th>INDEKS</th>
+            <th>NAZWA</th>
+            <th>SKROT_PRODUCENTA</th>
+            <th>Ranking</th>
+            <th>Grupa produktowa</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${html || `<tr><td colspan="${selectable ? 8 : 7}" class="reports-empty">${escapeHtml(emptyText)}</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function getFilteredClientRows(rows, filters){
+  return rows.filter(row => {
+    if(filters.ranking && !includesText(row.Ranking, filters.ranking)) return false;
+    if(filters.group && !includesText(row['Grupa produktowa'], filters.group)) return false;
+    return true;
+  });
+}
+
+function renderClientTableFilters(type, filters){
+  const rows = type === 'purchased' ? clientReportPurchasedRows : clientReportMissingRows;
+  const groupOptions = Array.from(new Set(rows.map(row => String(row['Grupa produktowa'] || '').trim()).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b, 'pl'))
+    .map(group => `<option value="${escapeAttr(group)}" ${filters.group === group ? 'selected' : ''}>${escapeHtml(group)}</option>`)
+    .join('');
+
+  return `
+    <div class="reports-table-filters">
+      <input type="text" value="${escapeAttr(filters.ranking)}" placeholder="Filtruj po rankingu" oninput="setClientTableFilter('${type}', 'ranking', this.value)">
+      <select onchange="setClientTableFilter('${type}', 'group', this.value)">
+        <option value="">Wszystkie grupy produktowe</option>
+        ${groupOptions}
+      </select>
+    </div>
+  `;
+}
+
+function renderClientComparisonContent(){
+  const representatives = getClientReportRepresentatives();
+  const customers = getClientReportCustomers();
+  const filteredPurchasedRows = getFilteredClientRows(clientReportPurchasedRows, clientReportPurchasedFilters);
+  const filteredMissingRows = getFilteredClientRows(clientReportMissingRows, clientReportMissingFilters);
+  const summary = clientReportSummary.length
+    ? `<div class="reports-summary">
+        ${clientReportSummary.map(item => `
+          <div class="reports-summary-card">
+            <div class="reports-summary-title">${escapeHtml(item.label)}</div>
+            <div class="reports-summary-meta">W ofercie: ${item.offerTotal} | Klient kupił: ${item.purchased} | Rekomendowane: ${item.missing}</div>
+          </div>
+        `).join('')}
+      </div>`
+    : '';
+
+  const selectedMissingCount = clientReportSelectedMissingIndexes.size;
+
+  return `
+    <div class="reports-toolbar">
+      <div>
+        <div class="import-title">Potencjał klienta Top Rumunia</div>
+        <div class="import-sub">Porównaj zakupy klienta do listy Top Rumunia według grup produktowych.</div>
+      </div>
+      <div class="reports-actions">
+        <input id="client-reports-excel-input" class="import-input" type="file" accept=".xlsx,.xls">
+        <button class="btn-outline" onclick="importClientReportExcel()">Importuj Excel</button>
+        <button class="btn-outline" onclick="exportClientRecommendationXlsx()" ${selectedMissingCount ? '' : 'disabled'}>Zapisz XLSX</button>
+        <button class="btn-outline" onclick="createClientRecommendationCatalog()" ${selectedMissingCount ? '' : 'disabled'}>Utwórz katalog</button>
+      </div>
+      <div class="import-info">
+        ${clientReportImportFile ? `Źródło: ${escapeHtml(clientReportImportFile)}` : 'Brak zaimportowanego pliku'}
+        ${clientReportSelectedCustomer ? ` | Zaznaczone rekomendacje: ${selectedMissingCount}` : ''}
+      </div>
+    </div>
+
+    <div class="reports-filters">
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Przedstawiciel handlowy</span>
+        <select onchange="setClientReportRepresentative(this.value)">
+          <option value="">Wybierz</option>
+          ${representatives.map(rep => `<option value="${escapeAttr(rep)}" ${clientReportSelectedRepresentative === rep ? 'selected' : ''}>${escapeHtml(rep)}</option>`).join('')}
+        </select>
+      </label>
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Numer klienta</span>
+        <select onchange="setClientReportCustomer(this.value)">
+          <option value="">Wybierz</option>
+          ${customers.map(customer => {
+            const value = `${customer.code}|||${customer.name}`;
+            return `<option value="${escapeAttr(value)}" ${clientReportSelectedCustomer === value ? 'selected' : ''}>${escapeHtml(customer.code || customer.name)}</option>`;
+          }).join('')}
+        </select>
+      </label>
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Nazwa klienta</span>
+        <select onchange="setClientReportCustomer(this.value)">
+          <option value="">Wybierz</option>
+          ${customers.map(customer => {
+            const value = `${customer.code}|||${customer.name}`;
+            return `<option value="${escapeAttr(value)}" ${clientReportSelectedCustomer === value ? 'selected' : ''}>${escapeHtml(customer.name || customer.code)}</option>`;
+          }).join('')}
+        </select>
+      </label>
+    </div>
+
+    <div class="reports-limits">
+      ${renderReportLimits()}
+    </div>
+
+    <label class="reports-cover-toggle">
+      <input type="checkbox" ${clientRecommendationIncludeCover ? 'checked' : ''} onchange="setClientRecommendationCoverOption(this.checked)">
+      <span>Dodaj okladke z komunikatem dla klienta podczas tworzenia katalogu</span>
+    </label>
+
+    ${summary}
+
+    <div class="reports-two-columns">
+      <div class="reports-column">
+        <h3 class="reports-table-title">Kupione przez klienta</h3>
+        ${renderClientTableFilters('purchased', clientReportPurchasedFilters)}
+        ${renderClientRowsTable(filteredPurchasedRows, 'Brak kupionych indeksów z Top Rumunia dla wybranego klienta.')}
+      </div>
+      <div class="reports-column">
+        <h3 class="reports-table-title">Brakujące z Top Rumunia</h3>
+        <div class="reports-inline-actions">
+          <button class="btn-outline" onclick="selectAllClientMissing()" ${clientReportMissingRows.length ? '' : 'disabled'}>Zaznacz wszystkie</button>
+          <button class="btn-outline" onclick="clearAllClientMissing()" ${clientReportSelectedMissingIndexes.size ? '' : 'disabled'}>Odznacz wszystkie</button>
+        </div>
+        ${renderClientTableFilters('missing', clientReportMissingFilters)}
+        ${renderClientRowsTable(filteredMissingRows, 'Klient kupił wszystkie wybrane indeksy z Top Rumunia.', { selectable: true })}
+      </div>
+    </div>
+  `;
+}
+
+function renderReportsView(){
+  if(!reportsContainer) return;
+
+  reportsContainer.innerHTML = `
+    <div class="reports-panel">
+      <div class="reports-mode-switch">
+        <button class="btn-outline ${reportsMode === 'top-sales' ? 'reports-mode-active' : ''}" onclick="setReportsMode('top-sales')">Top sprzedaż</button>
+        <button class="btn-outline ${reportsMode === 'client-gap' ? 'reports-mode-active' : ''}" onclick="setReportsMode('client-gap')">Potencjał klienta Top Rumunia</button>
+      </div>
+      ${reportsMode === 'top-sales' ? renderTopSalesReportContent() : renderClientComparisonContent()}
+    </div>
+  `;
+}
+
+function openReportsView(){
+  setActiveCard('reports-card');
+  setImageBase(imageBaseUrlRumunia);
+  setFullData([]);
+  isLoading = false;
+  activeContainer = reportsContainer;
+  currentCategoryName = 'Raporty';
+  currentCategorySlug = 'raporty';
+  resetFilters();
+  clearAllContentContainers();
+  renderReportsView();
+}
+
+async function importReportsExcel(){
+  const input = document.getElementById('reports-excel-input');
+  const file = input?.files?.[0];
+  if(!file) return;
+
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+    const headers = rows.length ? Object.keys(rows[0]) : [];
+    reportsSourceRows = rows
+      .map(row => normalizeReportRow(row, headers))
+      .filter(row => row.index && row.productGroup);
+    reportsImportFile = file.name;
+    generateReportsData();
+  }catch(e){
+    console.error('Reports import error', e);
+    reportsSourceRows = [];
+    reportsGeneratedRows = [];
+    reportsImportFile = '';
+    reportsSummary = [];
+  }
+
+  renderReportsView();
+}
+
+function setReportGroupLimit(groupId, value){
+  const parsed = Number(value);
+  reportsGroupLimits[groupId] = Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : 0;
+  if(reportsMode === 'top-sales' && reportsSourceRows.length){
+    generateReportsData();
+  }
+  if(reportsMode === 'client-gap' && clientReportSourceRows.length){
+    generateClientComparisonReport().then(renderReportsView);
+    return;
+  }
+  renderReportsView();
+}
+
+function setReportsMode(mode){
+  reportsMode = mode;
+  renderReportsView();
+}
+
+async function importClientReportExcel(){
+  const input = document.getElementById('client-reports-excel-input');
+  const file = input?.files?.[0];
+  if(!file) return;
+
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+    const headers = rows.length ? Object.keys(rows[0]) : [];
+    clientReportSourceRows = rows
+      .map(row => normalizeClientReportRow(row, headers))
+      .filter(row => row.index && row.representative);
+    clientReportImportFile = file.name;
+    clientReportSelectedRepresentative = '';
+    clientReportSelectedCustomer = '';
+    clientReportPurchasedRows = [];
+    clientReportMissingRows = [];
+    clientReportSummary = [];
+    clientReportSelectedMissingIndexes = new Set();
+  }catch(e){
+    console.error('Client report import error', e);
+    clientReportSourceRows = [];
+    clientReportImportFile = '';
+    clientReportSelectedRepresentative = '';
+    clientReportSelectedCustomer = '';
+    clientReportPurchasedRows = [];
+    clientReportMissingRows = [];
+    clientReportSummary = [];
+    clientReportSelectedMissingIndexes = new Set();
+  }
+
+  renderReportsView();
+}
+
+async function setClientReportRepresentative(value){
+  clientReportSelectedRepresentative = value;
+  clientReportSelectedCustomer = '';
+  clientReportPurchasedRows = [];
+  clientReportMissingRows = [];
+  clientReportSummary = [];
+  clientReportSelectedMissingIndexes = new Set();
+  renderReportsView();
+}
+
+async function setClientReportCustomer(value){
+  clientReportSelectedCustomer = value;
+  await generateClientComparisonReport();
+  renderReportsView();
+}
+
+function toggleClientMissingSelection(checkbox){
+  const index = normalizeIndexValue(checkbox?.getAttribute('data-index'));
+  if(!index) return;
+  if(checkbox.checked){
+    clientReportSelectedMissingIndexes.add(index);
+  }else{
+    clientReportSelectedMissingIndexes.delete(index);
+  }
+}
+
+function selectAllClientMissing(){
+  clientReportSelectedMissingIndexes = new Set(
+    clientReportMissingRows.map(row => normalizeIndexValue(row.INDEKS)).filter(Boolean)
+  );
+  renderReportsView();
+}
+
+function clearAllClientMissing(){
+  clientReportSelectedMissingIndexes = new Set();
+  renderReportsView();
+}
+
+function setClientTableFilter(type, key, value){
+  if(type === 'purchased'){
+    clientReportPurchasedFilters[key] = value;
+  }else{
+    clientReportMissingFilters[key] = value;
+  }
+  renderReportsView();
+}
+
+function setClientRecommendationCoverOption(checked){
+  clientRecommendationIncludeCover = !!checked;
+}
+
+function getSelectedClientRecommendationRows(){
+  return clientReportMissingRows.filter(row =>
+    clientReportSelectedMissingIndexes.has(normalizeIndexValue(row.INDEKS))
+  );
+}
+
+function getClientRecommendationFileName(){
+  const [customerCode, customerName] = (clientReportSelectedCustomer || '').split('|||');
+  const safePart = (value, fallback) => String(value || fallback)
+    .trim()
+    .replace(/[\\/:*?"<>|]+/g, ' ')
+    .replace(/\s+/g, ' ');
+  return `${safePart(customerCode, 'Klient')} ${safePart(customerName, 'Bez nazwy')} - Top Rumunia`;
+}
+
+function getClientRecommendationCustomerInfo(){
+  const [customerCode, customerName] = (clientReportSelectedCustomer || '').split('|||');
+  return {
+    code: String(customerCode || '').trim(),
+    name: String(customerName || '').trim()
+  };
+}
+
+function getClientRecommendationMessage(){
+  return {
+    pl: 'Przygotowalismy dla Ciebie wyselekcjonowana liste produktow z oferty rumunskiej na podstawie ostatnich Twoich zakupow. Produkty podzielilismy na grupy i dobralismy je tak, aby wspieraly rotacje, uzupelnialy braki w ofercie i odpowiadaly na realne potrzeby klientow rumunskich. Oferta bedzie dostepna na mastersale.eu. Szczegoly uzyskasz u swojego opiekuna handlowego.',
+    en: 'We have prepared a curated list of Romanian products based on your recent purchases. We grouped the products and selected them to support turnover, fill assortment gaps, and meet the real needs of Romanian shoppers. The offer will be available at mastersale.eu. For details, please contact your account manager.'
+  };
+}
+
+function openClientRecommendationMessageModal(){
+  if(!reportsMessageModal || !reportsMessageText) return;
+  const message = getClientRecommendationMessage();
+  reportsMessageText.innerHTML = `
+    <div class="reports-message-hero">
+      <div class="reports-message-kicker">World Food Rumunia</div>
+      <div class="reports-message-sub">Rekomendacja produktowa dla klienta</div>
+    </div>
+    <div class="reports-message-section">
+      <div class="reports-message-label">PL</div>
+      <p>${escapeHtml(message.pl)}</p>
+    </div>
+    <div class="reports-message-section">
+      <div class="reports-message-label">EN</div>
+      <p>${escapeHtml(message.en)}</p>
+    </div>
+  `;
+  reportsMessageModal.classList.remove('hidden');
+}
+
+function getClientRecommendationMessageText(){
+  const message = getClientRecommendationMessage();
+  return `WORLD FOOD RUMUNIA
+
+PL:
+${message.pl}
+
+EN:
+${message.en}`;
+}
+
+async function createClientRecommendationCoverDataUrl(){
+  const message = getClientRecommendationMessage();
+  const customer = getClientRecommendationCustomerInfo();
+  const logoImage = await loadImageAsDataUrl(maspoLogoUrl).catch(() => null);
+  const canvas = document.createElement('canvas');
+  const width = 1600;
+  const height = 2260;
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, '#f8fbff');
+  gradient.addColorStop(1, '#eef7f1');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = '#ffffff';
+  roundRect(ctx, 70, 70, width - 140, height - 140, 48);
+  ctx.fill();
+
+  ctx.fillStyle = '#002b7f';
+  ctx.fillRect(90, 90, (width - 180) / 3, 26);
+  ctx.fillStyle = '#fcd116';
+  ctx.fillRect(90 + (width - 180) / 3, 90, (width - 180) / 3, 26);
+  ctx.fillStyle = '#ce1126';
+  ctx.fillRect(90 + ((width - 180) / 3) * 2, 90, (width - 180) / 3, 26);
+
+  const circleX = width - 250;
+  const circleY = 260;
+  ctx.beginPath();
+  ctx.arc(circleX, circleY, 120, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.fillStyle = '#f4f8ff';
+  ctx.fill();
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = '#dbeafe';
+  ctx.stroke();
+
+  ctx.fillStyle = '#002b7f';
+  ctx.fillRect(circleX - 72, circleY - 56, 48, 112);
+  ctx.fillStyle = '#fcd116';
+  ctx.fillRect(circleX - 24, circleY - 56, 48, 112);
+  ctx.fillStyle = '#ce1126';
+  ctx.fillRect(circleX + 24, circleY - 56, 48, 112);
+
+  ctx.fillStyle = '#0f1b2d';
+  ctx.font = '700 84px Georgia';
+  ctx.fillText('World Food Rumunia', 110, 220);
+
+  ctx.fillStyle = '#168a3f';
+  ctx.font = '700 28px Arial';
+  ctx.fillText('TOP RUMUNIA', 112, 276);
+
+  ctx.fillStyle = '#475569';
+  ctx.font = '500 32px Arial';
+  ctx.fillText('Rekomendacja produktowa dla klienta', 110, 324);
+
+  const hasCustomerInfo = !!(customer.code || customer.name);
+  const customerBoxY = 352;
+  const customerBoxH = 116;
+  const plBoxY = hasCustomerInfo ? 500 : 390;
+  const plTextY = hasCustomerInfo ? 645 : 535;
+  const enBoxY = hasCustomerInfo ? 1160 : 1050;
+  const enTextY = hasCustomerInfo ? 1298 : 1188;
+  const ctaY = hasCustomerInfo ? 1880 : 1770;
+
+  if(customer.code || customer.name){
+    ctx.fillStyle = '#ffffff';
+    roundRect(ctx, 110, customerBoxY, 860, customerBoxH, 28);
+    ctx.fill();
+    ctx.strokeStyle = '#dbe7f3';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = '600 22px Arial';
+    ctx.fillText('Klient', 144, customerBoxY + 38);
+
+    ctx.fillStyle = '#0f1b2d';
+    ctx.font = '700 34px Arial';
+    const customerLine = [customer.code, customer.name].filter(Boolean).join(' - ');
+    drawWrappedText(ctx, customerLine, 144, customerBoxY + 84, 780, 40);
+  }
+
+  ctx.fillStyle = 'rgba(0, 43, 127, 0.08)';
+  ctx.beginPath();
+  ctx.arc(1180, 560, 150, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#002b7f';
+  ctx.fillRect(1098, 500, 58, 122);
+  ctx.fillStyle = '#fcd116';
+  ctx.fillRect(1156, 500, 58, 122);
+  ctx.fillStyle = '#ce1126';
+  ctx.fillRect(1214, 500, 58, 122);
+
+  ctx.fillStyle = '#ffffff';
+  roundRect(ctx, 90, plBoxY, width - 180, 610, 36);
+  ctx.fill();
+  ctx.strokeStyle = '#d8e7dc';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.fillStyle = '#002b7f';
+  roundRect(ctx, 132, plBoxY + 52, 220, 16, 8);
+  ctx.fill();
+  ctx.fillStyle = '#0f1b2d';
+  ctx.font = '400 38px Arial';
+  drawWrappedText(ctx, message.pl, 140, plTextY, width - 320, 54);
+
+  ctx.fillStyle = '#ffffff';
+  roundRect(ctx, 90, enBoxY, width - 180, 540, 36);
+  ctx.fill();
+  ctx.strokeStyle = '#d8e7dc';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.fillStyle = '#ce1126';
+  roundRect(ctx, 132, enBoxY + 52, 220, 16, 8);
+  ctx.fill();
+  ctx.fillStyle = '#0f1b2d';
+  ctx.font = '400 38px Arial';
+  drawWrappedText(ctx, message.en, 140, enTextY, width - 320, 54);
+
+  ctx.fillStyle = '#102c6b';
+  roundRect(ctx, 90, ctaY, width - 180, 170, 34);
+  ctx.fill();
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '700 46px Arial';
+  ctx.fillText('Oferta bedzie dostepna na mastersale.eu', 145, ctaY + 80);
+  ctx.font = '400 28px Arial';
+  ctx.fillText('Szczegoly uzyskasz u swojego opiekuna handlowego.', 145, ctaY + 134);
+
+  if(logoImage?.dataUrl){
+    const img = new Image();
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = logoImage.dataUrl;
+    }).catch(() => null);
+
+    if(img.naturalWidth && img.naturalHeight){
+      const maxW = 280;
+      const maxH = 82;
+      const scale = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight, 1);
+      const drawW = img.naturalWidth * scale;
+      const drawH = img.naturalHeight * scale;
+      const drawX = width - drawW - 150;
+      const drawY = 2088;
+      ctx.drawImage(img, drawX, drawY, drawW, drawH);
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = '600 22px Arial';
+      ctx.fillText('World Food Partner', drawX + 20, Math.min(drawY + drawH + 28, 2230));
+    }
+  }
+
+  ctx.fillStyle = '#64748b';
+  ctx.font = '400 24px Arial';
+  ctx.fillText('World Food | Romanian assortment recommendations', 110, 2230);
+
+  return canvas.toDataURL('image/jpeg', 0.92);
+}
+
+function roundRect(ctx, x, y, width, height, radius){
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight){
+  const words = String(text || '').split(/\s+/);
+  let line = '';
+  let currentY = y;
+  words.forEach(word => {
+    const testLine = line ? `${line} ${word}` : word;
+    if(ctx.measureText(testLine).width > maxWidth && line){
+      ctx.fillText(line, x, currentY);
+      line = word;
+      currentY += lineHeight;
+    }else{
+      line = testLine;
+    }
+  });
+  if(line){
+    ctx.fillText(line, x, currentY);
+  }
+}
+
+function exportClientRecommendationXlsx(){
+  const selectedRows = getSelectedClientRecommendationRows();
+  if(!selectedRows.length) return;
+  const cols = ['INDEKS', 'NAZWA', 'SKROT_PRODUCENTA', 'Ranking', 'Grupa produktowa'];
+  const rows = [cols, ...selectedRows.map(row => cols.map(col => row[col] ?? ''))];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'rekomendowane');
+  const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  downloadBlob(blob, `${getClientRecommendationFileName()}.xlsx`);
+  openClientRecommendationMessageModal();
+}
+
+async function createClientRecommendationCatalog(){
+  const selectedRows = getSelectedClientRecommendationRows();
+  if(!selectedRows.length) return;
+  selectedProducts = new Map();
+  selectedRows.forEach(row => {
+    const idx = normalizeIndexValue(row.INDEKS);
+    if(idx){
+      selectedProducts.set(idx, {
+        INDEKS: row.INDEKS,
+        NAZWA: row.NAZWA,
+        PRODUCENT: row.SKROT_PRODUCENTA,
+        GRUPA: row['Grupa produktowa'],
+        'KOD EAN': row['KOD EAN'] || ''
+      });
+    }
+  });
+  setFullData(Array.from(selectedProducts.values()), ['INDEKS', 'NAZWA', 'PRODUCENT', 'GRUPA', 'KOD EAN']);
+  activeContainer = reportsContainer;
+  currentCategorySlug = getClientRecommendationFileName();
+  const coverDataUrl = clientRecommendationIncludeCover
+    ? await createClientRecommendationCoverDataUrl()
+    : null;
+  catalogOptionsOverride = {
+    groupByField: 'GRUPA',
+    sectionTitle: 'Grupa produktowa',
+    coverDataUrl
+  };
+  await createCatalog();
+}
+
+function exportReportsXlsx(){
+  if(!reportsGeneratedRows.length) return;
+  const cols = ['INDEKS', 'NAZWA', 'SKROT_PRODUCENTA', 'NAZWA_GRUPA', 'Ranking', 'Grupa produktowa'];
+  const rows = [cols, ...reportsGeneratedRows.map(row => cols.map(col => row[col] ?? ''))];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'top sprzedaz');
+  const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  downloadBlob(blob, 'top_sprzedaz.xlsx');
+}
+
 function render(){
   if(!fullData.length && !isLoading) return;
   clearAllContentContainers();
@@ -707,7 +1800,7 @@ function render(){
           <div class="catalog-spinner"></div>
           <div>Tworzę katalog...</div>
         </div>` : ''}
-        ${catalogBlobUrl ? `<iframe src="${catalogBlobUrl}#zoom=50" title="Katalog PDF"></iframe>` : ''}
+        ${catalogBlobUrl ? `<iframe src="${catalogBlobUrl}#view=FitH&zoom=page-fit" title="Katalog PDF"></iframe>` : ''}
       </div>
     ` : `
       <div class="filters">
@@ -838,6 +1931,18 @@ function normalizeIndexValue(value){
     .replace(/\s+/g, '');
 }
 
+function dedupeRowsByIndex(rows, indexKey){
+  if(!indexKey || !Array.isArray(rows) || !rows.length) return rows;
+  const seen = new Set();
+  return rows.filter(row => {
+    const idx = normalizeIndexValue(row?.[indexKey]);
+    if(!idx) return true;
+    if(seen.has(idx)) return false;
+    seen.add(idx);
+    return true;
+  });
+}
+
 const listingCodeInput = document.getElementById('listing-code');
 const listingStartBtn = document.getElementById('listing-start-btn');
 const listingStopBtn = document.getElementById('listing-stop-btn');
@@ -866,6 +1971,10 @@ const listingMarionYes = document.getElementById('listing-marion-yes');
 const listingMarionNo = document.getElementById('listing-marion-no');
 const listingMarionImage = document.getElementById('listing-marion-image');
 const listingMarionName = document.getElementById('listing-marion-name');
+const reportsMessageModal = document.getElementById('reports-message-modal');
+const reportsMessageText = document.getElementById('reports-message-text');
+const reportsMessageCopy = document.getElementById('reports-message-copy');
+const reportsMessageClose = document.getElementById('reports-message-close');
 let pendingMarionAdd = null;
 
 if(listingStartBtn){
@@ -937,6 +2046,26 @@ if(listingMarionNo){
   listingMarionNo.addEventListener('click', () => {
     pendingMarionAdd = null;
     if(listingMarionModal) listingMarionModal.classList.add('hidden');
+  });
+}
+if(reportsMessageClose){
+  reportsMessageClose.addEventListener('click', () => {
+    if(reportsMessageModal) reportsMessageModal.classList.add('hidden');
+  });
+}
+if(reportsMessageCopy){
+  reportsMessageCopy.addEventListener('click', async () => {
+    const text = getClientRecommendationMessageText();
+    if(!text) return;
+    try{
+      await navigator.clipboard.writeText(text);
+      reportsMessageCopy.textContent = 'Skopiowano';
+      setTimeout(() => {
+        if(reportsMessageCopy) reportsMessageCopy.textContent = 'Kopiuj';
+      }, 1500);
+    }catch(e){
+      console.error('Clipboard copy failed', e);
+    }
   });
 }
 if(listingCodeInput){
@@ -1500,7 +2629,7 @@ async function createCatalog(){
       return;
     }
     window.imageBaseUrl = currentImageBaseUrl;
-    const blob = await window.createCatalogPdf(products);
+    const blob = await window.createCatalogPdf(products, catalogOptionsOverride || {});
     catalogBlobUrl = URL.createObjectURL(blob);
   }catch(e){
     console.error(e);
@@ -1602,7 +2731,13 @@ async function buildAndSaveCatalog(){
       return;
     }
     const priceColor = catalogPriceColorInput?.value || '#000000';
-    const options = { coverDataUrl: catalogCoverDataUrl, priceMap: catalogPriceMap, currency, priceColor };
+    const options = {
+      ...(catalogOptionsOverride || {}),
+      coverDataUrl: catalogCoverDataUrl || catalogOptionsOverride?.coverDataUrl || null,
+      priceMap: catalogPriceMap,
+      currency,
+      priceColor
+    };
     window.imageBaseUrl = currentImageBaseUrl;
     const blob = await window.createCatalogPdf(products, options);
     const url = URL.createObjectURL(blob);
@@ -1779,7 +2914,7 @@ function getFilteredData(){
   const eanKey = findColumn(cols, ['kod ean', 'ean']);
   const indexKey = findColumn(cols, ['indeks', 'index', 'id', 'numer katalogowy', 'sku number']);
 
-  return fullData.filter(r => {
+  const filtered = fullData.filter(r => {
     if(importedIndexSet && indexKey){
       const idx = normalizeIndexValue(r[indexKey]);
       if(!importedIndexSet.has(idx)) return false;
@@ -1791,6 +2926,12 @@ function getFilteredData(){
     if(indexKey && filters.index && !includesText(r[indexKey], filters.index)) return false;
     return true;
   });
+
+  if(importedIndexSet && indexKey){
+    return dedupeRowsByIndex(filtered, indexKey);
+  }
+
+  return filtered;
 }
 
 function updateTable(){
@@ -1803,9 +2944,9 @@ function updateTable(){
 
   const tbody = document.getElementById('data-tbody');
   if(tbody){
-    tbody.innerHTML = data.map(r => `
+    tbody.innerHTML = data.map((r, rowIndex) => `
       <tr>
-        ${cols.map(c => renderCell(c, r, indexKey, eanKey)).join('')}
+        ${cols.map(c => renderCell(c, r, indexKey, eanKey, rowIndex + 1)).join('')}
       </tr>
     `).join('');
   }
@@ -1888,16 +3029,16 @@ function setActiveCard(id){
 }
 
 function toggleAdminPanel(email){
-  if(!adminPanelBtn) return;
-  const isAdminEmail = String(email || '').toLowerCase() === 'admin@admin.com';
+  const isAdminEmail = ADMIN_EMAILS.includes(String(email || '').toLowerCase());
   const isAdminSession = localStorage.getItem('is_admin') === '1';
-  const isAdminPassword = lastLoginPassword === 'ADMIN1';
-  const isAdmin = isAdminEmail && (isAdminPassword || isAdminSession);
-  adminPanelBtn.classList.toggle('hidden', !isAdmin);
+  const isAdmin = isAdminEmail || (isAdminSession && isAdminEmail);
+  if(adminPanelBtn) adminPanelBtn.classList.toggle('hidden', !isAdmin);
+  if(reportsCard) reportsCard.classList.toggle('hidden', !isAdmin);
   if(isAdmin){
     localStorage.setItem('is_admin', '1');
   }else{
     localStorage.removeItem('is_admin');
+    if(reportsContainer) reportsContainer.innerHTML = '';
   }
 }
 
@@ -1915,7 +3056,7 @@ function toggleProductSelection(checkbox){
   }
 }
 
-function renderCell(col, row, indexKey, eanKey){
+function renderCell(col, row, indexKey, eanKey, rowNumber){
   const value = row ? row[col] : '';
   if(indexKey && col === indexKey){
     const idx = String(value ?? '').trim();
@@ -1934,6 +3075,7 @@ function renderCell(col, row, indexKey, eanKey){
                 <input type="checkbox" data-index="${escapeAttr(idx)}" onchange="toggleProductSelection(this)" ${checked}>
                 <span></span>
               </label>
+              <span class="row-number">${rowNumber || ''}.</span>
               ${img}
               <span>${escapeHtml(idx)}</span>
             </td>`;
