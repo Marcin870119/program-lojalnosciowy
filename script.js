@@ -792,6 +792,7 @@ function normalizeReportRow(row, headers){
   const indexKey = findHeaderKey(headers, ['indeks', 'index', 'id', 'numer katalogowy', 'sku number']);
   const nameKey = findHeaderKey(headers, ['nazwa', 'name']);
   const producerKey = findHeaderKey(headers, ['skrot producenta', 'skrót producenta', 'producent', 'producer']);
+  const eanKey = findHeaderKey(headers, ['kod ean', 'ean']);
   const groupNameKey = findHeaderKey(headers, ['nazwa grupa', 'nazwa_grupa', 'grupa', 'group']);
   const rankingKey = findHeaderKey(headers, ['sprzedaż ilościowa', 'sprzedaz ilosciowa', 'ranking']);
   const productGroupKey = findHeaderKey(headers, ['grupa produktowa', 'grupa produktowa ']);
@@ -803,6 +804,7 @@ function normalizeReportRow(row, headers){
     index: String(row[indexKey] ?? '').trim(),
     name: String(row[nameKey] ?? '').trim(),
     producer: String(row[producerKey] ?? '').trim(),
+    ean: String(row[eanKey] ?? '').trim(),
     groupName: String(row[groupNameKey] ?? '').trim(),
     ranking: Number.isFinite(rankingNumber) ? rankingNumber : Number.POSITIVE_INFINITY,
     rankingLabel: String(rankingRaw ?? '').trim(),
@@ -850,6 +852,7 @@ function generateReportsData(){
         INDEKS: row.index,
         NAZWA: row.name,
         SKROT_PRODUCENTA: row.producer,
+        'KOD EAN': row.ean || '',
         NAZWA_GRUPA: row.groupName,
         Ranking: row.rankingLabel || (Number.isFinite(row.ranking) ? String(row.ranking) : ''),
         'Grupa produktowa': group.label
@@ -964,6 +967,18 @@ function normalizeClientReportRow(row, headers){
     representative: String(row[repKey] ?? '').trim(),
     customerCode: String(row[customerCodeKey] ?? '').trim(),
     customerName: String(row[customerNameKey] ?? '').trim()
+  };
+}
+
+function buildClientReportImportFallback(fileName){
+  const baseName = String(fileName || '')
+    .replace(/\.[^.]+$/, '')
+    .trim();
+  const customerName = baseName || 'Import Excel';
+  return {
+    representative: 'Import Excel',
+    customerCode: 'IMPORT',
+    customerName
   };
 }
 
@@ -1363,9 +1378,23 @@ async function importClientReportExcel(){
     const sheet = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' });
     const headers = rows.length ? Object.keys(rows[0]) : [];
-    clientReportSourceRows = rows
+    const fallbackMeta = buildClientReportImportFallback(file.name);
+    const normalizedRows = rows
       .map(row => normalizeClientReportRow(row, headers))
-      .filter(row => row.index && row.representative);
+      .filter(row => row.index);
+
+    clientReportSourceRows = normalizedRows.map(row => {
+      const representative = row.representative || fallbackMeta.representative;
+      const customerCode = row.customerCode || fallbackMeta.customerCode;
+      const customerName = row.customerName || fallbackMeta.customerName;
+      return {
+        ...row,
+        representative,
+        customerCode,
+        customerName
+      };
+    });
+
     clientReportImportFile = file.name;
     clientReportSelectedRepresentative = '';
     clientReportSelectedCustomer = '';
@@ -1373,6 +1402,19 @@ async function importClientReportExcel(){
     clientReportMissingRows = [];
     clientReportSummary = [];
     clientReportSelectedMissingIndexes = new Set();
+    clientReportPurchasedFilters = { producer:'', ranking:'', group:'' };
+    clientReportMissingFilters = { producer:'', ranking:'', group:'' };
+
+    const representatives = getClientReportRepresentatives();
+    if(representatives.length === 1){
+      clientReportSelectedRepresentative = representatives[0];
+      const customers = getClientReportCustomers();
+      if(customers.length === 1){
+        const onlyCustomer = customers[0];
+        clientReportSelectedCustomer = `${onlyCustomer.code}|||${onlyCustomer.name}`;
+        await generateClientComparisonReport();
+      }
+    }
   }catch(e){
     console.error('Client report import error', e);
     clientReportSourceRows = [];
@@ -1383,6 +1425,8 @@ async function importClientReportExcel(){
     clientReportMissingRows = [];
     clientReportSummary = [];
     clientReportSelectedMissingIndexes = new Set();
+    clientReportPurchasedFilters = { producer:'', ranking:'', group:'' };
+    clientReportMissingFilters = { producer:'', ranking:'', group:'' };
   }
 
   renderReportsView();
@@ -1700,7 +1744,7 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight){
 function exportClientRecommendationXlsx(){
   const selectedRows = getSelectedClientRecommendationRows();
   if(!selectedRows.length) return;
-  const cols = ['INDEKS', 'NAZWA', 'SKROT_PRODUCENTA', 'Ranking', 'Grupa produktowa'];
+  const cols = ['INDEKS', 'NAZWA', 'SKROT_PRODUCENTA', 'KOD EAN', 'Ranking', 'Grupa produktowa'];
   const rows = [cols, ...selectedRows.map(row => cols.map(col => row[col] ?? ''))];
   const ws = XLSX.utils.aoa_to_sheet(rows);
   const wb = XLSX.utils.book_new();
@@ -1743,7 +1787,7 @@ async function createClientRecommendationCatalog(){
 
 function exportReportsXlsx(){
   if(!reportsGeneratedRows.length) return;
-  const cols = ['INDEKS', 'NAZWA', 'SKROT_PRODUCENTA', 'NAZWA_GRUPA', 'Ranking', 'Grupa produktowa'];
+  const cols = ['INDEKS', 'NAZWA', 'SKROT_PRODUCENTA', 'KOD EAN', 'NAZWA_GRUPA', 'Ranking', 'Grupa produktowa'];
   const rows = [cols, ...reportsGeneratedRows.map(row => cols.map(col => row[col] ?? ''))];
   const ws = XLSX.utils.aoa_to_sheet(rows);
   const wb = XLSX.utils.book_new();
