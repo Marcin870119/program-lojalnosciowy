@@ -159,10 +159,12 @@ let clientReportMissingRows = [];
 let clientReportSummary = [];
 let clientReportSelectedMissingIndexes = new Set();
 let clientReportPurchasedFilters = {
+  producer: '',
   ranking: '',
   group: ''
 };
 let clientReportMissingFilters = {
+  producer: '',
   ranking: '',
   group: ''
 };
@@ -282,8 +284,8 @@ function resetAppState(){
   clientReportMissingRows = [];
   clientReportSummary = [];
   clientReportSelectedMissingIndexes = new Set();
-  clientReportPurchasedFilters = { ranking:'', group:'' };
-  clientReportMissingFilters = { ranking:'', group:'' };
+  clientReportPurchasedFilters = { producer:'', ranking:'', group:'' };
+  clientReportMissingFilters = { producer:'', ranking:'', group:'' };
   clientRecommendationIncludeCover = true;
   reportsGroupLimits = createDefaultReportLimits();
   resetFilters();
@@ -1149,6 +1151,7 @@ function renderClientRowsTable(rows, emptyText, options = {}){
 
 function getFilteredClientRows(rows, filters){
   return rows.filter(row => {
+    if(filters.producer && !includesText(row.SKROT_PRODUCENTA, filters.producer)) return false;
     if(filters.ranking && !includesText(row.Ranking, filters.ranking)) return false;
     if(filters.group && !includesText(row['Grupa produktowa'], filters.group)) return false;
     return true;
@@ -1157,6 +1160,10 @@ function getFilteredClientRows(rows, filters){
 
 function renderClientTableFilters(type, filters){
   const rows = type === 'purchased' ? clientReportPurchasedRows : clientReportMissingRows;
+  const producerOptions = Array.from(new Set(rows.map(row => String(row.SKROT_PRODUCENTA || '').trim()).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b, 'pl'))
+    .map(producer => `<option value="${escapeAttr(producer)}" ${filters.producer === producer ? 'selected' : ''}>${escapeHtml(producer)}</option>`)
+    .join('');
   const groupOptions = Array.from(new Set(rows.map(row => String(row['Grupa produktowa'] || '').trim()).filter(Boolean)))
     .sort((a, b) => a.localeCompare(b, 'pl'))
     .map(group => `<option value="${escapeAttr(group)}" ${filters.group === group ? 'selected' : ''}>${escapeHtml(group)}</option>`)
@@ -1164,6 +1171,10 @@ function renderClientTableFilters(type, filters){
 
   return `
     <div class="reports-table-filters">
+      <select onchange="setClientTableFilter('${type}', 'producer', this.value)">
+        <option value="">Wszyscy producenci</option>
+        ${producerOptions}
+      </select>
       <input type="text" value="${escapeAttr(filters.ranking)}" placeholder="Filtruj po rankingu" oninput="setClientTableFilter('${type}', 'ranking', this.value)">
       <select onchange="setClientTableFilter('${type}', 'group', this.value)">
         <option value="">Wszystkie grupy produktowe</option>
