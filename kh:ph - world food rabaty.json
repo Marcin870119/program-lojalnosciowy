@@ -1,0 +1,4474 @@
+[
+  {
+    "KH_KOD": "386",
+    "SKROT": "NIMIT PATEL !! SAVE MORE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "NIMIT"
+  },
+  {
+    "KH_KOD": "386",
+    "SKROT": "NIMIT PATEL !! SAVE MORE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "NIMIT"
+  },
+  {
+    "KH_KOD": "387",
+    "SKROT": "PRASHANT PATEL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "NIMIT"
+  },
+  {
+    "KH_KOD": "387",
+    "SKROT": "PRASHANT PATEL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "NIMIT"
+  },
+  {
+    "KH_KOD": "447",
+    "SKROT": "MAXIM 24 LTD CORBY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "447",
+    "SKROT": "MAXIM 24 LTD CORBY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "714",
+    "SKROT": "BALTICA KING’S LYNN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Saied"
+  },
+  {
+    "KH_KOD": "714",
+    "SKROT": "BALTICA KING’S LYNN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Saied"
+  },
+  {
+    "KH_KOD": "1175",
+    "SKROT": "CLOCKTOWER EXPRESS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "NIMIT"
+  },
+  {
+    "KH_KOD": "1175",
+    "SKROT": "CLOCKTOWER EXPRESS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "NIMIT"
+  },
+  {
+    "KH_KOD": "1193",
+    "SKROT": "LUTON SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GRUPA SPALDING"
+  },
+  {
+    "KH_KOD": "1193",
+    "SKROT": "LUTON SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GRUPA SPALDING"
+  },
+  {
+    "KH_KOD": "1210",
+    "SKROT": "MEGA DEALS LIMITED",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Mega Deals"
+  },
+  {
+    "KH_KOD": "1210",
+    "SKROT": "MEGA DEALS LIMITED",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Mega Deals"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "WORLD FOOD",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "UKRAINA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "BUŁGARIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "LITWA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "UKRAINA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "BUŁGARIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "LITWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1382",
+    "SKROT": "WISBECH MARKET (UK)",
+    "NAZWA_GRUPA": "ŁOTWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "1666",
+    "SKROT": "BART-PHILL LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1666",
+    "SKROT": "BART-PHILL LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "WORLD FOOD",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "UKRAINA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "BUŁGARIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "LITWA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "UKRAINA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "BUŁGARIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "LITWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2147",
+    "SKROT": "FANTAZJA SPALDING",
+    "NAZWA_GRUPA": "ŁOTWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2307",
+    "SKROT": "SUPERMARKET ABC",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "2307",
+    "SKROT": "SUPERMARKET ABC",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "WORLD FOOD",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "UKRAINA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "BUŁGARIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "LITWA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "UKRAINA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "BUŁGARIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "LITWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2368",
+    "SKROT": "GROSIK SKLEP LTD",
+    "NAZWA_GRUPA": "ŁOTWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "2461",
+    "SKROT": "T/A NISA LOCAL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "NIMIT"
+  },
+  {
+    "KH_KOD": "2461",
+    "SKROT": "T/A NISA LOCAL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "NIMIT"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "WORLD FOOD",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "UKRAINA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "BUŁGARIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "LITWA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "UKRAINA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "BUŁGARIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "LITWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2721",
+    "SKROT": "IPSWICH FOOD CENTRE",
+    "NAZWA_GRUPA": "ŁOTWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "2805",
+    "SKROT": "ODRA BEDFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Odra"
+  },
+  {
+    "KH_KOD": "2805",
+    "SKROT": "ODRA BEDFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Odra"
+  },
+  {
+    "KH_KOD": "3738",
+    "SKROT": "POLDI  SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3738",
+    "SKROT": "POLDI  SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3796",
+    "SKROT": "WAWELSKI",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3796",
+    "SKROT": "WAWELSKI",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3832",
+    "SKROT": "MINI POLI SPALDING",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "3832",
+    "SKROT": "MINI POLI SPALDING",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "GROSIK MINIPOLI"
+  },
+  {
+    "KH_KOD": "4959",
+    "SKROT": "KOMADA LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4959",
+    "SKROT": "KOMADA LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "5410",
+    "SKROT": "SUPERMARKET ABC SWANSEA",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "5410",
+    "SKROT": "SUPERMARKET ABC SWANSEA",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "5466",
+    "SKROT": "MACIUS BOREHAMWOOD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "5466",
+    "SKROT": "MACIUS BOREHAMWOOD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "5572",
+    "SKROT": "MACIUS 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "5572",
+    "SKROT": "MACIUS 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "9799",
+    "SKROT": "BRASOV SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "9799",
+    "SKROT": "BRASOV SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "10363",
+    "SKROT": "EURO FOOD BANBURY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "HAKAN"
+  },
+  {
+    "KH_KOD": "10363",
+    "SKROT": "EURO FOOD BANBURY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "HAKAN"
+  },
+  {
+    "KH_KOD": "11156",
+    "SKROT": "EUROPEAN FOOD CENTRE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Odra"
+  },
+  {
+    "KH_KOD": "11156",
+    "SKROT": "EUROPEAN FOOD CENTRE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Odra"
+  },
+  {
+    "KH_KOD": "11317",
+    "SKROT": "POLI MAXX 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "HAKAN"
+  },
+  {
+    "KH_KOD": "11317",
+    "SKROT": "POLI MAXX 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "HAKAN"
+  },
+  {
+    "KH_KOD": "12057",
+    "SKROT": "MACIUS 4",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "12057",
+    "SKROT": "MACIUS 4",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "MACIUS"
+  },
+  {
+    "KH_KOD": "13694",
+    "SKROT": "MAMA FOODSTORE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "13694",
+    "SKROT": "MAMA FOODSTORE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "14374",
+    "SKROT": "COSTCUTTER IPSWICH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "14374",
+    "SKROT": "COSTCUTTER IPSWICH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "14923",
+    "SKROT": "NASZ SKLE3P GROCERY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "14923",
+    "SKROT": "NASZ SKLE3P GROCERY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15105",
+    "SKROT": "DELICATESSEN FOOD PLUS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15105",
+    "SKROT": "DELICATESSEN FOOD PLUS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "WORLD FOOD",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "UKRAINA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "BUŁGARIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "LITWA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "UKRAINA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "BUŁGARIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "LITWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "17503",
+    "SKROT": "MARTA PETERBOROUGH",
+    "NAZWA_GRUPA": "ŁOTWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "19523",
+    "SKROT": "EURO FOOD CENTRE LUTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "HAKAN"
+  },
+  {
+    "KH_KOD": "19523",
+    "SKROT": "EURO FOOD CENTRE LUTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "HAKAN"
+  },
+  {
+    "KH_KOD": "19902",
+    "SKROT": "UMRAH SUPERMARKET WALSALL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Europol"
+  },
+  {
+    "KH_KOD": "19902",
+    "SKROT": "UMRAH SUPERMARKET WALSALL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Europol"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "WORLD FOOD",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "UKRAINA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "BUŁGARIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "LITWA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "UKRAINA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "BUŁGARIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "LITWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20401",
+    "SKROT": "FOOD PLUS WISBECH",
+    "NAZWA_GRUPA": "ŁOTWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "Abbas ipswich"
+  },
+  {
+    "KH_KOD": "20528",
+    "SKROT": "BARWAY STAFF SHOP",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "BARWAY"
+  },
+  {
+    "KH_KOD": "20528",
+    "SKROT": "BARWAY STAFF SHOP",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "BARWAY"
+  },
+  {
+    "KH_KOD": "20717",
+    "SKROT": "HOLBEACH LONDIS SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20717",
+    "SKROT": "HOLBEACH LONDIS SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20790",
+    "SKROT": "FOX BAZAAR",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20790",
+    "SKROT": "FOX BAZAAR",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20888",
+    "SKROT": "EURO EXPRESS SHOP",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20888",
+    "SKROT": "EURO EXPRESS SHOP",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "21092",
+    "SKROT": "GEORGIANA MAGAZIN TRADITIONAL ROMANESC",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "21092",
+    "SKROT": "GEORGIANA MAGAZIN TRADITIONAL ROMANESC",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Babicz Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "338",
+    "SKROT": "DELIGHT WEDLINKA NEASDEN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "338",
+    "SKROT": "DELIGHT WEDLINKA NEASDEN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "423",
+    "SKROT": "POD ORLEM",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "423",
+    "SKROT": "POD ORLEM",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "674",
+    "SKROT": "FOODPLUS WELLINGBOROUGH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "674",
+    "SKROT": "FOODPLUS WELLINGBOROUGH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1139",
+    "SKROT": "BALBINKA GROCERY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1139",
+    "SKROT": "BALBINKA GROCERY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1567",
+    "SKROT": "SLOUGH SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Tani"
+  },
+  {
+    "KH_KOD": "1567",
+    "SKROT": "SLOUGH SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Tani"
+  },
+  {
+    "KH_KOD": "1749",
+    "SKROT": "EUROPE FOOD PLUS 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Europa"
+  },
+  {
+    "KH_KOD": "1749",
+    "SKROT": "EUROPE FOOD PLUS 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Europa"
+  },
+  {
+    "KH_KOD": "1840",
+    "SKROT": "TANI SKLEP SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Tani"
+  },
+  {
+    "KH_KOD": "1840",
+    "SKROT": "TANI SKLEP SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Tani"
+  },
+  {
+    "KH_KOD": "1922",
+    "SKROT": "POZIOMKA GOLDERS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "POLSKIE SMAKI KAMILA"
+  },
+  {
+    "KH_KOD": "1922",
+    "SKROT": "POZIOMKA GOLDERS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "POLSKIE SMAKI KAMILA"
+  },
+  {
+    "KH_KOD": "2016",
+    "SKROT": "TWOJ SKLEP UK LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2016",
+    "SKROT": "TWOJ SKLEP UK LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2361",
+    "SKROT": "KUBUS CAMBERLEY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2361",
+    "SKROT": "KUBUS CAMBERLEY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2517",
+    "SKROT": "MAXIMART",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "MAXI MART"
+  },
+  {
+    "KH_KOD": "2517",
+    "SKROT": "MAXIMART",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "MAXI MART"
+  },
+  {
+    "KH_KOD": "2835",
+    "SKROT": "POLSKIE SMAKI 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "POLSKIE SMAKI KAMILA"
+  },
+  {
+    "KH_KOD": "2835",
+    "SKROT": "POLSKIE SMAKI 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "POLSKIE SMAKI KAMILA"
+  },
+  {
+    "KH_KOD": "4148",
+    "SKROT": "FOODSTOP DELICATESSEN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "4148",
+    "SKROT": "FOODSTOP DELICATESSEN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "4149",
+    "SKROT": "PARKSTONE DELICATESSEN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "4149",
+    "SKROT": "PARKSTONE DELICATESSEN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "4472",
+    "SKROT": "POLSKIE SMAKI LTD LUTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "POLSKIE SMAKI KAMILA"
+  },
+  {
+    "KH_KOD": "4472",
+    "SKROT": "POLSKIE SMAKI LTD LUTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "POLSKIE SMAKI KAMILA"
+  },
+  {
+    "KH_KOD": "4481",
+    "SKROT": "DRAGON LONDON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4481",
+    "SKROT": "DRAGON LONDON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4661",
+    "SKROT": "EUROPE FOOD PLUS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Europa"
+  },
+  {
+    "KH_KOD": "4661",
+    "SKROT": "EUROPE FOOD PLUS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Europa"
+  },
+  {
+    "KH_KOD": "4707",
+    "SKROT": "POLSKI SKLEP ZUBR 2 ABINGDON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Polish Taste"
+  },
+  {
+    "KH_KOD": "4707",
+    "SKROT": "POLSKI SKLEP ZUBR 2 ABINGDON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Polish Taste"
+  },
+  {
+    "KH_KOD": "4711",
+    "SKROT": "DELIGHT WEDLINKA TOOTING",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "4711",
+    "SKROT": "DELIGHT WEDLINKA TOOTING",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "4714",
+    "SKROT": "DELIGHT WEDLINKA NORBURY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "4714",
+    "SKROT": "DELIGHT WEDLINKA NORBURY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "5392",
+    "SKROT": "FOOD STORE PLUS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Europa"
+  },
+  {
+    "KH_KOD": "5392",
+    "SKROT": "FOOD STORE PLUS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Europa"
+  },
+  {
+    "KH_KOD": "6145",
+    "SKROT": "DELIGHT WEDLINKA GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "6145",
+    "SKROT": "DELIGHT WEDLINKA GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "6147",
+    "SKROT": "WEDLINKA WALTHAMSTOW",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "6147",
+    "SKROT": "WEDLINKA WALTHAMSTOW",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "6149",
+    "SKROT": "DELIGHT WEDLINKA TOOTING BEC",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "6149",
+    "SKROT": "DELIGHT WEDLINKA TOOTING BEC",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "12372",
+    "SKROT": "LONDIS PRICE CUTTER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "12372",
+    "SKROT": "LONDIS PRICE CUTTER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "12704",
+    "SKROT": "GROSIK SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "12704",
+    "SKROT": "GROSIK SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "14528",
+    "SKROT": "EURO SUPERMARKET BOURNEMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "14528",
+    "SKROT": "EURO SUPERMARKET BOURNEMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15180",
+    "SKROT": "EURO PLUS WELLINGBOROUGH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "AKO"
+  },
+  {
+    "KH_KOD": "15180",
+    "SKROT": "EURO PLUS WELLINGBOROUGH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "AKO"
+  },
+  {
+    "KH_KOD": "15672",
+    "SKROT": "WEST STREET FOOD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15672",
+    "SKROT": "WEST STREET FOOD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "16401",
+    "SKROT": "KOPERNIK BIRMINGHAM",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "16401",
+    "SKROT": "KOPERNIK BIRMINGHAM",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "17459",
+    "SKROT": "AREEL CO",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "17459",
+    "SKROT": "AREEL CO",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "17965",
+    "SKROT": "KWIK SAVE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "17965",
+    "SKROT": "KWIK SAVE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "18930",
+    "SKROT": "FOOD PLUS BANBURY",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "18930",
+    "SKROT": "FOOD PLUS BANBURY",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "19160",
+    "SKROT": "RED SKY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "19160",
+    "SKROT": "RED SKY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "19654",
+    "SKROT": "KOPERNIK POLISH SUPERMARKET BRIDGWATER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "19654",
+    "SKROT": "KOPERNIK POLISH SUPERMARKET BRIDGWATER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "20347",
+    "SKROT": "BIEDRONKA FOODS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20347",
+    "SKROT": "BIEDRONKA FOODS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20445",
+    "SKROT": "ISTANBUL SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20445",
+    "SKROT": "ISTANBUL SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20524",
+    "SKROT": "WEDLINKA MAGAZYN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "20524",
+    "SKROT": "WEDLINKA MAGAZYN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "Wedlinka"
+  },
+  {
+    "KH_KOD": "20595",
+    "SKROT": "GREEN HOLLAND SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20595",
+    "SKROT": "GREEN HOLLAND SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Bubula Robert",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "498",
+    "SKROT": "WISLA SUPERMARKET SOUTH LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Brasov"
+  },
+  {
+    "KH_KOD": "498",
+    "SKROT": "WISLA SUPERMARKET SOUTH LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Brasov"
+  },
+  {
+    "KH_KOD": "670",
+    "SKROT": "ANIA CARDIFF",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Ania"
+  },
+  {
+    "KH_KOD": "670",
+    "SKROT": "ANIA CARDIFF",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Ania"
+  },
+  {
+    "KH_KOD": "840",
+    "SKROT": "SKLEP U PAULI",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "840",
+    "SKROT": "SKLEP U PAULI",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "942",
+    "SKROT": "EUROPEAN FOOD STORE BRISTOL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "942",
+    "SKROT": "EUROPEAN FOOD STORE BRISTOL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "945",
+    "SKROT": "ABC INTERNATIONAL FOOD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "FOOD ABC"
+  },
+  {
+    "KH_KOD": "945",
+    "SKROT": "ABC INTERNATIONAL FOOD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "FOOD ABC"
+  },
+  {
+    "KH_KOD": "1761",
+    "SKROT": "ZEBRA",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "ZEB"
+  },
+  {
+    "KH_KOD": "1761",
+    "SKROT": "ZEBRA",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "ZEB"
+  },
+  {
+    "KH_KOD": "1943",
+    "SKROT": "KOPERNIK GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "1943",
+    "SKROT": "KOPERNIK GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "1984",
+    "SKROT": "KOPERNIK SLOUGH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "1984",
+    "SKROT": "KOPERNIK SLOUGH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "2548",
+    "SKROT": "KOPERNIK SUPERMARKET LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "2548",
+    "SKROT": "KOPERNIK SUPERMARKET LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "2843",
+    "SKROT": "FOOD PLUS BRIDGWATER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Fresh"
+  },
+  {
+    "KH_KOD": "2843",
+    "SKROT": "FOOD PLUS BRIDGWATER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Fresh"
+  },
+  {
+    "KH_KOD": "3444",
+    "SKROT": "KOPERNIK LONDON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "3444",
+    "SKROT": "KOPERNIK LONDON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "3693",
+    "SKROT": "INTERNATIONAL MINI MARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3693",
+    "SKROT": "INTERNATIONAL MINI MARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3938",
+    "SKROT": "KOPERNIK NORTHOLT",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "3938",
+    "SKROT": "KOPERNIK NORTHOLT",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "4814",
+    "SKROT": "FOOD PLUS POLISH DELICATTESSEN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "ZEB"
+  },
+  {
+    "KH_KOD": "4814",
+    "SKROT": "FOOD PLUS POLISH DELICATTESSEN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "ZEB"
+  },
+  {
+    "KH_KOD": "4993",
+    "SKROT": "KOPERNIK DUNSTABLE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "4993",
+    "SKROT": "KOPERNIK DUNSTABLE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "5181",
+    "SKROT": "KOPERNIK LUTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "5181",
+    "SKROT": "KOPERNIK LUTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "6415",
+    "SKROT": "KOPERNIK GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "6415",
+    "SKROT": "KOPERNIK GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "7109",
+    "SKROT": "BALTIKA SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "ZEB"
+  },
+  {
+    "KH_KOD": "7109",
+    "SKROT": "BALTIKA SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "ZEB"
+  },
+  {
+    "KH_KOD": "9882",
+    "SKROT": "BRASOV GLOUCESTER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Brasov"
+  },
+  {
+    "KH_KOD": "9882",
+    "SKROT": "BRASOV GLOUCESTER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Brasov"
+  },
+  {
+    "KH_KOD": "11042",
+    "SKROT": "LADYBUG CARMARTHEN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Ladybug"
+  },
+  {
+    "KH_KOD": "11042",
+    "SKROT": "LADYBUG CARMARTHEN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Ladybug"
+  },
+  {
+    "KH_KOD": "11129",
+    "SKROT": "KOPERNIK STOKE ROAD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "11129",
+    "SKROT": "KOPERNIK STOKE ROAD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "11681",
+    "SKROT": "DELTA",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "11681",
+    "SKROT": "DELTA",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "13014",
+    "SKROT": "FOOD PLUS EXETER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Fresh"
+  },
+  {
+    "KH_KOD": "13014",
+    "SKROT": "FOOD PLUS EXETER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Fresh"
+  },
+  {
+    "KH_KOD": "14446",
+    "SKROT": "KOPERNIK HOUNSLOW",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "14446",
+    "SKROT": "KOPERNIK HOUNSLOW",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "14508",
+    "SKROT": "GARY FOOD&WINE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "14508",
+    "SKROT": "GARY FOOD&WINE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "Kopernik"
+  },
+  {
+    "KH_KOD": "16111",
+    "SKROT": "ZRODELKO FOOD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "16111",
+    "SKROT": "ZRODELKO FOOD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "16424",
+    "SKROT": "BALTIKA EURO",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "16424",
+    "SKROT": "BALTIKA EURO",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20834",
+    "SKROT": "EURO STAR",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20834",
+    "SKROT": "EURO STAR",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Derlatka Dariusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1215",
+    "SKROT": "TADEK",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Gaik Adrian",
+    "SIEC_OBCA": "Tadek"
+  },
+  {
+    "KH_KOD": "1215",
+    "SKROT": "TADEK",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Gaik Adrian",
+    "SIEC_OBCA": "Tadek"
+  },
+  {
+    "KH_KOD": "2695",
+    "SKROT": "ALL NATIONS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Gaik Adrian",
+    "SIEC_OBCA": "All Nations"
+  },
+  {
+    "KH_KOD": "2695",
+    "SKROT": "ALL NATIONS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Gaik Adrian",
+    "SIEC_OBCA": "All Nations"
+  },
+  {
+    "KH_KOD": "18356",
+    "SKROT": "TADEK WORKSOP",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Gaik Adrian",
+    "SIEC_OBCA": "Tadek"
+  },
+  {
+    "KH_KOD": "18356",
+    "SKROT": "TADEK WORKSOP",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Gaik Adrian",
+    "SIEC_OBCA": "Tadek"
+  },
+  {
+    "KH_KOD": "1432",
+    "SKROT": "EUROPA DELICATESY PRESTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "2",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "Eurodelikatesy"
+  },
+  {
+    "KH_KOD": "1432",
+    "SKROT": "EUROPA DELICATESY PRESTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "2",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "Eurodelikatesy"
+  },
+  {
+    "KH_KOD": "2382",
+    "SKROT": "MEGA MARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "Eurodelikatesy"
+  },
+  {
+    "KH_KOD": "2382",
+    "SKROT": "MEGA MARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "Eurodelikatesy"
+  },
+  {
+    "KH_KOD": "3355",
+    "SKROT": "KARPATY LEEDS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3355",
+    "SKROT": "KARPATY LEEDS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "6400",
+    "SKROT": "H D MARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "6400",
+    "SKROT": "H D MARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "13050",
+    "SKROT": "FRESH DELI FOOD PLUS LTD- RUMUNSKIE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "Fresh Deli"
+  },
+  {
+    "KH_KOD": "13050",
+    "SKROT": "FRESH DELI FOOD PLUS LTD- RUMUNSKIE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "Fresh Deli"
+  },
+  {
+    "KH_KOD": "13491",
+    "SKROT": "MI MARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "13491",
+    "SKROT": "MI MARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "16005",
+    "SKROT": "ZODIAK LOCAL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "Eurodelikatesy"
+  },
+  {
+    "KH_KOD": "16005",
+    "SKROT": "ZODIAK LOCAL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Grzelak Malwina",
+    "SIEC_OBCA": "Eurodelikatesy"
+  },
+  {
+    "KH_KOD": "587",
+    "SKROT": "NASZ SKLEP GLASGOW",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "587",
+    "SKROT": "NASZ SKLEP GLASGOW",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "1050",
+    "SKROT": "B&M SAUSAGES",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "1050",
+    "SKROT": "B&M SAUSAGES",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "2521",
+    "SKROT": "B&M SAUSAGES MOTHERWELL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "2521",
+    "SKROT": "B&M SAUSAGES MOTHERWELL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "3051",
+    "SKROT": "DELICATESSEN PYSIO",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3051",
+    "SKROT": "DELICATESSEN PYSIO",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3102",
+    "SKROT": "EAST EUROPEAN FOOD PETERHEAD",
+    "NAZWA_GRUPA": "WORLD FOOD",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3102",
+    "SKROT": "EAST EUROPEAN FOOD PETERHEAD",
+    "NAZWA_GRUPA": "WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3102",
+    "SKROT": "EAST EUROPEAN FOOD PETERHEAD",
+    "NAZWA_GRUPA": "UKRAINA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3102",
+    "SKROT": "EAST EUROPEAN FOOD PETERHEAD",
+    "NAZWA_GRUPA": "BUŁGARIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3102",
+    "SKROT": "EAST EUROPEAN FOOD PETERHEAD",
+    "NAZWA_GRUPA": "LITWA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3102",
+    "SKROT": "EAST EUROPEAN FOOD PETERHEAD",
+    "NAZWA_GRUPA": "UKRAINA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3102",
+    "SKROT": "EAST EUROPEAN FOOD PETERHEAD",
+    "NAZWA_GRUPA": "BUŁGARIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3102",
+    "SKROT": "EAST EUROPEAN FOOD PETERHEAD",
+    "NAZWA_GRUPA": "LITWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3102",
+    "SKROT": "EAST EUROPEAN FOOD PETERHEAD",
+    "NAZWA_GRUPA": "ŁOTWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3600",
+    "SKROT": "B&M SASUAGE CLYDEBANKI",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "3600",
+    "SKROT": "B&M SASUAGE CLYDEBANKI",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "3969",
+    "SKROT": "B&M SAUSAGES EDINBURGH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "3969",
+    "SKROT": "B&M SAUSAGES EDINBURGH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "B&M"
+  },
+  {
+    "KH_KOD": "20486",
+    "SKROT": "MADE IN EUROPE PAISLEY",
+    "NAZWA_GRUPA": "WORLD FOOD",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20486",
+    "SKROT": "MADE IN EUROPE PAISLEY",
+    "NAZWA_GRUPA": "WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20486",
+    "SKROT": "MADE IN EUROPE PAISLEY",
+    "NAZWA_GRUPA": "UKRAINA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20486",
+    "SKROT": "MADE IN EUROPE PAISLEY",
+    "NAZWA_GRUPA": "BUŁGARIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20486",
+    "SKROT": "MADE IN EUROPE PAISLEY",
+    "NAZWA_GRUPA": "LITWA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20486",
+    "SKROT": "MADE IN EUROPE PAISLEY",
+    "NAZWA_GRUPA": "UKRAINA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20486",
+    "SKROT": "MADE IN EUROPE PAISLEY",
+    "NAZWA_GRUPA": "BUŁGARIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20486",
+    "SKROT": "MADE IN EUROPE PAISLEY",
+    "NAZWA_GRUPA": "LITWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20486",
+    "SKROT": "MADE IN EUROPE PAISLEY",
+    "NAZWA_GRUPA": "ŁOTWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Kadzioła Paweł",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20478",
+    "SKROT": "TRUSKAWKA",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Lonycz Tomasz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20478",
+    "SKROT": "TRUSKAWKA",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Lonycz Tomasz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "371",
+    "SKROT": "KRAKOW SKLEP LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Krakow"
+  },
+  {
+    "KH_KOD": "371",
+    "SKROT": "KRAKOW SKLEP LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Krakow"
+  },
+  {
+    "KH_KOD": "649",
+    "SKROT": "FOOD PLUS WREXHAM",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "649",
+    "SKROT": "FOOD PLUS WREXHAM",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "700",
+    "SKROT": "CHATA POLSKA TELFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Chata"
+  },
+  {
+    "KH_KOD": "700",
+    "SKROT": "CHATA POLSKA TELFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Chata"
+  },
+  {
+    "KH_KOD": "1360",
+    "SKROT": "EXTRA SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "WB"
+  },
+  {
+    "KH_KOD": "1360",
+    "SKROT": "EXTRA SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "WB"
+  },
+  {
+    "KH_KOD": "1904",
+    "SKROT": "WISLA MANCHESTER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1904",
+    "SKROT": "WISLA MANCHESTER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2076",
+    "SKROT": "SMACZEK SHOTTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "2076",
+    "SKROT": "SMACZEK SHOTTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "2191",
+    "SKROT": "KRAKUS LIVERPOOL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2191",
+    "SKROT": "KRAKUS LIVERPOOL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2283",
+    "SKROT": "DOBRY SKLEP LIMITED",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2283",
+    "SKROT": "DOBRY SKLEP LIMITED",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2284",
+    "SKROT": "CHATA POLSKA SHREWSBURY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Chata"
+  },
+  {
+    "KH_KOD": "2284",
+    "SKROT": "CHATA POLSKA SHREWSBURY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Chata"
+  },
+  {
+    "KH_KOD": "2648",
+    "SKROT": "CHATA POLSKA WREXHAM",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Chata"
+  },
+  {
+    "KH_KOD": "2648",
+    "SKROT": "CHATA POLSKA WREXHAM",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Chata"
+  },
+  {
+    "KH_KOD": "2738",
+    "SKROT": "SUN MARKET LIVERPOOL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Krakow"
+  },
+  {
+    "KH_KOD": "2738",
+    "SKROT": "SUN MARKET LIVERPOOL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Krakow"
+  },
+  {
+    "KH_KOD": "2822",
+    "SKROT": "BALTIC ELLESMERE PORT",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "2822",
+    "SKROT": "BALTIC ELLESMERE PORT",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "3138",
+    "SKROT": "MEET MEAT",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3138",
+    "SKROT": "MEET MEAT",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4516",
+    "SKROT": "EXTRA SUPERMARKET 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "WB"
+  },
+  {
+    "KH_KOD": "4516",
+    "SKROT": "EXTRA SUPERMARKET 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "WB"
+  },
+  {
+    "KH_KOD": "5700",
+    "SKROT": "U MISIA",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "5700",
+    "SKROT": "U MISIA",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "11330",
+    "SKROT": "CHATA POLSKA EXTRA",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Chata"
+  },
+  {
+    "KH_KOD": "11330",
+    "SKROT": "CHATA POLSKA EXTRA",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Chata"
+  },
+  {
+    "KH_KOD": "14969",
+    "SKROT": "KRAKOW ASHTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Capital"
+  },
+  {
+    "KH_KOD": "14969",
+    "SKROT": "KRAKOW ASHTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Capital"
+  },
+  {
+    "KH_KOD": "17169",
+    "SKROT": "DUET LEIGH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "17169",
+    "SKROT": "DUET LEIGH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "20991",
+    "SKROT": "NAZAR BAZAAR MANCHESTER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Krakow"
+  },
+  {
+    "KH_KOD": "20991",
+    "SKROT": "NAZAR BAZAAR MANCHESTER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Krakow"
+  },
+  {
+    "KH_KOD": "21099",
+    "SKROT": "LOCAL STATION OFF LICENSE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "21099",
+    "SKROT": "LOCAL STATION OFF LICENSE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Matusiak Marcin",
+    "SIEC_OBCA": "Smaczek Shotton"
+  },
+  {
+    "KH_KOD": "4588",
+    "SKROT": "BALTIC SUPERMARKET SWINDON",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Nitkowski Wojciech",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4588",
+    "SKROT": "BALTIC SUPERMARKET SWINDON",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Nitkowski Wojciech",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "484",
+    "SKROT": "TOUCH OF POLAND KIRKCALDY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "484",
+    "SKROT": "TOUCH OF POLAND KIRKCALDY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "486",
+    "SKROT": "TASTE OF POLAND LIMITED",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "486",
+    "SKROT": "TASTE OF POLAND LIMITED",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "1545",
+    "SKROT": "BIGPOL LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "1545",
+    "SKROT": "BIGPOL LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "3479",
+    "SKROT": "BIGPOL 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "3479",
+    "SKROT": "BIGPOL 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "3691",
+    "SKROT": "TOUCH OF POLAND EDINBURGH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "3691",
+    "SKROT": "TOUCH OF POLAND EDINBURGH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "3822",
+    "SKROT": "TASTE OF POLAND GLASGOW",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "3822",
+    "SKROT": "TASTE OF POLAND GLASGOW",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "6018",
+    "SKROT": "KOSAR SUPER FRESH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "2",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Sabir"
+  },
+  {
+    "KH_KOD": "6018",
+    "SKROT": "KOSAR SUPER FRESH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "2",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Sabir"
+  },
+  {
+    "KH_KOD": "6223",
+    "SKROT": "TOUCH OF POLAND ARBROATH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "6223",
+    "SKROT": "TOUCH OF POLAND ARBROATH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "Taste of Poland"
+  },
+  {
+    "KH_KOD": "15275",
+    "SKROT": "BERYOZKA",
+    "NAZWA_GRUPA": "WORLD FOOD",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15275",
+    "SKROT": "BERYOZKA",
+    "NAZWA_GRUPA": "WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15275",
+    "SKROT": "BERYOZKA",
+    "NAZWA_GRUPA": "UKRAINA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15275",
+    "SKROT": "BERYOZKA",
+    "NAZWA_GRUPA": "BUŁGARIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15275",
+    "SKROT": "BERYOZKA",
+    "NAZWA_GRUPA": "LITWA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15275",
+    "SKROT": "BERYOZKA",
+    "NAZWA_GRUPA": "UKRAINA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15275",
+    "SKROT": "BERYOZKA",
+    "NAZWA_GRUPA": "BUŁGARIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15275",
+    "SKROT": "BERYOZKA",
+    "NAZWA_GRUPA": "LITWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "15275",
+    "SKROT": "BERYOZKA",
+    "NAZWA_GRUPA": "ŁOTWA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20883",
+    "SKROT": "BUCHAREST STORE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20883",
+    "SKROT": "BUCHAREST STORE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Roszczyk Mateusz",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "344",
+    "SKROT": "KRUPNIK POLISH SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "344",
+    "SKROT": "KRUPNIK POLISH SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "393",
+    "SKROT": "MAYA POLISH SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "393",
+    "SKROT": "MAYA POLISH SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "473",
+    "SKROT": "LONDEK ILFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "473",
+    "SKROT": "LONDEK ILFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "754",
+    "SKROT": "KOPERNIK LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "754",
+    "SKROT": "KOPERNIK LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "813",
+    "SKROT": "MAGDALENKA POLISH DELICATESSEN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "813",
+    "SKROT": "MAGDALENKA POLISH DELICATESSEN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "814",
+    "SKROT": "FOOD PLUS BOURNEMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "DK FOODS Daniel"
+  },
+  {
+    "KH_KOD": "814",
+    "SKROT": "FOOD PLUS BOURNEMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "DK FOODS Daniel"
+  },
+  {
+    "KH_KOD": "954",
+    "SKROT": "EUROPA FOOD STORE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "954",
+    "SKROT": "EUROPA FOOD STORE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1015",
+    "SKROT": "LITTLE POLAND GILLINGHAM",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1015",
+    "SKROT": "LITTLE POLAND GILLINGHAM",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1767",
+    "SKROT": "SUPER POLO FOOD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "1767",
+    "SKROT": "SUPER POLO FOOD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2033",
+    "SKROT": "FERHAT STORES LTD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2033",
+    "SKROT": "FERHAT STORES LTD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "3",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2262",
+    "SKROT": "MAYA PORTSMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2262",
+    "SKROT": "MAYA PORTSMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2838",
+    "SKROT": "7 DAYS ORANGE SHOP",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "2838",
+    "SKROT": "7 DAYS ORANGE SHOP",
+    "NAZWA_GRUPA": "RUMUNIA I WORLD FOOD CHŁODNIA",
+    "RABAT_PROCENTOWY": "8",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3927",
+    "SKROT": "NASZ SKLEP SOUTHAMPTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3927",
+    "SKROT": "NASZ SKLEP SOUTHAMPTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4071",
+    "SKROT": "ACC POLSKI SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4071",
+    "SKROT": "ACC POLSKI SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4135",
+    "SKROT": "PAWELEK POLISH FOOD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4135",
+    "SKROT": "PAWELEK POLISH FOOD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "6044",
+    "SKROT": "MAJA NORTHOLT",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6044",
+    "SKROT": "MAJA NORTHOLT",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6046",
+    "SKROT": "MAJA PROSIAK",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6046",
+    "SKROT": "MAJA PROSIAK",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6048",
+    "SKROT": "MAJA GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6048",
+    "SKROT": "MAJA GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6051",
+    "SKROT": "MAJA TORQUAY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6051",
+    "SKROT": "MAJA TORQUAY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6052",
+    "SKROT": "MAJA BRIDGWATER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6052",
+    "SKROT": "MAJA BRIDGWATER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6054",
+    "SKROT": "MAJA EXETER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6054",
+    "SKROT": "MAJA EXETER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "6287",
+    "SKROT": "BALBINKA DELI",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "6287",
+    "SKROT": "BALBINKA DELI",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "11246",
+    "SKROT": "MEGA SAVER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "11246",
+    "SKROT": "MEGA SAVER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "12006",
+    "SKROT": "BALKANIKA",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "12006",
+    "SKROT": "BALKANIKA",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "13437",
+    "SKROT": "MAJA DRAYTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "13437",
+    "SKROT": "MAJA DRAYTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "16327",
+    "SKROT": "777PRIMEFOOD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "16327",
+    "SKROT": "777PRIMEFOOD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "16885",
+    "SKROT": "LONDEK ROMFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "16885",
+    "SKROT": "LONDEK ROMFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "17877",
+    "SKROT": "KRAKOW SUPERMARKET PLYMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "17877",
+    "SKROT": "KRAKOW SUPERMARKET PLYMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "18236",
+    "SKROT": "MAJA CHELMSFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "18236",
+    "SKROT": "MAJA CHELMSFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "MAJA"
+  },
+  {
+    "KH_KOD": "19050",
+    "SKROT": "EUROPEAN SOUTH SUPERSTORE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "19050",
+    "SKROT": "EUROPEAN SOUTH SUPERSTORE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "19246",
+    "SKROT": "D&D BOURNEMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "19246",
+    "SKROT": "D&D BOURNEMOUTH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20874",
+    "SKROT": "FOOD PLUS LONDEK",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "20874",
+    "SKROT": "FOOD PLUS LONDEK",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Stępień Karol",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "927",
+    "SKROT": "BESKID SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Karpaty"
+  },
+  {
+    "KH_KOD": "927",
+    "SKROT": "BESKID SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Karpaty"
+  },
+  {
+    "KH_KOD": "1709",
+    "SKROT": "EURO SUPERMARKET REDDITCH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDOS"
+  },
+  {
+    "KH_KOD": "1709",
+    "SKROT": "EURO SUPERMARKET REDDITCH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDOS"
+  },
+  {
+    "KH_KOD": "1946",
+    "SKROT": "ALMA SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "1946",
+    "SKROT": "ALMA SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "3589",
+    "SKROT": "EURO SUPERMERKET COVENTRY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDOS"
+  },
+  {
+    "KH_KOD": "3589",
+    "SKROT": "EURO SUPERMERKET COVENTRY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDOS"
+  },
+  {
+    "KH_KOD": "4027",
+    "SKROT": "EURO SUPERMARKET FOLESHIL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDO"
+  },
+  {
+    "KH_KOD": "4027",
+    "SKROT": "EURO SUPERMARKET FOLESHIL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDO"
+  },
+  {
+    "KH_KOD": "4439",
+    "SKROT": "KARPATY SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Karpaty"
+  },
+  {
+    "KH_KOD": "4439",
+    "SKROT": "KARPATY SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Karpaty"
+  },
+  {
+    "KH_KOD": "4741",
+    "SKROT": "GROSIK SKLEP BAN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik Banbury"
+  },
+  {
+    "KH_KOD": "4741",
+    "SKROT": "GROSIK SKLEP BAN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik Banbury"
+  },
+  {
+    "KH_KOD": "5588",
+    "SKROT": "DWA KOTY STOKE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "2",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Dwa koty"
+  },
+  {
+    "KH_KOD": "5588",
+    "SKROT": "DWA KOTY STOKE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "2",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Dwa koty"
+  },
+  {
+    "KH_KOD": "5593",
+    "SKROT": "GROSIK FOOD PLUS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Karpaty"
+  },
+  {
+    "KH_KOD": "5593",
+    "SKROT": "GROSIK FOOD PLUS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Karpaty"
+  },
+  {
+    "KH_KOD": "6075",
+    "SKROT": "EURO SUPERMARKET RUGBY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "6075",
+    "SKROT": "EURO SUPERMARKET RUGBY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "9755",
+    "SKROT": "MEGA GROSIK",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "9755",
+    "SKROT": "MEGA GROSIK",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "10481",
+    "SKROT": "MAXI FRESH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik Banbury"
+  },
+  {
+    "KH_KOD": "10481",
+    "SKROT": "MAXI FRESH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik Banbury"
+  },
+  {
+    "KH_KOD": "11047",
+    "SKROT": "MARYSIA SUPERSTORE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Janosik UK"
+  },
+  {
+    "KH_KOD": "11047",
+    "SKROT": "MARYSIA SUPERSTORE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Janosik UK"
+  },
+  {
+    "KH_KOD": "12150",
+    "SKROT": "LIDO",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDO"
+  },
+  {
+    "KH_KOD": "12150",
+    "SKROT": "LIDO",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDO"
+  },
+  {
+    "KH_KOD": "13263",
+    "SKROT": "KUBUS MINI MARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "13263",
+    "SKROT": "KUBUS MINI MARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "14280",
+    "SKROT": "MAXI GROSIK",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "14280",
+    "SKROT": "MAXI GROSIK",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "14505",
+    "SKROT": "ALMA WORCESTER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "14505",
+    "SKROT": "ALMA WORCESTER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "15474",
+    "SKROT": "LIDOS",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDOS"
+  },
+  {
+    "KH_KOD": "15474",
+    "SKROT": "LIDOS",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "10",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "LIDOS"
+  },
+  {
+    "KH_KOD": "16256",
+    "SKROT": "MILKA COVENTRY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "16256",
+    "SKROT": "MILKA COVENTRY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "11",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Mega Grosik"
+  },
+  {
+    "KH_KOD": "20190",
+    "SKROT": "DWA KOTY STOKE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "2",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Dwa koty"
+  },
+  {
+    "KH_KOD": "20190",
+    "SKROT": "DWA KOTY STOKE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "2",
+    "OPIEKUN_KLIENTA": "Szermerowski Łukasz",
+    "SIEC_OBCA": "Dwa koty"
+  },
+  {
+    "KH_KOD": "378",
+    "SKROT": "NORWOOD LESNA CHATA",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "6",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Leśna Chata"
+  },
+  {
+    "KH_KOD": "378",
+    "SKROT": "NORWOOD LESNA CHATA",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "6",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Leśna Chata"
+  },
+  {
+    "KH_KOD": "449",
+    "SKROT": "SMACZEK READING",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "449",
+    "SKROT": "SMACZEK READING",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "809",
+    "SKROT": "POLSKI SKLEP SMACZEK LANGLEY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "809",
+    "SKROT": "POLSKI SKLEP SMACZEK LANGLEY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "1163",
+    "SKROT": "SMACZEK LUTON 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "1163",
+    "SKROT": "SMACZEK LUTON 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "1164",
+    "SKROT": "SMACZEK BIRMINGHAM",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "1164",
+    "SKROT": "SMACZEK BIRMINGHAM",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "1967",
+    "SKROT": "SMACZEK SOUTHAMPTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "1967",
+    "SKROT": "SMACZEK SOUTHAMPTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "2165",
+    "SKROT": "SMACZEK SLOUGH 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "2165",
+    "SKROT": "SMACZEK SLOUGH 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "2380",
+    "SKROT": "SMACZEK BASINGSTONE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "2380",
+    "SKROT": "SMACZEK BASINGSTONE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "2901",
+    "SKROT": "SMACZEK LEICESTER",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "2901",
+    "SKROT": "SMACZEK LEICESTER",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "2905",
+    "SKROT": "WIEJSKA CHATA",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "6",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Leśna Chata"
+  },
+  {
+    "KH_KOD": "2905",
+    "SKROT": "WIEJSKA CHATA",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "6",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Leśna Chata"
+  },
+  {
+    "KH_KOD": "3057",
+    "SKROT": "MLECZKO MAGAZYN CENTRALNY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "3057",
+    "SKROT": "MLECZKO MAGAZYN CENTRALNY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "3180",
+    "SKROT": "BOUNDS GREEN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "4",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3180",
+    "SKROT": "BOUNDS GREEN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "4",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "3376",
+    "SKROT": "SUTTON LESNA CHATA 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "6",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Leśna Chata"
+  },
+  {
+    "KH_KOD": "3376",
+    "SKROT": "SUTTON LESNA CHATA 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "6",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Leśna Chata"
+  },
+  {
+    "KH_KOD": "3613",
+    "SKROT": "SMACZEK HIGH WYCOMBE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "3613",
+    "SKROT": "SMACZEK HIGH WYCOMBE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "4642",
+    "SKROT": "POLMAR WEMBLEY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "6",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "4642",
+    "SKROT": "POLMAR WEMBLEY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "6",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "6199",
+    "SKROT": "MLECZKO DELIKATESY SLOUGH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6199",
+    "SKROT": "MLECZKO DELIKATESY SLOUGH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6201",
+    "SKROT": "MLECZKO DELIKATESY CROYDON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6201",
+    "SKROT": "MLECZKO DELIKATESY CROYDON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6280",
+    "SKROT": "POLSKI SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "6280",
+    "SKROT": "POLSKI SUPERMARKET",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "(puste)"
+  },
+  {
+    "KH_KOD": "6328",
+    "SKROT": "MLECZKO DELIKATESY KENTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6328",
+    "SKROT": "MLECZKO DELIKATESY KENTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6360",
+    "SKROT": "MLECZKO DELIKATESY WOODGREEN",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6360",
+    "SKROT": "MLECZKO DELIKATESY WOODGREEN",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6361",
+    "SKROT": "MLECZKO DELIKATESY ACTON",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6361",
+    "SKROT": "MLECZKO DELIKATESY ACTON",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6453",
+    "SKROT": "MLECZKO DELIKATESY READING",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6453",
+    "SKROT": "MLECZKO DELIKATESY READING",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6463",
+    "SKROT": "MLECZKO DELIKATESY HOUNSLOW",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6463",
+    "SKROT": "MLECZKO DELIKATESY HOUNSLOW",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "6679",
+    "SKROT": "SMACZEK SWINDON 2",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "6679",
+    "SKROT": "SMACZEK SWINDON 2",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "9907",
+    "SKROT": "MLECZKO DELIKATESY SUDBURY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "9907",
+    "SKROT": "MLECZKO DELIKATESY SUDBURY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11905",
+    "SKROT": "MLECZKO DELIKATESY CRANFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11905",
+    "SKROT": "MLECZKO DELIKATESY CRANFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11907",
+    "SKROT": "MLECZKO DELIKATESY GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11907",
+    "SKROT": "MLECZKO DELIKATESY GREENFORD",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11908",
+    "SKROT": "MLECZKO DELIKATESY HANWELL",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11908",
+    "SKROT": "MLECZKO DELIKATESY HANWELL",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11909",
+    "SKROT": "MLECZKO DELIKATESY SOUTH EALING",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11909",
+    "SKROT": "MLECZKO DELIKATESY SOUTH EALING",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11910",
+    "SKROT": "MLECZKO DELIKATESY SHEPHERD'S BUSH",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11910",
+    "SKROT": "MLECZKO DELIKATESY SHEPHERD'S BUSH",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "7",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Mleczko"
+  },
+  {
+    "KH_KOD": "11941",
+    "SKROT": "SMACZEK SOUTHAMPTON BITTERNE",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "11941",
+    "SKROT": "SMACZEK SOUTHAMPTON BITTERNE",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "12364",
+    "SKROT": "DELIKATESY SMACZEK COVENTRY",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "12364",
+    "SKROT": "DELIKATESY SMACZEK COVENTRY",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "12699",
+    "SKROT": "DELIKATESY SMACZEK LUTON 3",
+    "NAZWA_GRUPA": "RUMUNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  },
+  {
+    "KH_KOD": "12699",
+    "SKROT": "DELIKATESY SMACZEK LUTON 3",
+    "NAZWA_GRUPA": "RUMUNIA CHŁODNIA",
+    "RABAT_PROCENTOWY": "5",
+    "OPIEKUN_KLIENTA": "Zawierski Jacek",
+    "SIEC_OBCA": "Smaczek"
+  }
+]
