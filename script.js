@@ -192,6 +192,11 @@ let topSuggestionSummary = null;
 let topRumuniaOfferCache = null;
 let reportOfferRowsCache = new Map();
 let isLoading = false;
+const IMAGE_PLACEHOLDER_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+const IMAGE_EXTENSION_CACHE_KEY = 'wf-image-extension-cache-v1';
+const MAX_IMAGE_EXTENSION_CACHE_ENTRIES = 3000;
+const imageExtensionCache = createImageExtensionCache();
+let lazyImageObserver = null;
 
 let auth = null;
 let authReady = false;
@@ -953,12 +958,11 @@ function renderTopSalesReportContent(){
 
   const rowsHtml = reportsGeneratedRows.map((row, index) => {
     const idx = String(row.INDEKS ?? '').trim();
-    const imgUrl = idx ? buildImageUrl(idx, 'png', imageBaseUrlRumunia) : '';
     return `
       <tr>
         <td>${index + 1}</td>
         <td class="reports-image-cell">
-          ${imgUrl ? `<img class="reports-image" src="${imgUrl}" data-index="${escapeAttr(idx)}" data-base="${escapeAttr(imageBaseUrlRumunia)}" data-tried="png" onerror="imageFallback(this)" alt="">` : ''}
+          ${idx ? buildProductImageTag(idx, imageBaseUrlRumunia, 'reports-image') : ''}
         </td>
         <td>${escapeHtml(row.INDEKS ?? '')}</td>
         <td>${escapeHtml(row.NAZWA ?? '')}</td>
@@ -1674,7 +1678,6 @@ function renderClientRowsTable(rows, emptyText, options = {}){
   const { selectable = false } = options;
   const html = rows.map((row, index) => {
     const idx = String(row.INDEKS ?? '').trim();
-    const imgUrl = idx ? buildImageUrl(idx, 'png', imageBaseUrlRumunia) : '';
     const normalizedIndex = normalizeIndexValue(idx);
     const checked = selectable && clientReportSelectedMissingIndexes.has(normalizedIndex) ? 'checked' : '';
     return `
@@ -1682,7 +1685,7 @@ function renderClientRowsTable(rows, emptyText, options = {}){
         <td>${index + 1}</td>
         ${selectable ? `<td><input type="checkbox" data-index="${escapeAttr(idx)}" onchange="toggleClientMissingSelection(this)" ${checked}></td>` : ''}
         <td class="reports-image-cell">
-          ${imgUrl ? `<img class="reports-image" src="${imgUrl}" data-index="${escapeAttr(idx)}" data-base="${escapeAttr(imageBaseUrlRumunia)}" data-tried="png" onerror="imageFallback(this)" alt="">` : ''}
+          ${idx ? buildProductImageTag(idx, imageBaseUrlRumunia, 'reports-image') : ''}
         </td>
         <td>${escapeHtml(row.INDEKS ?? '')}</td>
         <td>${escapeHtml(row.NAZWA ?? '')}</td>
@@ -2198,6 +2201,7 @@ function renderReportsView(){
       ${renderContent()}
     </div>
   `;
+  registerLazyImages(reportsContainer);
 }
 
 function openReportsView(){
@@ -3578,10 +3582,11 @@ function renderListingTable(){
   listingBody.innerHTML = listingResults.map(r => `
     <tr>
       ${cols.map(c => c === 'Zdjęcie'
-        ? `<td>${r[c] ? `<img class="listing-img" src="${escapeAttr(r[c])}" alt="">` : ''}</td>`
+        ? `<td>${r[c] ? buildDeferredImageTag(String(r[c]), 'listing-img') : ''}</td>`
         : `<td>${escapeHtml(r[c] ?? '')}</td>`).join('')}
     </tr>
   `).join('');
+  registerLazyImages(listingBody);
 }
 
 function exportListingXlsx(){
@@ -4175,6 +4180,7 @@ function updateTable(){
         ${cols.map(c => renderCell(c, r, indexKey, eanKey, rowIndex + 1)).join('')}
       </tr>
     `).join('');
+    registerLazyImages(tbody);
   }
 
   const expandContainer = document.getElementById('expand-container');
@@ -4290,9 +4296,9 @@ function renderCell(col, row, indexKey, eanKey, rowNumber){
     const imgBase = getRowImageBase(row);
     const img = idx
       ? `<span class="img-hover" onmouseenter="positionPopup(this)">
-           <img class="index-img" src="${buildImageUrl(idx, 'png', imgBase)}" data-index="${escapeAttr(idx)}" data-base="${escapeAttr(imgBase)}" data-tried="png" onerror="imageFallback(this)" alt="">
+           ${buildProductImageTag(idx, imgBase, 'index-img')}
            <span class="img-pop">
-             <img class="index-img-large" src="${buildImageUrl(idx, 'png', imgBase)}" alt="">
+             ${buildProductImageTag(idx, imgBase, 'index-img-large', { popup: true })}
            </span>
          </span>`
       : '';
@@ -4388,24 +4394,184 @@ function buildImageUrl(index, ext, baseUrl){
   return `${base}${encodeURIComponent(index)}.${ext}?alt=media`;
 }
 
+function createImageExtensionCache(){
+  if(typeof localStorage === 'undefined') return new Map();
+  try{
+    const raw = localStorage.getItem(IMAGE_EXTENSION_CACHE_KEY);
+    if(!raw) return new Map();
+    const parsed = JSON.parse(raw);
+    if(!parsed || typeof parsed !== 'object') return new Map();
+    return new Map(
+      Object.entries(parsed).filter(([key, value]) => key && (value === 'png' || value === 'jpg'))
+    );
+  }catch(e){
+    console.warn('Image cache restore failed', e);
+    return new Map();
+  }
+}
+
+function persistImageExtensionCache(){
+  if(typeof localStorage === 'undefined') return;
+  try{
+    const trimmedEntries = Array.from(imageExtensionCache.entries()).slice(-MAX_IMAGE_EXTENSION_CACHE_ENTRIES);
+    localStorage.setItem(IMAGE_EXTENSION_CACHE_KEY, JSON.stringify(Object.fromEntries(trimmedEntries)));
+  }catch(e){
+    console.warn('Image cache save failed', e);
+  }
+}
+
+function getImageCacheKey(index, baseUrl){
+  const normalizedIndex = normalizeIndexValue(index);
+  const base = String(baseUrl || currentImageBaseUrl || '').trim();
+  if(!normalizedIndex || !base) return '';
+  return `${base}|${normalizedIndex}`;
+}
+
+function getPreferredImageExt(index, baseUrl){
+  const key = getImageCacheKey(index, baseUrl);
+  return (key && imageExtensionCache.get(key)) || 'png';
+}
+
+function rememberImageExt(index, baseUrl, ext){
+  const normalizedExt = ext === 'jpg' ? 'jpg' : 'png';
+  const key = getImageCacheKey(index, baseUrl);
+  if(!key) return;
+  if(imageExtensionCache.has(key)) imageExtensionCache.delete(key);
+  imageExtensionCache.set(key, normalizedExt);
+  while(imageExtensionCache.size > MAX_IMAGE_EXTENSION_CACHE_ENTRIES){
+    const oldestKey = imageExtensionCache.keys().next().value;
+    if(!oldestKey) break;
+    imageExtensionCache.delete(oldestKey);
+  }
+  persistImageExtensionCache();
+}
+
+function buildDeferredImageTag(src, className, options = {}){
+  const {
+    alt = '',
+    attrs = '',
+    onload = '',
+    onerror = '',
+    popup = false
+  } = options;
+  const sourceAttr = popup ? '' : `src="${IMAGE_PLACEHOLDER_SRC}"`;
+  const loadAttr = popup ? 'eager' : 'lazy';
+  const lazyFlag = popup ? 'data-popup-image="1"' : 'data-lazy-image="1"';
+  const fetchPriority = popup ? 'high' : 'low';
+  return `<img class="${className}" ${sourceAttr} data-src="${escapeAttr(src)}" data-state="idle" ${lazyFlag} loading="${loadAttr}" decoding="async" fetchpriority="${fetchPriority}"${onload ? ` onload="${onload}"` : ''}${onerror ? ` onerror="${onerror}"` : ''}${attrs ? ` ${attrs}` : ''} alt="${escapeAttr(alt)}">`;
+}
+
+function buildProductImageTag(index, baseUrl, className, options = {}){
+  if(!index) return '';
+  const base = baseUrl || currentImageBaseUrl;
+  const ext = getPreferredImageExt(index, base);
+  const src = buildImageUrl(index, ext, base);
+  const attrs = `data-index="${escapeAttr(index)}" data-base="${escapeAttr(base)}" data-tried="${ext}"${options.attrs ? ` ${options.attrs}` : ''}`;
+  return buildDeferredImageTag(src, className, {
+    ...options,
+    attrs,
+    onload: 'handleDeferredImageLoad(this)',
+    onerror: 'imageFallback(this)'
+  });
+}
+
+function ensureLazyImageObserver(){
+  if(lazyImageObserver || typeof IntersectionObserver === 'undefined') return;
+  lazyImageObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(!entry.isIntersecting) return;
+      lazyImageObserver.unobserve(entry.target);
+      loadDeferredImage(entry.target);
+    });
+  }, { rootMargin: '300px 0px' });
+}
+
+function loadDeferredImage(img){
+  if(!img) return;
+  const src = img.getAttribute('data-src');
+  const state = img.getAttribute('data-state');
+  if(!src || state === 'loading' || state === 'loaded') return;
+  img.setAttribute('data-state', 'loading');
+  img.src = src;
+}
+
+function registerLazyImages(root = document){
+  const images = root.querySelectorAll('img[data-lazy-image="1"]');
+  if(!images.length) return;
+  if(typeof IntersectionObserver === 'undefined'){
+    images.forEach(loadDeferredImage);
+    return;
+  }
+  ensureLazyImageObserver();
+  images.forEach(img => {
+    const state = img.getAttribute('data-state');
+    if(state === 'loading' || state === 'loaded') return;
+    lazyImageObserver.observe(img);
+  });
+}
+
+function handleDeferredImageLoad(img){
+  const state = img.getAttribute('data-state');
+  if(state !== 'loading' && state !== 'fallback') return;
+  img.setAttribute('data-state', 'loaded');
+  img.classList.remove('img-missing');
+
+  const index = img.getAttribute('data-index');
+  const base = img.getAttribute('data-base') || currentImageBaseUrl;
+  const tried = img.getAttribute('data-tried') || 'png';
+  if(!index) return;
+
+  rememberImageExt(index, base, tried);
+  const popupImage = img.closest('.img-hover')?.querySelector('.index-img-large');
+  if(popupImage && popupImage !== img && !popupImage.getAttribute('src')){
+    popupImage.setAttribute('data-tried', tried);
+    popupImage.setAttribute('data-src', buildImageUrl(index, tried, base));
+  }
+}
+
+function preparePopupImage(img){
+  if(!img) return;
+  const index = img.getAttribute('data-index');
+  const base = img.getAttribute('data-base') || currentImageBaseUrl;
+  const ext = getPreferredImageExt(index, base);
+  img.setAttribute('data-tried', ext);
+  img.setAttribute('data-src', buildImageUrl(index, ext, base));
+  loadDeferredImage(img);
+}
+
 function imageFallback(img){
   const index = img.getAttribute('data-index');
   const base = img.getAttribute('data-base') || currentImageBaseUrl;
   const tried = img.getAttribute('data-tried');
   const pop = img.closest('.img-hover')?.querySelector('.index-img-large');
   if(tried === 'png'){
+    const nextUrl = buildImageUrl(index, 'jpg', base);
     img.setAttribute('data-tried', 'jpg');
-    img.src = buildImageUrl(index, 'jpg', base);
-    if(pop) pop.src = buildImageUrl(index, 'jpg', base);
+    img.setAttribute('data-src', nextUrl);
+    img.setAttribute('data-state', 'fallback');
+    img.src = nextUrl;
+    if(pop){
+      pop.setAttribute('data-tried', 'jpg');
+      pop.setAttribute('data-src', nextUrl);
+      if(pop.getAttribute('src')){
+        pop.setAttribute('data-state', 'fallback');
+        pop.src = nextUrl;
+      }
+    }
     return;
   }
+  img.setAttribute('data-state', 'error');
   img.classList.add('img-missing');
-  if(pop) pop.classList.add('img-missing');
+  if(pop){
+    pop.setAttribute('data-state', 'error');
+    pop.classList.add('img-missing');
+  }
 }
 
 function positionPopup(el){
   const pop = el.querySelector('.img-pop');
   if(!pop) return;
+  preparePopupImage(pop.querySelector('.index-img-large'));
   pop.style.left = '';
   pop.style.right = '';
   const rect = el.getBoundingClientRect();
