@@ -16,6 +16,8 @@ const jsonUrlKawyHerbaty =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Kawa%20i%20Herbata%20-%20Ranking%20Rumunia.json';
 const jsonUrlTopRumunia =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Top%20Rumunia.json';
+const jsonUrlCustomerDiscounts =
+  'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/kh%3Aph%20-%20world%20food%20rabaty.json';
 const jsonUrlSlodyczeUkraina =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/SLODYCZE%20UKRAINA%20-%20RANKING.json';
 const jsonUrlMiesoUkraina =
@@ -169,6 +171,25 @@ let clientReportMissingFilters = {
   group: ''
 };
 let clientRecommendationIncludeCover = true;
+let weeklySalesSourceRows = [];
+let weeklySalesGeneratedRows = [];
+let weeklySalesImportFile = '';
+let weeklySalesSelectedRepresentative = '';
+let weeklySalesSelectedCustomer = '';
+let weeklySalesSelectedProducer = '';
+let weeklySalesSelectedWeek = '';
+let weeklySalesOnlyLastWeek250 = false;
+let weeklySalesRepComparison = false;
+let customerDiscountMapCache = null;
+let topSuggestionSourceRows = [];
+let topSuggestionGeneratedRows = [];
+let topSuggestionPurchasedRows = [];
+let topSuggestionImportFile = '';
+let topSuggestionSelectedRepresentative = '';
+let topSuggestionSelectedCustomer = '';
+let topSuggestionLimit = '';
+let topSuggestionSummary = null;
+let topRumuniaOfferCache = null;
 let reportOfferRowsCache = new Map();
 let isLoading = false;
 
@@ -287,6 +308,23 @@ function resetAppState(){
   clientReportPurchasedFilters = { producer:'', ranking:'', group:'' };
   clientReportMissingFilters = { producer:'', ranking:'', group:'' };
   clientRecommendationIncludeCover = true;
+  weeklySalesSourceRows = [];
+  weeklySalesGeneratedRows = [];
+  weeklySalesImportFile = '';
+  weeklySalesSelectedRepresentative = '';
+  weeklySalesSelectedCustomer = '';
+  weeklySalesSelectedProducer = '';
+  weeklySalesSelectedWeek = '';
+  weeklySalesOnlyLastWeek250 = false;
+  weeklySalesRepComparison = false;
+  topSuggestionSourceRows = [];
+  topSuggestionGeneratedRows = [];
+  topSuggestionPurchasedRows = [];
+  topSuggestionImportFile = '';
+  topSuggestionSelectedRepresentative = '';
+  topSuggestionSelectedCustomer = '';
+  topSuggestionLimit = '';
+  topSuggestionSummary = null;
   reportsGroupLimits = createDefaultReportLimits();
   resetFilters();
 
@@ -770,20 +808,37 @@ if(reportsCard){
 
 function normalizeHeaderKey(value){
   return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/[_-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
+function formatNumber(value){
+  const number = Number(value);
+  if(!Number.isFinite(number)) return '';
+  return new Intl.NumberFormat('pl-PL', { maximumFractionDigits: 2 }).format(number);
+}
+
 function findHeaderKey(headers, variants){
   const map = new Map();
+  const normalizedHeaders = headers.map(header => ({
+    original: header,
+    normalized: normalizeHeaderKey(header)
+  }));
   headers.forEach(header => {
     map.set(normalizeHeaderKey(header), header);
   });
   for(const variant of variants){
     const found = map.get(normalizeHeaderKey(variant));
     if(found) return found;
+  }
+  for(const variant of variants){
+    const normalizedVariant = normalizeHeaderKey(variant);
+    const found = normalizedHeaders.find(header => header.normalized.includes(normalizedVariant));
+    if(found) return found.original;
   }
   return '';
 }
@@ -863,6 +918,13 @@ function generateReportsData(){
   reportsGeneratedRows = generated;
 }
 
+function pickReportFile(inputId){
+  const input = document.getElementById(inputId);
+  if(!input) return;
+  input.value = '';
+  input.click();
+}
+
 function renderReportLimits(){
   return REPORT_GROUP_CONFIGS.map(group => `
     <label class="reports-limit-card">
@@ -915,8 +977,8 @@ function renderTopSalesReportContent(){
         <div class="import-sub">Importuj Excel i generuj top indeksy według grup produktowych.</div>
       </div>
       <div class="reports-actions">
-        <input id="reports-excel-input" class="import-input" type="file" accept=".xlsx,.xls">
-        <button class="btn-outline" onclick="importReportsExcel()">Importuj Excel</button>
+        <input id="reports-excel-input" class="import-input reports-file-input" type="file" accept=".xlsx,.xls" onchange="importReportsExcel()">
+        <button class="btn-outline" onclick="pickReportFile('reports-excel-input')">Importuj Excel</button>
         <button class="btn-outline" onclick="exportReportsXlsx()" ${reportsGeneratedRows.length ? '' : 'disabled'}>Zapisz XLSX</button>
       </div>
       <div class="import-info">
@@ -970,6 +1032,370 @@ function normalizeClientReportRow(row, headers){
   };
 }
 
+function normalizeWeeklySalesRow(row, headers){
+  const indexKey = findHeaderKey(headers, ['indeks', 'index', 'id', 'numer katalogowy', 'sku number']);
+  const nameKey = findHeaderKey(headers, ['nazwa', 'name', 'nazwa towaru', 'nazwa produktu']);
+  const producerKey = findHeaderKey(headers, ['skrot producenta', 'skrót producenta', 'producent', 'producer']);
+  const repKey = findHeaderKey(headers, ['opiekun klienta', 'opiekun_klienta', 'przedstawiciel handlowy', 'przedstawiciel', 'handlowiec']);
+  const customerCodeKey = findHeaderKey(headers, ['kod kh', 'kod_kh', 'numer klienta', 'kod klienta']);
+  const customerNameKey = findHeaderKey(headers, ['nazwa kh', 'nazwa_kh', 'nazwa klienta', 'klient']);
+  const weekKey = findHeaderKey(headers, ['tydzień', 'tydzien', 'week', 'nr tygodnia', 'numer tygodnia']);
+  const salesKey = findHeaderKey(headers, ['sprzedaż ilościowa', 'sprzedaz ilosciowa', 'ilość', 'ilosc', 'szt', 'quantity', 'qty']);
+  const valueKey = findHeaderKey(headers, ['sprzedaż wartościowa', 'sprzedaz wartosciowa', 'wartość', 'wartosc', 'value']);
+
+  const salesRaw = row[salesKey];
+  const valueRaw = row[valueKey];
+  const salesNumber = Number(String(salesRaw ?? '').replace(/\s+/g, '').replace(',', '.'));
+  const valueNumber = Number(String(valueRaw ?? '').replace(/\s+/g, '').replace(',', '.'));
+
+  return {
+    representative: String(row[repKey] ?? '').trim() || 'Bez przedstawiciela',
+    customerCode: String(row[customerCodeKey] ?? '').trim(),
+    customerName: String(row[customerNameKey] ?? '').trim() || 'Bez nazwy klienta',
+    index: String(row[indexKey] ?? '').trim(),
+    name: String(row[nameKey] ?? '').trim(),
+    producer: String(row[producerKey] ?? '').trim(),
+    week: String(row[weekKey] ?? '').trim() || 'Bez tygodnia',
+    quantity: Number.isFinite(salesNumber) ? salesNumber : 0,
+    value: Number.isFinite(valueNumber) ? valueNumber : 0
+  };
+}
+
+function normalizeWeeklySalesRowsFromMatrix(matrix){
+  const rows = Array.isArray(matrix) ? matrix : [];
+  const firstRow = rows[0] || [];
+  const secondRow = rows[1] || [];
+  const isWideWeeklyReport =
+    normalizeHeaderKey(firstRow[0]).includes('tydzien sprzedazy') ||
+    normalizeHeaderKey(firstRow[0]).includes('tydzień sprzedaży');
+
+  if(!isWideWeeklyReport){
+    const headers = rows.length ? rows[0] : [];
+    return rows.slice(1)
+      .map(values => {
+        const row = {};
+        headers.forEach((header, index) => {
+          row[header] = values[index] ?? '';
+        });
+        return normalizeWeeklySalesRow(row, headers);
+      })
+      .filter(row => row.index);
+  }
+
+  const repIndex = secondRow.findIndex(header => normalizeHeaderKey(header) === 'opiekun klienta');
+  const customerCodeIndex = secondRow.findIndex(header => normalizeHeaderKey(header) === 'kod kh');
+  const customerNameIndex = secondRow.findIndex(header => normalizeHeaderKey(header) === 'nazwa kh');
+  const productIndex = secondRow.findIndex(header => normalizeHeaderKey(header) === 'kh kod prod');
+  const producerIndex = secondRow.findIndex(header => normalizeHeaderKey(header) === 'skrot producenta');
+  const hasProductColumn = productIndex >= 0;
+  const salesColumnIndexes = secondRow
+    .map((header, index) => ({ header, index }))
+    .filter(item => normalizeHeaderKey(item.header).includes('sprzedaz waluta'))
+    .map(item => item.index);
+
+  return rows.slice(2).flatMap(values => {
+    const representative = String(values[repIndex] ?? '').trim() || 'Bez przedstawiciela';
+    const customerCode = String(values[customerCodeIndex] ?? '').trim();
+    const customerName = String(values[customerNameIndex] ?? '').trim() || 'Bez nazwy klienta';
+    const index = hasProductColumn ? String(values[productIndex] ?? '').trim() : '';
+    const producer = producerIndex >= 0 ? String(values[producerIndex] ?? '').trim() : '';
+    if(hasProductColumn && !index) return [];
+    if(!hasProductColumn && !customerCode && !customerName) return [];
+
+    return salesColumnIndexes.map((columnIndex, weekIndex) => {
+      const valueRaw = values[columnIndex];
+      const value = Number(String(valueRaw ?? '').replace(/\s+/g, '').replace(',', '.'));
+      const weekHeader = String(firstRow[columnIndex] ?? '').trim();
+      const weekLabel = weekHeader && !weekHeader.startsWith('=') ? weekHeader : `Tydzień ${weekIndex + 1}`;
+      return {
+        representative,
+        customerCode,
+        customerName,
+        index,
+        name: '',
+        producer,
+        week: weekLabel,
+        quantity: 0,
+        value: Number.isFinite(value) ? value : 0
+      };
+    }).filter(row => row.value);
+  });
+}
+
+function getWeeklySalesRepresentatives(){
+  return Array.from(new Set(weeklySalesSourceRows.map(row => row.representative).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b, 'pl'));
+}
+
+function getWeeklySalesCustomers(){
+  if(!weeklySalesSelectedRepresentative) return [];
+  const map = new Map();
+  weeklySalesSourceRows
+    .filter(row => row.representative === weeklySalesSelectedRepresentative)
+    .forEach(row => {
+      const key = `${row.customerCode}|||${row.customerName}`;
+      if(!map.has(key)){
+        map.set(key, { code: row.customerCode, name: row.customerName });
+      }
+    });
+  return Array.from(map.values()).sort((a, b) => {
+    const nameCompare = a.name.localeCompare(b.name, 'pl');
+    return nameCompare || a.code.localeCompare(b.code, 'pl');
+  });
+}
+
+function getWeeklySalesProducers(){
+  return Array.from(new Set(
+    weeklySalesGeneratedRows.map(row => String(row.producer || '').trim()).filter(Boolean)
+  )).sort((a, b) => a.localeCompare(b, 'pl'));
+}
+
+function getWeeklySalesWeeks(){
+  const rows = weeklySalesGeneratedRows.length ? weeklySalesGeneratedRows : weeklySalesSourceRows;
+  return Array.from(new Set(
+    rows.map(row => String(row.week || '').trim()).filter(Boolean)
+  )).sort((a, b) => a.localeCompare(b, 'pl', { numeric: true }));
+}
+
+function getLatestWeeklySalesWeek(){
+  const weeks = getWeeklySalesWeeks();
+  return weeks[weeks.length - 1] || '';
+}
+
+function getWeeklySalesComparisonWeeks(){
+  const weeks = Array.from(new Set(
+    weeklySalesSourceRows.map(row => String(row.week || '').trim()).filter(Boolean)
+  )).sort((a, b) => a.localeCompare(b, 'pl', { numeric: true }));
+  return weeks.slice(Math.max(weeks.length - 2, 0));
+}
+
+function getWeeklySalesRepresentativeComparisonRows(){
+  const [previousWeek, latestWeek] = getWeeklySalesComparisonWeeks();
+  if(!previousWeek || !latestWeek) return [];
+
+  const map = new Map();
+  weeklySalesSourceRows
+    .filter(row => String(row.week || '') === previousWeek || String(row.week || '') === latestWeek)
+    .forEach(row => {
+      const representative = row.representative || 'Bez przedstawiciela';
+      const current = map.get(representative) || {
+        representative,
+        previousWeek,
+        latestWeek,
+        previousValue: 0,
+        latestValue: 0,
+        trendValue: 0
+      };
+      if(String(row.week || '') === previousWeek){
+        current.previousValue += row.quantity || row.value;
+      }else if(String(row.week || '') === latestWeek){
+        current.latestValue += row.quantity || row.value;
+      }
+      map.set(representative, current);
+    });
+
+  return Array.from(map.values())
+    .map(row => ({
+      ...row,
+      trendValue: row.latestValue - row.previousValue
+    }))
+    .sort((a, b) => b.latestValue - a.latestValue || a.representative.localeCompare(b.representative, 'pl'));
+}
+
+function getFilteredWeeklySalesRows(){
+  let rows = weeklySalesGeneratedRows;
+  const latestWeek = getLatestWeeklySalesWeek();
+  const activeWeek = weeklySalesSelectedWeek || latestWeek;
+
+  if(weeklySalesOnlyLastWeek250){
+    const totalsByCustomer = new Map();
+    rows.filter(row => String(row.week || '') === latestWeek).forEach(row => {
+      const key = `${row.representative}|||${row.customerCode}|||${row.customerName}`;
+      totalsByCustomer.set(key, (totalsByCustomer.get(key) || 0) + (row.quantity || row.value));
+    });
+    rows = rows.filter(row => {
+      const key = `${row.representative}|||${row.customerCode}|||${row.customerName}`;
+      return String(row.week || '') === latestWeek && (totalsByCustomer.get(key) || 0) >= 250;
+    });
+  }else if(activeWeek){
+    rows = rows.filter(row => String(row.week || '') === activeWeek);
+  }
+
+  if(weeklySalesSelectedProducer){
+    rows = rows.filter(row => String(row.producer || '').trim() === weeklySalesSelectedProducer);
+  }
+
+  return rows;
+}
+
+function getLatestWeeksFromRows(rows, count){
+  const weeks = Array.from(new Set(rows.map(row => String(row.week || '').trim()).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b, 'pl', { numeric: true }));
+  return weeks.slice(Math.max(weeks.length - count, 0));
+}
+
+function generateWeeklySalesReport(){
+  weeklySalesGeneratedRows = [];
+  if(!weeklySalesSelectedRepresentative) return;
+
+  const selectedCustomer = weeklySalesSelectedCustomer;
+  const filteredRows = weeklySalesSourceRows.filter(row => {
+    if(row.representative !== weeklySalesSelectedRepresentative) return false;
+    if(!selectedCustomer) return true;
+    const [customerCode, customerName] = selectedCustomer.split('|||');
+    return row.customerCode === customerCode && row.customerName === customerName;
+  });
+
+  const grouped = new Map();
+  filteredRows.forEach(row => {
+    const key = [
+      row.representative,
+      row.customerCode,
+      row.customerName,
+      normalizeIndexValue(row.index),
+      row.week
+    ].join('|||');
+    const current = grouped.get(key) || {
+      representative: row.representative,
+      customerCode: row.customerCode,
+      customerName: row.customerName,
+      index: row.index,
+      name: row.name,
+      producer: row.producer,
+      week: row.week,
+      quantity: 0,
+      value: 0
+    };
+    current.quantity += row.quantity;
+    current.value += row.value;
+    grouped.set(key, current);
+  });
+
+  const groupedRows = Array.from(grouped.values());
+  const weeks = Array.from(new Set(groupedRows.map(row => String(row.week || '').trim()).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b, 'pl', { numeric: true }));
+  const weekIndexByLabel = new Map(weeks.map((week, index) => [week, index]));
+  const salesByComparableKey = new Map();
+  groupedRows.forEach(row => {
+    const comparableKey = [
+      row.representative,
+      row.customerCode,
+      row.customerName,
+      normalizeIndexValue(row.index),
+      normalizeProducerValue(row.producer),
+      row.name
+    ].join('|||');
+    salesByComparableKey.set(`${comparableKey}|||${row.week}`, row.quantity || row.value);
+  });
+  groupedRows.forEach(row => {
+    const comparableKey = [
+      row.representative,
+      row.customerCode,
+      row.customerName,
+      normalizeIndexValue(row.index),
+      normalizeProducerValue(row.producer),
+      row.name
+    ].join('|||');
+    const currentWeekIndex = weekIndexByLabel.get(String(row.week || ''));
+    const previousWeek = Number.isInteger(currentWeekIndex) ? weeks[currentWeekIndex - 1] : '';
+    const previousValue = previousWeek ? salesByComparableKey.get(`${comparableKey}|||${previousWeek}`) : undefined;
+    const currentValue = row.quantity || row.value;
+    row.previousWeek = previousWeek || '';
+    row.previousValue = Number.isFinite(previousValue) ? previousValue : null;
+    row.trendValue = Number.isFinite(previousValue) ? currentValue - previousValue : null;
+    const discountInfo = getCustomerDiscountInfo(row.customerCode, row.representative);
+    row.discountLabel = discountInfo.label;
+    row.discountDetails = discountInfo.details;
+    row.discountNetwork = discountInfo.network;
+    row.discountShortcut = discountInfo.shortcut;
+  });
+
+  weeklySalesGeneratedRows = groupedRows.sort((a, b) => {
+    const weekCompare = String(b.week).localeCompare(String(a.week), 'pl', { numeric: true });
+    if(weekCompare) return weekCompare;
+    const customerCompare = String(a.customerName).localeCompare(String(b.customerName), 'pl');
+    if(customerCompare) return customerCompare;
+    return String(a.index).localeCompare(String(b.index), 'pl', { numeric: true });
+  });
+}
+
+async function loadCustomerDiscountMap(){
+  if(customerDiscountMapCache) return customerDiscountMapCache;
+
+  try{
+    const res = await fetch(jsonUrlCustomerDiscounts);
+    const data = await res.json();
+    const map = new Map();
+    (Array.isArray(data) ? data : []).forEach(row => {
+      const code = normalizeCustomerCodeValue(row.KH_KOD);
+      if(!code) return;
+      if(!map.has(code)) map.set(code, []);
+      map.get(code).push({
+        discount: formatDiscountPercent(row.RABAT_PROCENTOWY),
+        group: String(row.NAZWA_GRUPA ?? '').trim(),
+        representative: String(row.OPIEKUN_KLIENTA ?? '').trim(),
+        network: String(row.SIEC_OBCA ?? '').trim(),
+        shortcut: String(row.SKROT ?? '').trim()
+      });
+    });
+    customerDiscountMapCache = map;
+  }catch(e){
+    console.error('Customer discounts load error', e);
+    customerDiscountMapCache = new Map();
+  }
+
+  return customerDiscountMapCache;
+}
+
+function getCustomerDiscountInfo(customerCode, representative){
+  const rows = customerDiscountMapCache?.get(normalizeCustomerCodeValue(customerCode)) || [];
+  if(!rows.length){
+    return { label: '', details: '', network: '', shortcut: '' };
+  }
+
+  const representativeKey = normalizeProducerValue(representative);
+  const representativeRows = representativeKey
+    ? rows.filter(row => normalizeProducerValue(row.representative) === representativeKey)
+    : [];
+  const sourceRows = representativeRows.length ? representativeRows : rows;
+  const seenEntries = new Set();
+  const entries = [];
+
+  sourceRows.forEach(row => {
+    if(!row.discount) return;
+    const key = `${row.group}|||${row.discount}`;
+    if(seenEntries.has(key)) return;
+    seenEntries.add(key);
+    entries.push({
+      group: row.group,
+      discount: row.discount
+    });
+  });
+
+  const networks = Array.from(new Set(sourceRows.map(row => row.network).filter(value => value && value !== '(puste)')));
+  const shortcuts = Array.from(new Set(sourceRows.map(row => row.shortcut).filter(Boolean)));
+  const label = entries
+    .map(entry => [entry.group, entry.discount].filter(Boolean).join(' '))
+    .join(', ');
+
+  return {
+    label,
+    details: entries.map(entry => [entry.group, entry.discount].filter(Boolean).join(': ')).join('; '),
+    network: networks.join(', '),
+    shortcut: shortcuts.join(', ')
+  };
+}
+
+function renderWeeklyTrendHtml(trendValue, title = ''){
+  if(!Number.isFinite(trendValue)){
+    return '<span class="weekly-trend weekly-trend--empty">-</span>';
+  }
+  const trendClass = trendValue > 0 ? 'weekly-trend--up' : trendValue < 0 ? 'weekly-trend--down' : 'weekly-trend--flat';
+  const trendArrow = trendValue > 0 ? '↑' : trendValue < 0 ? '↓' : '→';
+  const titleAttr = title ? ` title="${escapeAttr(title)}"` : '';
+  return `<span class="weekly-trend ${trendClass}"${titleAttr}>${trendArrow} ${formatNumber(Math.abs(trendValue))}</span>`;
+}
+
 function buildClientReportImportFallback(fileName){
   const baseName = String(fileName || '')
     .replace(/\.[^.]+$/, '')
@@ -1009,6 +1435,26 @@ async function loadOfferRowsForGroup(group){
   return allRows;
 }
 
+async function loadTopRumuniaOfferRows(){
+  if(topRumuniaOfferCache) return topRumuniaOfferCache;
+  const res = await fetch(jsonUrlTopRumunia);
+  const data = await res.json();
+  topRumuniaOfferCache = (data || []).map((row, rowIndex) => {
+    const rankingRaw = getValueByVariants(row, ['ranking']);
+    const rankingValue = Number(String(rankingRaw ?? '').replace(',', '.'));
+    return {
+      index: String(getValueByVariants(row, ['indeks', 'index', 'id', 'numer katalogowy', 'sku number']) || '').trim(),
+      name: String(getValueByVariants(row, ['nazwa', 'name']) || '').trim(),
+      producer: String(getValueByVariants(row, ['producent', 'producer', 'skrot producenta', 'skrót producenta', 'skrot_producenta', 'skrót_producenta', 'SKROT_PRODUCENTA']) || '').trim(),
+      ean: String(getValueByVariants(row, ['kod ean', 'ean']) || '').trim(),
+      group: String(getValueByVariants(row, ['grupa', 'group', 'nazwa grupa', 'nazwa_grupa', 'NAZWA_GRUPA']) || '').trim(),
+      ranking: Number.isFinite(rankingValue) ? rankingValue : rowIndex + 1,
+      rankingLabel: String(rankingRaw ?? (rowIndex + 1)).trim()
+    };
+  }).filter(row => row.index);
+  return topRumuniaOfferCache;
+}
+
 function getClientReportRepresentatives(){
   return Array.from(new Set(clientReportSourceRows.map(row => row.representative).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'pl'));
 }
@@ -1028,6 +1474,112 @@ function getClientReportCustomers(){
     const nameCompare = a.name.localeCompare(b.name, 'pl');
     return nameCompare || a.code.localeCompare(b.code, 'pl');
   });
+}
+
+function getTopSuggestionRepresentatives(){
+  return Array.from(new Set(topSuggestionSourceRows.map(row => row.representative).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b, 'pl'));
+}
+
+function getTopSuggestionCustomers(){
+  if(!topSuggestionSelectedRepresentative) return [];
+  const map = new Map();
+  topSuggestionSourceRows
+    .filter(row => row.representative === topSuggestionSelectedRepresentative)
+    .forEach(row => {
+      const key = `${row.customerCode}|||${row.customerName}`;
+      if(!map.has(key)){
+        map.set(key, { code: row.customerCode, name: row.customerName });
+      }
+    });
+  return Array.from(map.values()).sort((a, b) => {
+    const nameCompare = a.name.localeCompare(b.name, 'pl');
+    return nameCompare || a.code.localeCompare(b.code, 'pl');
+  });
+}
+
+async function generateTopSuggestionsReport(){
+  topSuggestionGeneratedRows = [];
+  topSuggestionPurchasedRows = [];
+  topSuggestionSummary = null;
+  if(!topSuggestionSelectedRepresentative || !topSuggestionSelectedCustomer) return;
+
+  const [customerCode, customerName] = topSuggestionSelectedCustomer.split('|||');
+  const customerRows = topSuggestionSourceRows.filter(row =>
+    row.representative === topSuggestionSelectedRepresentative &&
+    row.customerCode === customerCode &&
+    row.customerName === customerName
+  );
+  const latestWeeks = getLatestWeeksFromRows(customerRows, 3);
+  const purchasedProducerMap = new Map();
+  customerRows
+    .filter(row => latestWeeks.includes(String(row.week || '')) && (row.quantity || row.value) > 0)
+    .forEach(row => {
+      const producer = String(row.producer || '').trim();
+      const producerKey = normalizeProducerValue(producer);
+      if(!producerKey) return;
+      const current = purchasedProducerMap.get(producerKey) || {
+        producerCode: row.index || '',
+        producer,
+        salesTotal: 0
+      };
+      current.salesTotal += row.quantity || row.value;
+      purchasedProducerMap.set(producerKey, current);
+    });
+  const purchasedProducerSet = new Set(purchasedProducerMap.keys());
+
+  const topRows = dedupeReportRows(await loadTopRumuniaOfferRows()).sort((a, b) => {
+    if(a.ranking !== b.ranking) return a.ranking - b.ranking;
+    return String(a.name).localeCompare(String(b.name), 'pl');
+  });
+  const topProducerMap = new Map();
+  topRows.forEach(row => {
+    const producer = String(row.producer || '').trim();
+    const producerKey = normalizeProducerValue(producer);
+    if(!producerKey) return;
+    const current = topProducerMap.get(producerKey) || {
+      producer,
+      productCount: 0,
+      bestRanking: row.ranking,
+      bestRankingLabel: row.rankingLabel || (Number.isFinite(row.ranking) ? String(row.ranking) : ''),
+      exampleIndex: row.index,
+      exampleName: row.name
+    };
+    current.productCount += 1;
+    if(row.ranking < current.bestRanking){
+      current.bestRanking = row.ranking;
+      current.bestRankingLabel = row.rankingLabel || (Number.isFinite(row.ranking) ? String(row.ranking) : '');
+      current.exampleIndex = row.index;
+      current.exampleName = row.name;
+    }
+    topProducerMap.set(producerKey, current);
+  });
+
+  const missingRows = Array.from(topProducerMap.entries())
+    .filter(([producerKey]) => !purchasedProducerSet.has(producerKey))
+    .map(([, row]) => row)
+    .sort((a, b) => {
+      if(a.bestRanking !== b.bestRanking) return a.bestRanking - b.bestRanking;
+      return String(a.producer).localeCompare(String(b.producer), 'pl');
+    });
+  const limit = Math.max(0, Math.floor(Number(topSuggestionLimit)));
+  const pickedRows = limit ? missingRows.slice(0, limit) : missingRows;
+
+  topSuggestionPurchasedRows = Array.from(purchasedProducerMap.values())
+    .sort((a, b) => b.salesTotal - a.salesTotal || String(a.producer).localeCompare(String(b.producer), 'pl'));
+  topSuggestionGeneratedRows = pickedRows.map(row => ({
+    producer: row.producer,
+    productCount: row.productCount,
+    bestRanking: row.bestRankingLabel,
+    exampleIndex: row.exampleIndex,
+    exampleName: row.exampleName
+  }));
+  topSuggestionSummary = {
+    weeks: latestWeeks,
+    purchasedCount: topSuggestionPurchasedRows.length,
+    missingCount: missingRows.length,
+    shownCount: topSuggestionGeneratedRows.length
+  };
 }
 
 async function generateClientComparisonReport(){
@@ -1164,6 +1716,68 @@ function renderClientRowsTable(rows, emptyText, options = {}){
   `;
 }
 
+function renderPurchasedProducerRowsTable(rows, emptyText){
+  const html = rows.map((row, index) => `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${escapeHtml(row.producerCode || '')}</td>
+      <td>${escapeHtml(row.producer || '')}</td>
+      <td>${formatNumber(row.salesTotal || 0)}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            <th>Nr producenta</th>
+            <th>Producent</th>
+            <th>Sprzedaż</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${html || `<tr><td colspan="4" class="reports-empty">${escapeHtml(emptyText)}</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderMissingProducerRowsTable(rows, emptyText){
+  const html = rows.map((row, index) => `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${escapeHtml(row.producer || '')}</td>
+      <td>${escapeHtml(row.productCount || '')}</td>
+      <td>${escapeHtml(row.bestRanking || '')}</td>
+      <td>${escapeHtml(row.exampleIndex || '')}</td>
+      <td>${escapeHtml(row.exampleName || '')}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            <th>Producent</th>
+            <th>Ile indeksów w Top</th>
+            <th>Najwyższy ranking</th>
+            <th>Przykładowy indeks</th>
+            <th>Przykładowy produkt</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${html || `<tr><td colspan="6" class="reports-empty">${escapeHtml(emptyText)}</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
 function getFilteredClientRows(rows, filters){
   return rows.filter(row => {
     if(filters.producer && !includesText(row.SKROT_PRODUCENTA, filters.producer)) return false;
@@ -1224,8 +1838,8 @@ function renderClientComparisonContent(){
         <div class="import-sub">Porównaj zakupy klienta do listy Top Rumunia według grup produktowych.</div>
       </div>
       <div class="reports-actions">
-        <input id="client-reports-excel-input" class="import-input" type="file" accept=".xlsx,.xls">
-        <button class="btn-outline" onclick="importClientReportExcel()">Importuj Excel</button>
+        <input id="client-reports-excel-input" class="import-input reports-file-input" type="file" accept=".xlsx,.xls" onchange="importClientReportExcel()">
+        <button class="btn-outline" onclick="pickReportFile('client-reports-excel-input')">Importuj Excel</button>
         <button class="btn-outline" onclick="exportClientRecommendationXlsx()" ${selectedMissingCount ? '' : 'disabled'}>Zapisz XLSX</button>
         <button class="btn-outline" onclick="createClientRecommendationCatalog()" ${selectedMissingCount ? '' : 'disabled'}>Utwórz katalog</button>
       </div>
@@ -1295,16 +1909,293 @@ function renderClientComparisonContent(){
   `;
 }
 
+function renderWeeklySalesContent(){
+  const representatives = getWeeklySalesRepresentatives();
+  const customers = getWeeklySalesCustomers();
+  const producers = getWeeklySalesProducers();
+  const weeks = getWeeklySalesWeeks();
+  const latestWeek = getLatestWeeklySalesWeek();
+  const filteredRows = getFilteredWeeklySalesRows();
+  const comparisonRows = getWeeklySalesRepresentativeComparisonRows();
+  const comparisonWeeks = getWeeklySalesComparisonWeeks();
+  const activeRowsCount = weeklySalesRepComparison ? comparisonRows.length : filteredRows.length;
+  const activeSalesTotal = weeklySalesRepComparison
+    ? comparisonRows.reduce((sum, row) => sum + row.latestValue, 0)
+    : filteredRows.reduce((sum, row) => sum + (row.quantity || row.value), 0);
+  const previousSalesTotal = comparisonRows.reduce((sum, row) => sum + row.previousValue, 0);
+  const comparisonTrendValue = activeSalesTotal - previousSalesTotal;
+  const customerLabel = weeklySalesSelectedCustomer ? 'wybrany klient' : 'wszyscy klienci';
+  const weekLabel = weeklySalesOnlyLastWeek250
+    ? `ostatni tydzień ${latestWeek || ''}, min. 250 GBP`
+    : (weeklySalesSelectedWeek || latestWeek || 'brak tygodnia');
+  const scopeLabel = weeklySalesRepComparison
+    ? `wszyscy PH | ${comparisonWeeks.join(' do ') || 'brak tygodni'}`
+    : `${weeklySalesSelectedRepresentative || 'Wybierz przedstawiciela'} | ${customerLabel} | ${weekLabel}`;
+  const rowsHtml = filteredRows.map((row, index) => {
+    const trendValue = row.trendValue;
+    const trendHtml = renderWeeklyTrendHtml(trendValue, `Poprzedni tydzień: ${row.previousWeek || ''}`);
+    const discountTitle = [
+      row.discountDetails ? `Grupy: ${row.discountDetails}` : '',
+      row.discountNetwork ? `Sieć: ${row.discountNetwork}` : '',
+      row.discountShortcut ? `Skrót: ${row.discountShortcut}` : ''
+    ].filter(Boolean).join(' | ');
+    const discountHtml = row.discountLabel
+      ? `<span title="${escapeAttr(discountTitle)}">${escapeHtml(row.discountLabel)}</span>`
+      : '';
+    return `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${escapeHtml(row.week)}</td>
+        <td>${escapeHtml(row.customerCode)}</td>
+        <td>${escapeHtml(row.customerName)}</td>
+        <td>${discountHtml}</td>
+        <td>${escapeHtml(row.index)}</td>
+        <td>${escapeHtml(row.name)}</td>
+        <td>${escapeHtml(row.producer)}</td>
+        <td>${formatNumber(row.quantity || row.value)}</td>
+        <td>${trendHtml}</td>
+      </tr>
+    `;
+  }).join('');
+  const comparisonRowsHtml = comparisonRows.map((row, index) => {
+    const trendTitle = `${row.previousWeek}: ${formatNumber(row.previousValue)} | ${row.latestWeek}: ${formatNumber(row.latestValue)}`;
+    return `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${escapeHtml(row.representative)}</td>
+        <td>${escapeHtml(row.previousWeek)}</td>
+        <td>${formatNumber(row.previousValue)}</td>
+        <td>${escapeHtml(row.latestWeek)}</td>
+        <td>${formatNumber(row.latestValue)}</td>
+        <td>${renderWeeklyTrendHtml(row.trendValue, trendTitle)}</td>
+      </tr>
+    `;
+  }).join('');
+  const tableHtml = weeklySalesRepComparison
+    ? `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Lp.</th>
+              <th>Przedstawiciel handlowy</th>
+              <th>Poprzedni tydzień</th>
+              <th>Sprzedaż poprzedni tydzień</th>
+              <th>Aktualny tydzień</th>
+              <th>Sprzedaż aktualny tydzień</th>
+              <th>Trend</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${comparisonRowsHtml || `<tr><td colspan="7" class="reports-empty">Zaimportuj plik z minimum dwoma tygodniami sprzedaży.</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    `
+    : `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Lp.</th>
+              <th>Tydzień</th>
+              <th>Kod klienta</th>
+              <th>Nazwa klienta</th>
+              <th>Rabat</th>
+              <th>INDEKS</th>
+              <th>NAZWA</th>
+              <th>Producent</th>
+              <th>Sprzedaż</th>
+              <th>Trend</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml || `<tr><td colspan="10" class="reports-empty">Zaimportuj plik Excel i wybierz przedstawiciela.</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    `;
+
+  return `
+    <div class="reports-toolbar">
+      <div>
+        <div class="import-title">Sprzedaż per indeks per tydzień</div>
+        <div class="import-sub">Importuj Excel, wybierz przedstawiciela i sprawdź sprzedaż dla wszystkich lub wybranego klienta.</div>
+      </div>
+      <div class="reports-actions">
+        <input id="weekly-sales-excel-input" class="import-input reports-file-input" type="file" accept=".xlsx,.xls" onchange="importWeeklySalesExcel()">
+        <button class="btn-outline" onclick="pickReportFile('weekly-sales-excel-input')">Importuj Excel</button>
+        <button class="btn-outline" onclick="exportWeeklySalesXlsx()" ${(weeklySalesGeneratedRows.length || weeklySalesSourceRows.length) ? '' : 'disabled'}>Zapisz XLSX</button>
+      </div>
+      <div class="import-info">
+        ${weeklySalesImportFile ? `Źródło: ${escapeHtml(weeklySalesImportFile)}` : 'Brak zaimportowanego pliku'}
+      </div>
+    </div>
+
+    ${weeklySalesRepComparison ? '' : `<div class="reports-filters">
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Przedstawiciel handlowy</span>
+        <select onchange="setWeeklySalesRepresentative(this.value)">
+          <option value="">Wybierz</option>
+          ${representatives.map(rep => `<option value="${escapeAttr(rep)}" ${weeklySalesSelectedRepresentative === rep ? 'selected' : ''}>${escapeHtml(rep)}</option>`).join('')}
+        </select>
+      </label>
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Klient</span>
+        <select onchange="setWeeklySalesCustomer(this.value)" ${weeklySalesSelectedRepresentative ? '' : 'disabled'}>
+          <option value="">Wszyscy klienci</option>
+          ${customers.map(customer => {
+            const value = `${customer.code}|||${customer.name}`;
+            const label = [customer.code, customer.name].filter(Boolean).join(' - ') || 'Bez nazwy klienta';
+            return `<option value="${escapeAttr(value)}" ${weeklySalesSelectedCustomer === value ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+          }).join('')}
+        </select>
+      </label>
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Producent</span>
+        <select onchange="setWeeklySalesProducer(this.value)" ${weeklySalesGeneratedRows.length ? '' : 'disabled'}>
+          <option value="">Wszyscy producenci</option>
+          ${producers.map(producer => `<option value="${escapeAttr(producer)}" ${weeklySalesSelectedProducer === producer ? 'selected' : ''}>${escapeHtml(producer)}</option>`).join('')}
+        </select>
+      </label>
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Tydzień sprzedaży</span>
+        <select onchange="setWeeklySalesWeek(this.value)" ${weeklySalesGeneratedRows.length || weeklySalesOnlyLastWeek250 ? '' : 'disabled'}>
+          <option value="">Ostatni tydzień</option>
+          ${weeks.map(week => `<option value="${escapeAttr(week)}" ${weeklySalesSelectedWeek === week ? 'selected' : ''}>${escapeHtml(week)}</option>`).join('')}
+        </select>
+      </label>
+    </div>`}
+
+    <div class="reports-inline-actions">
+      <button class="btn-outline ${weeklySalesOnlyLastWeek250 ? 'reports-mode-active' : ''}" onclick="setWeeklySalesLastWeek250(!weeklySalesOnlyLastWeek250)" ${weeklySalesGeneratedRows.length ? '' : 'disabled'}>Klienci >= 250 GBP w ostatnim tygodniu</button>
+      <button class="btn-outline ${weeklySalesRepComparison ? 'reports-mode-active' : ''}" onclick="setWeeklySalesRepComparison(!weeklySalesRepComparison)" ${weeklySalesSourceRows.length ? '' : 'disabled'}>Porównanie PH tydzień do tygodnia</button>
+    </div>
+
+    <div class="reports-summary">
+      <div class="reports-summary-card">
+        <div class="reports-summary-title">Zakres</div>
+        <div class="reports-summary-meta">${escapeHtml(scopeLabel)}</div>
+      </div>
+      <div class="reports-summary-card">
+        <div class="reports-summary-title">${weeklySalesRepComparison ? 'Przedstawiciele' : 'Pozycje'}</div>
+        <div class="reports-summary-meta">${activeRowsCount}</div>
+      </div>
+      <div class="reports-summary-card">
+        <div class="reports-summary-title">Suma sprzedaży</div>
+        <div class="reports-summary-meta">${formatNumber(activeSalesTotal)}</div>
+      </div>
+      ${weeklySalesRepComparison ? `
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Porównanie tygodni</div>
+          <div class="reports-summary-meta">
+            ${escapeHtml(comparisonWeeks[0] || '')}: ${formatNumber(previousSalesTotal)} |
+            ${escapeHtml(comparisonWeeks[1] || '')}: ${formatNumber(activeSalesTotal)} |
+            ${renderWeeklyTrendHtml(comparisonTrendValue)}
+          </div>
+        </div>
+      ` : ''}
+    </div>
+
+    ${tableHtml}
+  `;
+}
+
+function renderTopSuggestionsContent(){
+  const representatives = getTopSuggestionRepresentatives();
+  const customers = getTopSuggestionCustomers();
+  const summary = topSuggestionSummary
+    ? `<div class="reports-summary">
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Ostatnie 3 tygodnie</div>
+          <div class="reports-summary-meta">${topSuggestionSummary.weeks.map(escapeHtml).join(', ') || 'Brak sprzedaży'}</div>
+        </div>
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Kupieni producenci</div>
+          <div class="reports-summary-meta">${topSuggestionSummary.purchasedCount}</div>
+        </div>
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Niekupieni producenci</div>
+          <div class="reports-summary-meta">${topSuggestionSummary.shownCount} z ${topSuggestionSummary.missingCount}</div>
+        </div>
+      </div>`
+    : '';
+
+  return `
+    <div class="reports-toolbar">
+      <div>
+        <div class="import-title">Propozycje Top Rumunia</div>
+        <div class="import-sub">Porównaj zakupy klienta z ostatnich 3 tygodni z rankingiem Top Rumunia.</div>
+      </div>
+      <div class="reports-actions">
+        <input id="top-suggestions-excel-input" class="import-input reports-file-input" type="file" accept=".xlsx,.xls" onchange="importTopSuggestionsExcel()">
+        <button class="btn-outline" onclick="pickReportFile('top-suggestions-excel-input')">Importuj Excel</button>
+        <button class="btn-outline" onclick="exportTopSuggestionsXlsx()" ${topSuggestionGeneratedRows.length ? '' : 'disabled'}>Zapisz XLSX</button>
+      </div>
+      <div class="import-info">
+        ${topSuggestionImportFile ? `Źródło: ${escapeHtml(topSuggestionImportFile)}` : 'Brak zaimportowanego pliku'}
+      </div>
+    </div>
+
+    <div class="reports-filters">
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Przedstawiciel handlowy</span>
+        <select onchange="setTopSuggestionRepresentative(this.value)">
+          <option value="">Wybierz</option>
+          ${representatives.map(rep => `<option value="${escapeAttr(rep)}" ${topSuggestionSelectedRepresentative === rep ? 'selected' : ''}>${escapeHtml(rep)}</option>`).join('')}
+        </select>
+      </label>
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Klient</span>
+        <select onchange="setTopSuggestionCustomer(this.value)" ${topSuggestionSelectedRepresentative ? '' : 'disabled'}>
+          <option value="">Wybierz</option>
+          ${customers.map(customer => {
+            const value = `${customer.code}|||${customer.name}`;
+            const label = [customer.code, customer.name].filter(Boolean).join(' - ') || 'Bez nazwy klienta';
+            return `<option value="${escapeAttr(value)}" ${topSuggestionSelectedCustomer === value ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+          }).join('')}
+        </select>
+      </label>
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Ile producentów pokazać</span>
+        <input type="number" min="0" value="${escapeAttr(topSuggestionLimit)}" placeholder="Wszystkie" onchange="setTopSuggestionLimit(this.value)">
+      </label>
+    </div>
+
+    ${summary}
+
+    <div class="reports-two-columns">
+      <div class="reports-column">
+        <h3 class="reports-table-title">Kupieni producenci</h3>
+        ${renderPurchasedProducerRowsTable(topSuggestionPurchasedRows, 'Brak kupionych producentów w ostatnich 3 tygodniach.')}
+      </div>
+      <div class="reports-column">
+        <h3 class="reports-table-title">Producenci, których nie kupił</h3>
+        ${renderMissingProducerRowsTable(topSuggestionGeneratedRows, 'Zaimportuj plik, wybierz PH i klienta, aby zobaczyć niekupionych producentów z Top Rumunia.')}
+      </div>
+    </div>
+  `;
+}
+
 function renderReportsView(){
   if(!reportsContainer) return;
+  const contentByMode = {
+    'top-sales': renderTopSalesReportContent,
+    'client-gap': renderClientComparisonContent,
+    'weekly-sales': renderWeeklySalesContent,
+    'top-suggestions': renderTopSuggestionsContent
+  };
+  const renderContent = contentByMode[reportsMode] || renderTopSalesReportContent;
 
   reportsContainer.innerHTML = `
     <div class="reports-panel">
       <div class="reports-mode-switch">
         <button class="btn-outline ${reportsMode === 'top-sales' ? 'reports-mode-active' : ''}" onclick="setReportsMode('top-sales')">Top sprzedaż</button>
         <button class="btn-outline ${reportsMode === 'client-gap' ? 'reports-mode-active' : ''}" onclick="setReportsMode('client-gap')">Potencjał klienta Top Rumunia</button>
+        <button class="btn-outline ${reportsMode === 'weekly-sales' ? 'reports-mode-active' : ''}" onclick="setReportsMode('weekly-sales')">Sprzedaż tygodniowa</button>
+        <button class="btn-outline ${reportsMode === 'top-suggestions' ? 'reports-mode-active' : ''}" onclick="setReportsMode('top-suggestions')">Propozycje Top</button>
       </div>
-      ${reportsMode === 'top-sales' ? renderTopSalesReportContent() : renderClientComparisonContent()}
+      ${renderContent()}
     </div>
   `;
 }
@@ -1432,6 +2323,88 @@ async function importClientReportExcel(){
   renderReportsView();
 }
 
+async function importWeeklySalesExcel(){
+  const input = document.getElementById('weekly-sales-excel-input');
+  const file = input?.files?.[0];
+  if(!file) return;
+
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const sheetName = wb.SheetNames.includes('Export') ? 'Export' : wb.SheetNames[0];
+    const sheet = wb.Sheets[sheetName];
+    const matrix = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+    weeklySalesSourceRows = normalizeWeeklySalesRowsFromMatrix(matrix);
+    weeklySalesImportFile = file.name;
+    weeklySalesSelectedRepresentative = '';
+    weeklySalesSelectedCustomer = '';
+    weeklySalesSelectedProducer = '';
+    weeklySalesSelectedWeek = '';
+    weeklySalesOnlyLastWeek250 = false;
+    weeklySalesRepComparison = false;
+    weeklySalesGeneratedRows = [];
+    await loadCustomerDiscountMap();
+
+    const representatives = getWeeklySalesRepresentatives();
+    if(representatives.length === 1){
+      weeklySalesSelectedRepresentative = representatives[0];
+      generateWeeklySalesReport();
+    }
+  }catch(e){
+    console.error('Weekly sales import error', e);
+    weeklySalesSourceRows = [];
+    weeklySalesGeneratedRows = [];
+    weeklySalesImportFile = '';
+    weeklySalesSelectedRepresentative = '';
+    weeklySalesSelectedCustomer = '';
+    weeklySalesSelectedProducer = '';
+    weeklySalesSelectedWeek = '';
+    weeklySalesOnlyLastWeek250 = false;
+    weeklySalesRepComparison = false;
+  }
+
+  renderReportsView();
+}
+
+async function importTopSuggestionsExcel(){
+  const input = document.getElementById('top-suggestions-excel-input');
+  const file = input?.files?.[0];
+  if(!file) return;
+
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const sheetName = wb.SheetNames.includes('Export') ? 'Export' : wb.SheetNames[0];
+    const sheet = wb.Sheets[sheetName];
+    const matrix = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+    topSuggestionSourceRows = normalizeWeeklySalesRowsFromMatrix(matrix);
+    topSuggestionImportFile = file.name;
+    topSuggestionSelectedRepresentative = '';
+    topSuggestionSelectedCustomer = '';
+    topSuggestionLimit = '';
+    topSuggestionGeneratedRows = [];
+    topSuggestionPurchasedRows = [];
+    topSuggestionSummary = null;
+
+    const representatives = getTopSuggestionRepresentatives();
+    if(representatives.length === 1){
+      topSuggestionSelectedRepresentative = representatives[0];
+    }
+  }catch(e){
+    console.error('Top suggestions import error', e);
+    topSuggestionSourceRows = [];
+    topSuggestionGeneratedRows = [];
+    topSuggestionPurchasedRows = [];
+    topSuggestionImportFile = '';
+    topSuggestionSelectedRepresentative = '';
+    topSuggestionSelectedCustomer = '';
+    topSuggestionLimit = '';
+    topSuggestionSummary = null;
+  }
+
+  renderReportsView();
+}
+
 async function setClientReportRepresentative(value){
   clientReportSelectedRepresentative = value;
   clientReportSelectedCustomer = '';
@@ -1445,6 +2418,80 @@ async function setClientReportRepresentative(value){
 async function setClientReportCustomer(value){
   clientReportSelectedCustomer = value;
   await generateClientComparisonReport();
+  renderReportsView();
+}
+
+async function setWeeklySalesRepresentative(value){
+  weeklySalesSelectedRepresentative = value;
+  weeklySalesSelectedCustomer = '';
+  weeklySalesSelectedProducer = '';
+  weeklySalesSelectedWeek = '';
+  weeklySalesOnlyLastWeek250 = false;
+  weeklySalesRepComparison = false;
+  await loadCustomerDiscountMap();
+  generateWeeklySalesReport();
+  renderReportsView();
+}
+
+async function setWeeklySalesCustomer(value){
+  weeklySalesSelectedCustomer = value;
+  weeklySalesSelectedProducer = '';
+  weeklySalesSelectedWeek = '';
+  weeklySalesOnlyLastWeek250 = false;
+  weeklySalesRepComparison = false;
+  await loadCustomerDiscountMap();
+  generateWeeklySalesReport();
+  renderReportsView();
+}
+
+function setWeeklySalesProducer(value){
+  weeklySalesSelectedProducer = value;
+  weeklySalesRepComparison = false;
+  renderReportsView();
+}
+
+function setWeeklySalesWeek(value){
+  weeklySalesSelectedWeek = value;
+  weeklySalesOnlyLastWeek250 = false;
+  weeklySalesRepComparison = false;
+  renderReportsView();
+}
+
+function setWeeklySalesLastWeek250(enabled){
+  weeklySalesOnlyLastWeek250 = !!enabled;
+  weeklySalesRepComparison = false;
+  if(weeklySalesOnlyLastWeek250){
+    weeklySalesSelectedWeek = getLatestWeeklySalesWeek();
+  }
+  renderReportsView();
+}
+
+function setWeeklySalesRepComparison(enabled){
+  weeklySalesRepComparison = !!enabled;
+  if(weeklySalesRepComparison){
+    weeklySalesOnlyLastWeek250 = false;
+  }
+  renderReportsView();
+}
+
+async function setTopSuggestionRepresentative(value){
+  topSuggestionSelectedRepresentative = value;
+  topSuggestionSelectedCustomer = '';
+  topSuggestionGeneratedRows = [];
+  topSuggestionPurchasedRows = [];
+  topSuggestionSummary = null;
+  renderReportsView();
+}
+
+async function setTopSuggestionCustomer(value){
+  topSuggestionSelectedCustomer = value;
+  await generateTopSuggestionsReport();
+  renderReportsView();
+}
+
+async function setTopSuggestionLimit(value){
+  topSuggestionLimit = value;
+  await generateTopSuggestionsReport();
   renderReportsView();
 }
 
@@ -1797,6 +2844,108 @@ function exportReportsXlsx(){
   downloadBlob(blob, 'top_sprzedaz.xlsx');
 }
 
+function exportWeeklySalesXlsx(){
+  if(weeklySalesRepComparison){
+    const comparisonRows = getWeeklySalesRepresentativeComparisonRows();
+    if(!comparisonRows.length) return;
+    const rows = [
+      ['Przedstawiciel handlowy', 'Poprzedni tydzień', 'Sprzedaż poprzedni tydzień', 'Aktualny tydzień', 'Sprzedaż aktualny tydzień', 'Trend'],
+      ...comparisonRows.map(row => [
+        row.representative,
+        row.previousWeek,
+        row.previousValue,
+        row.latestWeek,
+        row.latestValue,
+        row.trendValue
+      ])
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'porownanie ph');
+    const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    downloadBlob(blob, 'porownanie_ph_tydzien_do_tygodnia.xlsx');
+    return;
+  }
+
+  const exportRows = getFilteredWeeklySalesRows();
+  if(!exportRows.length) return;
+  const cols = [
+    'Przedstawiciel handlowy',
+    'Kod klienta',
+    'Nazwa klienta',
+    'Rabat',
+    'Szczegóły rabatu',
+    'Sieć obca',
+    'INDEKS',
+    'NAZWA',
+    'Producent',
+    'Tydzień',
+    'Sprzedaż',
+    'Trend',
+    'Poprzedni tydzień',
+    'Sprzedaż poprzedni tydzień'
+  ];
+  const rows = [
+    cols,
+    ...exportRows.map(row => [
+      row.representative,
+      row.customerCode,
+      row.customerName,
+      row.discountLabel || '',
+      row.discountDetails || '',
+      row.discountNetwork || '',
+      row.index,
+      row.name,
+      row.producer,
+      row.week,
+      row.quantity || row.value,
+      Number.isFinite(row.trendValue) ? row.trendValue : '',
+      row.previousWeek || '',
+      Number.isFinite(row.previousValue) ? row.previousValue : ''
+    ])
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'sprzedaz per tydzien');
+  const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  downloadBlob(blob, 'sprzedaz_per_indeks_per_tydzien.xlsx');
+}
+
+function exportTopSuggestionsXlsx(){
+  if(!topSuggestionGeneratedRows.length && !topSuggestionPurchasedRows.length) return;
+  const rows = [
+    ['Typ', 'Nr producenta', 'Producent', 'Sprzedaż', 'Ile indeksów w Top', 'Najwyższy ranking', 'Przykładowy indeks', 'Przykładowy produkt'],
+    ...topSuggestionPurchasedRows.map(row => [
+      'Kupiony',
+      row.producerCode || '',
+      row.producer || '',
+      row.salesTotal || 0,
+      '',
+      '',
+      '',
+      ''
+    ]),
+    ...topSuggestionGeneratedRows.map(row => [
+      'Niekupiony',
+      '',
+      row.producer || '',
+      '',
+      row.productCount || '',
+      row.bestRanking || '',
+      row.exampleIndex || '',
+      row.exampleName || ''
+    ])
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'producenci top');
+  const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  downloadBlob(blob, 'producenci_top_rumunia.xlsx');
+}
+
 function render(){
   if(!fullData.length && !isLoading) return;
   clearAllContentContainers();
@@ -1984,6 +3133,28 @@ function normalizeIndexValue(value){
     .trim()
     .replace(/\.0+$/, '')
     .replace(/\s+/g, '');
+}
+
+function normalizeCustomerCodeValue(value){
+  return String(value ?? '')
+    .trim()
+    .replace(/\.0+$/, '')
+    .replace(/\s+/g, '');
+}
+
+function formatDiscountPercent(value){
+  const cleaned = String(value ?? '').trim();
+  if(!cleaned) return '';
+  return cleaned.includes('%') ? cleaned : `${cleaned}%`;
+}
+
+function normalizeProducerValue(value){
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function dedupeRowsByIndex(rows, indexKey){
