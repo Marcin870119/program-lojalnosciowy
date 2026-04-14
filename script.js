@@ -63,6 +63,15 @@ const firebaseConfig = {
 };
 
 const ADMIN_EMAILS = ['admin@admin.info', 'admin@admin.com'];
+const USERS_COLLECTION = 'app_users';
+const SALES_REPORTS_ROOT = 'raporty - maspo';
+const STORAGE_BUCKET = 'gs://pdf-creator-f7a8b.firebasestorage.app';
+const PERSONAL_SALES_USERS = {
+  '9MB4MF77sRayF6jjgvLCMpphBJM2': {
+    displayName: 'Robert Bubula',
+    storageFolder: 'Bubula Robert'
+  }
+};
 
 const loginView = document.getElementById('login-view');
 const appView = document.getElementById('app-view');
@@ -71,6 +80,8 @@ const loginPassword = document.getElementById('login-password');
 const loginBtn = document.getElementById('login-btn');
 const logoutBtn = document.getElementById('logout-btn');
 const loginError = document.getElementById('login-error');
+const personalSalesInsight = document.getElementById('personal-sales-insight');
+const personalSalesInsightContent = document.getElementById('personal-sales-insight-content');
 const securityModal = document.getElementById('security-modal');
 const modalClose = document.getElementById('modal-close');
 const catalogModal = document.getElementById('catalog-modal');
@@ -93,6 +104,9 @@ const passwordCancel = document.getElementById('password-cancel');
 const passwordError = document.getElementById('password-error');
 const adminPanelBtn = document.getElementById('admin-panel-btn');
 const appBrandLink = document.querySelector('#app-view .brand-link');
+const worldFoodBtn = document.getElementById('world-food-btn');
+const salesReportsBtn = document.getElementById('sales-reports-btn');
+const worldFoodSubnav = document.getElementById('world-food-subnav');
 
 const slodyczeContainer = document.getElementById('slodycze-content');
 const miesoContainer = document.getElementById('mieso-wedliny-content');
@@ -199,9 +213,13 @@ const imageExtensionCache = createImageExtensionCache();
 let lazyImageObserver = null;
 
 let auth = null;
+let db = null;
+let storage = null;
 let authReady = false;
 let lastLoginEmail = '';
 let lastLoginPassword = '';
+let authStateVersion = 0;
+let preserveAdminSessionAfterBlockedLogout = false;
 
 const REPORT_GROUP_CONFIGS = [
   {
@@ -262,6 +280,50 @@ function createDefaultReportLimits(){
 }
 
 let reportsGroupLimits = createDefaultReportLimits();
+
+function setWorldFoodExpanded(expanded){
+  if(worldFoodBtn){
+    worldFoodBtn.classList.toggle('active', expanded);
+    worldFoodBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  }
+  if(worldFoodSubnav){
+    worldFoodSubnav.classList.toggle('hidden', !expanded);
+    worldFoodSubnav.setAttribute('aria-hidden', expanded ? 'false' : 'true');
+  }
+}
+
+function setPrimaryNavState(mode){
+  const isWorldFood = mode !== 'reports';
+  setWorldFoodExpanded(isWorldFood);
+  if(salesReportsBtn){
+    salesReportsBtn.classList.toggle('active', mode === 'reports');
+  }
+}
+
+function showTabSection(sectionId){
+  document.querySelectorAll('.tab-content').forEach(section => section.classList.add('hidden'));
+  const section = document.getElementById(sectionId);
+  if(section){
+    section.classList.remove('hidden');
+  }
+}
+
+function activateTab(tabId){
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.tab === tabId);
+  });
+  setPrimaryNavState('world-food');
+  showTabSection(tabId);
+  currentImageBaseUrl = tabId === 'ukraina' ? imageBaseUrlUkraina : imageBaseUrlRumunia;
+  window.imageBaseUrl = currentImageBaseUrl;
+  clearAllContentContainers();
+  document.querySelectorAll('.grid .card').forEach(card => card.classList.remove('active'));
+  viewMode = 'table';
+
+  if(tabId !== 'listing'){
+    stopListingScanner();
+  }
+}
 
 function showApp(){
   if(loginView) loginView.classList.add('hidden');
@@ -356,6 +418,7 @@ function resetAppState(){
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   const defaultTab = document.querySelector('.tab[data-tab="rumunia"]');
   if(defaultTab) defaultTab.classList.add('active');
+  setPrimaryNavState('world-food');
 
   document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
   const rumuniaSection = document.getElementById('rumunia');
@@ -406,6 +469,397 @@ function setLoginError(message){
   if(loginError) loginError.textContent = message || '';
 }
 
+function hidePersonalSalesInsight(){
+  if(personalSalesInsight) personalSalesInsight.classList.add('hidden');
+  if(personalSalesInsightContent) personalSalesInsightContent.innerHTML = '';
+}
+
+function setPersonalSalesInsightMarkup(markup){
+  if(!personalSalesInsight || !personalSalesInsightContent) return;
+  personalSalesInsightContent.innerHTML = markup;
+  personalSalesInsight.classList.remove('hidden');
+}
+
+function formatSalesNumber(value){
+  return new Intl.NumberFormat('pl-PL', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(Number.isFinite(value) ? value : 0);
+}
+
+function formatSalesDelta(value){
+  const prefix = value > 0 ? '+' : value < 0 ? '-' : '';
+  return `${prefix}${formatSalesNumber(Math.abs(value))}`;
+}
+
+function formatPercentageDelta(value){
+  const prefix = value > 0 ? '+' : value < 0 ? '-' : '';
+  return `${prefix}${Math.abs(value).toFixed(1).replace('.', ',')}%`;
+}
+
+function formatInsightDate(value){
+  if(!value) return 'brak daty';
+  const date = new Date(value);
+  if(Number.isNaN(date.getTime())) return 'brak daty';
+  return date.toLocaleString('pl-PL');
+}
+
+function parseSalesValue(value){
+  if(typeof value === 'number'){
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  const normalized = String(value ?? '')
+    .replace(/\s+/g, '')
+    .replace(',', '.');
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function renderPersonalSalesInsightLoading(config){
+  setPersonalSalesInsightMarkup(`
+    <div class="sales-insight-shell">
+      <div class="sales-insight-main">
+        <span class="sales-insight-eyebrow">Twoja sprzedaż</span>
+        <h2>${escapeHtml(config.displayName)}</h2>
+        <p>Ładuję porównanie dwóch ostatnich tygodni sprzedaży z najnowszego raportu.</p>
+      </div>
+      <div class="sales-insight-side">
+        <div class="admin-user-empty">Pobieram raport z folderu ${escapeHtml(config.storageFolder)}...</div>
+      </div>
+    </div>
+  `);
+}
+
+function renderPersonalSalesInsightEmpty(config, message){
+  setPersonalSalesInsightMarkup(`
+    <div class="sales-insight-empty">
+      <strong>${escapeHtml(config.displayName)}</strong><br>
+      ${escapeHtml(message)}
+    </div>
+  `);
+}
+
+function renderPersonalSalesInsight(config, insight){
+  const directionClass = insight.direction === 'up'
+    ? 'is-up'
+    : insight.direction === 'down'
+      ? 'is-down'
+      : 'is-flat';
+  const statusClass = insight.direction === 'up'
+    ? 'sales-insight-status--up'
+    : insight.direction === 'down'
+      ? 'sales-insight-status--down'
+      : 'sales-insight-status--flat';
+  const statusText = insight.direction === 'up'
+    ? 'Sprzedaż rośnie względem poprzedniego tygodnia'
+    : insight.direction === 'down'
+      ? 'Sprzedaż spada względem poprzedniego tygodnia'
+      : 'Sprzedaż utrzymała ten sam poziom';
+  const statusIcon = insight.direction === 'up' ? '↗' : insight.direction === 'down' ? '↘' : '→';
+  const maxValue = Math.max(insight.previousTotal, insight.lastTotal, 1);
+  const previousWidth = Math.max((insight.previousTotal / maxValue) * 100, insight.previousTotal > 0 ? 8 : 0);
+  const lastWidth = Math.max((insight.lastTotal / maxValue) * 100, insight.lastTotal > 0 ? 8 : 0);
+
+  setPersonalSalesInsightMarkup(`
+    <div class="sales-insight-shell ${directionClass}">
+      <div class="sales-insight-main">
+        <span class="sales-insight-eyebrow">Twoja sprzedaż</span>
+        <h2>${escapeHtml(config.displayName)}</h2>
+        <p>Porównanie dwóch ostatnich tygodni z najnowszego raportu sprzedaży przypisanego do Twojego konta.</p>
+        <div class="sales-insight-status ${statusClass}">
+          <span>${statusIcon}</span>
+          <strong>${escapeHtml(statusText)}</strong>
+        </div>
+        <div class="sales-insight-change">
+          <div class="sales-insight-delta">${escapeHtml(formatSalesDelta(insight.difference))}</div>
+          <div class="sales-insight-percent">${escapeHtml(formatPercentageDelta(insight.percentChange))}</div>
+        </div>
+      </div>
+      <div class="sales-insight-side">
+        <div class="sales-insight-bars">
+          <div class="sales-insight-bar-card">
+            <span class="sales-insight-bar-label">${escapeHtml(insight.previousWeek)}</span>
+            <div class="sales-insight-bar-track">
+              <span class="sales-insight-bar-fill sales-insight-bar-fill--prev" style="width:${previousWidth.toFixed(2)}%"></span>
+            </div>
+            <span class="sales-insight-bar-value">${escapeHtml(formatSalesNumber(insight.previousTotal))}</span>
+          </div>
+          <div class="sales-insight-bar-card">
+            <span class="sales-insight-bar-label">${escapeHtml(insight.lastWeek)}</span>
+            <div class="sales-insight-bar-track">
+              <span class="sales-insight-bar-fill sales-insight-bar-fill--last" style="width:${lastWidth.toFixed(2)}%"></span>
+            </div>
+            <span class="sales-insight-bar-value">${escapeHtml(formatSalesNumber(insight.lastTotal))}</span>
+          </div>
+        </div>
+        <div class="sales-insight-footnote">
+          Raport: ${escapeHtml(insight.fileName)}<br>
+          Ostatnia aktualizacja: ${escapeHtml(formatInsightDate(insight.updatedAt))}
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+async function getLatestPersonalSalesReport(config){
+  if(!storage){
+    throw new Error('Firebase Storage nie jest dostępny.');
+  }
+
+  const folderRef = storage.ref().child(`${SALES_REPORTS_ROOT}/${config.storageFolder}`);
+  const listResult = await folderRef.listAll();
+  const xlsxItems = listResult.items.filter(item => /\.xlsx$/i.test(item.name));
+
+  if(!xlsxItems.length){
+    return null;
+  }
+
+  const entries = await Promise.all(
+    xlsxItems.map(async item => {
+      const metadata = await item.getMetadata();
+      const updatedAt = Date.parse(metadata.updated || metadata.timeCreated || '') || 0;
+      return { item, metadata, updatedAt };
+    })
+  );
+
+  entries.sort((a, b) => {
+    if(b.updatedAt !== a.updatedAt) return b.updatedAt - a.updatedAt;
+    return b.item.name.localeCompare(a.item.name, 'pl');
+  });
+
+  return entries[0] || null;
+}
+
+function readPersonalSalesInsightFromMetadata(reportEntry){
+  const customMetadata = reportEntry?.metadata?.customMetadata || {};
+  const previousWeek = String(customMetadata.insightPreviousWeek || '').trim();
+  const lastWeek = String(customMetadata.insightLastWeek || '').trim();
+
+  if(!previousWeek || !lastWeek){
+    return null;
+  }
+
+  const previousTotal = parseSalesValue(customMetadata.insightPreviousTotal);
+  const lastTotal = parseSalesValue(customMetadata.insightLastTotal);
+  const difference = lastTotal - previousTotal;
+  const percentChange = previousTotal !== 0
+    ? (difference / previousTotal) * 100
+    : (lastTotal === 0 ? 0 : 100);
+  const direction = difference > 0.005 ? 'up' : difference < -0.005 ? 'down' : 'flat';
+
+  return {
+    previousWeek,
+    lastWeek,
+    previousTotal,
+    lastTotal,
+    difference,
+    percentChange,
+    direction,
+    fileName: reportEntry?.item?.name || '',
+    updatedAt: reportEntry?.metadata?.updated || reportEntry?.metadata?.timeCreated || ''
+  };
+}
+
+function convertBytesToArrayBuffer(bytes){
+  if(bytes instanceof ArrayBuffer){
+    return bytes;
+  }
+  if(ArrayBuffer.isView(bytes)){
+    return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+  }
+  throw new Error('Nieobsługiwany format pobranych danych raportu.');
+}
+
+function buildReportDownloadErrorMessage(errorList){
+  const hasFetchError = errorList.some(error => String(error?.message || '').toLowerCase().includes('failed to fetch'));
+  if(hasFetchError){
+    return 'Nie udało się pobrać raportu sprzedaży (błąd sieci/CORS). Odśwież stronę i spróbuj ponownie.';
+  }
+  return 'Nie udało się pobrać pliku raportu sprzedaży z Firebase Storage.';
+}
+
+async function fetchArrayBufferFromDownloadUrl(downloadUrl){
+  const response = await fetch(downloadUrl, { cache: 'no-store' });
+  if(!response.ok){
+    throw new Error(`Pobieranie raportu nie powiodło się (HTTP ${response.status}).`);
+  }
+  return response.arrayBuffer();
+}
+
+function fetchArrayBufferViaXhr(downloadUrl){
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open('GET', downloadUrl, true);
+    request.responseType = 'arraybuffer';
+    request.onload = () => {
+      if(request.status >= 200 && request.status < 300){
+        resolve(request.response);
+      }else{
+        reject(new Error(`Pobieranie raportu nie powiodło się (HTTP ${request.status}).`));
+      }
+    };
+    request.onerror = () => reject(new Error('Błąd sieci podczas pobierania raportu.'));
+    request.send();
+  });
+}
+
+async function readReportEntryArrayBuffer(reportEntry){
+  const reference = reportEntry?.item;
+  if(!reference){
+    throw new Error('Brak pliku raportu do odczytu.');
+  }
+
+  const errors = [];
+
+  if(typeof reference.getBlob === 'function'){
+    try{
+      const blob = await reference.getBlob();
+      return await blob.arrayBuffer();
+    }catch(error){
+      errors.push(error);
+    }
+  }
+
+  if(typeof reference.getBytes === 'function'){
+    try{
+      const bytes = await reference.getBytes(25 * 1024 * 1024);
+      return convertBytesToArrayBuffer(bytes);
+    }catch(error){
+      errors.push(error);
+    }
+  }
+
+  try{
+    const downloadUrl = await reference.getDownloadURL();
+    try{
+      return await fetchArrayBufferFromDownloadUrl(downloadUrl);
+    }catch(fetchError){
+      errors.push(fetchError);
+      try{
+        return await fetchArrayBufferViaXhr(downloadUrl);
+      }catch(xhrError){
+        errors.push(xhrError);
+      }
+    }
+  }catch(error){
+    errors.push(error);
+  }
+
+  console.error('Personal sales report download attempts failed', errors);
+  throw new Error(buildReportDownloadErrorMessage(errors));
+}
+
+async function readPersonalSalesInsight(reportEntry){
+  const metadataInsight = readPersonalSalesInsightFromMetadata(reportEntry);
+  if(metadataInsight){
+    return metadataInsight;
+  }
+
+  const buffer = await readReportEntryArrayBuffer(reportEntry);
+  const workbook = XLSX.read(buffer, { type: 'array', raw: true, cellDates: true });
+  const sheetName = workbook.SheetNames?.[0];
+
+  if(!sheetName){
+    throw new Error('Raport sprzedaży nie zawiera arkusza.');
+  }
+
+  const sheet = workbook.Sheets[sheetName];
+  const rows = XLSX.utils.sheet_to_json(sheet, {
+    header: 1,
+    raw: true,
+    defval: ''
+  });
+
+  if(rows.length < 3){
+    throw new Error('Raport sprzedaży ma zbyt mało danych do porównania.');
+  }
+
+  const weekLabels = [];
+  const headerRow = Array.isArray(rows[0]) ? rows[0] : [];
+
+  for(let columnIndex = 3; columnIndex < headerRow.length; columnIndex += 1){
+    const label = String(headerRow[columnIndex] ?? '').trim();
+    if(label){
+      weekLabels.push({ columnIndex, label });
+    }
+  }
+
+  if(weekLabels.length < 2){
+    throw new Error('Raport sprzedaży nie zawiera dwóch tygodni do porównania.');
+  }
+
+  const previousWeek = weekLabels[weekLabels.length - 2];
+  const lastWeek = weekLabels[weekLabels.length - 1];
+  let previousTotal = 0;
+  let lastTotal = 0;
+
+  rows.slice(2).forEach(row => {
+    if(!Array.isArray(row)) return;
+    previousTotal += parseSalesValue(row[previousWeek.columnIndex]);
+    lastTotal += parseSalesValue(row[lastWeek.columnIndex]);
+  });
+
+  const difference = lastTotal - previousTotal;
+  const percentChange = previousTotal !== 0
+    ? (difference / previousTotal) * 100
+    : (lastTotal === 0 ? 0 : 100);
+  const direction = difference > 0.005 ? 'up' : difference < -0.005 ? 'down' : 'flat';
+
+  return {
+    previousWeek: previousWeek.label,
+    lastWeek: lastWeek.label,
+    previousTotal,
+    lastTotal,
+    difference,
+    percentChange,
+    direction,
+    fileName: reportEntry.item.name,
+    updatedAt: reportEntry.metadata?.updated || reportEntry.metadata?.timeCreated || ''
+  };
+}
+
+async function loadPersonalSalesInsightForUser(user, version){
+  const config = PERSONAL_SALES_USERS[user?.uid];
+
+  if(!config){
+    hidePersonalSalesInsight();
+    return;
+  }
+
+  renderPersonalSalesInsightLoading(config);
+
+  try{
+    const latestReport = await getLatestPersonalSalesReport(config);
+    if(version !== authStateVersion) return;
+
+    if(!latestReport){
+      renderPersonalSalesInsightEmpty(config, 'Brak podzielonego raportu sprzedaży w folderze tego przedstawiciela.');
+      return;
+    }
+
+    const insight = await readPersonalSalesInsight(latestReport);
+    if(version !== authStateVersion) return;
+    renderPersonalSalesInsight(config, insight);
+  }catch(error){
+    console.error('Personal sales insight error', error);
+    if(version !== authStateVersion) return;
+    renderPersonalSalesInsightEmpty(config, error?.message || 'Nie udało się wczytać danych sprzedaży.');
+  }
+}
+
+async function getUserBlockState(uid){
+  if(!db || !uid) return false;
+
+  try{
+    const doc = await db.collection(USERS_COLLECTION).doc(uid).get();
+    return Boolean(doc.exists && doc.data()?.blocked);
+  }catch(error){
+    console.error('User block check error', error);
+    return false;
+  }
+}
+
 if(typeof firebase !== 'undefined'){
   if(String(firebaseConfig.apiKey).startsWith('PASTE_')){
     setLoginError('Uzupełnij firebaseConfig w script.js');
@@ -414,16 +868,43 @@ if(typeof firebase !== 'undefined'){
       firebase.initializeApp(firebaseConfig);
     }
     auth = firebase.auth();
+    if(typeof firebase.firestore === 'function'){
+      db = firebase.firestore();
+    }
+    if(typeof firebase.storage === 'function'){
+      storage = firebase.app().storage(STORAGE_BUCKET);
+    }
     authReady = true;
 
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(async user => {
+      const currentVersion = ++authStateVersion;
+
       if(user){
+        const isBlocked = await getUserBlockState(user.uid);
+        if(currentVersion !== authStateVersion){
+          return;
+        }
+        if(isBlocked){
+          preserveAdminSessionAfterBlockedLogout = localStorage.getItem('is_admin') === '1';
+          setLoginError('To konto jest zablokowane.');
+          try{
+            await auth.signOut();
+          }catch(error){
+            console.error('Blocked user sign out error', error);
+          }
+          return;
+        }
         showApp();
         toggleAdminPanel(user.email || '');
         resetAppState();
         setLoginError('');
+        loadPersonalSalesInsightForUser(user, currentVersion);
       }else{
-        toggleAdminPanel('');
+        toggleAdminPanel('', {
+          preserveSession: preserveAdminSessionAfterBlockedLogout
+        });
+        preserveAdminSessionAfterBlockedLogout = false;
+        hidePersonalSalesInsight();
         resetAppState();
         showLogin();
       }
@@ -447,9 +928,6 @@ if(loginBtn){
     console.log('AUTH READY:', authReady, auth);
     try{
       await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
-      showApp();
-      toggleAdminPanel(lastLoginEmail);
-      resetAppState();
     }catch(err){
       console.error('LOGIN ERROR:', err.code, err.message, err);
       setLoginError(err.code || err.message || 'Błąd logowania');
@@ -574,39 +1052,23 @@ if(passwordCancel){
   });
 }
 
+if(worldFoodBtn){
+  worldFoodBtn.addEventListener('click', () => {
+    const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'rumunia';
+    activateTab(activeTab);
+  });
+}
+
+if(salesReportsBtn){
+  salesReportsBtn.addEventListener('click', () => {
+    openReportsView();
+  });
+}
+
 // OBSŁUGA ZAKŁADEK
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-    document.getElementById(tab.dataset.tab).classList.remove('hidden');
-    currentImageBaseUrl = tab.dataset.tab === 'ukraina' ? imageBaseUrlUkraina : imageBaseUrlRumunia;
-    window.imageBaseUrl = currentImageBaseUrl;
-
-    slodyczeContainer.innerHTML = '';
-    miesoContainer.innerHTML = '';
-    nabialContainer.innerHTML = '';
-    napojeContainer.innerHTML = '';
-    przyprawyProszekContainer.innerHTML = '';
-    puszkiSloikiContainer.innerHTML = '';
-    produktyPodstawoweContainer.innerHTML = '';
-    kawyHerbatyContainer.innerHTML = '';
-    if(topRumuniaContainer) topRumuniaContainer.innerHTML = '';
-    if(importDaneContainer) importDaneContainer.innerHTML = '';
-    if(reportsContainer) reportsContainer.innerHTML = '';
-    if(ukrainaSlodyczeContainer) ukrainaSlodyczeContainer.innerHTML = '';
-    if(ukrainaMiesoContainer) ukrainaMiesoContainer.innerHTML = '';
-    if(ukrainaKawyContainer) ukrainaKawyContainer.innerHTML = '';
-    if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
-    if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
-    if(ukrainaPrzyprawyContainer) ukrainaPrzyprawyContainer.innerHTML = '';
-    viewMode = 'table';
-
-    if(tab.dataset.tab !== 'listing'){
-      stopListingScanner();
-    }
+    activateTab(tab.dataset.tab);
   });
 });
 
@@ -2205,6 +2667,9 @@ function renderReportsView(){
 }
 
 function openReportsView(){
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  setPrimaryNavState('reports');
+  showTabSection('reports-sales');
   setActiveCard('reports-card');
   setImageBase(imageBaseUrlRumunia);
   setFullData([]);
@@ -4260,16 +4725,19 @@ function setActiveCard(id){
   if(el) el.classList.add('active');
 }
 
-function toggleAdminPanel(email){
+function toggleAdminPanel(email, options = {}){
   const isAdminEmail = ADMIN_EMAILS.includes(String(email || '').toLowerCase());
   const isAdminSession = localStorage.getItem('is_admin') === '1';
   const isAdmin = isAdminEmail || (isAdminSession && isAdminEmail);
+  const preserveSession = Boolean(options.preserveSession);
   if(adminPanelBtn) adminPanelBtn.classList.toggle('hidden', !isAdmin);
   if(reportsCard) reportsCard.classList.toggle('hidden', !isAdmin);
   if(isAdmin){
     localStorage.setItem('is_admin', '1');
   }else{
-    localStorage.removeItem('is_admin');
+    if(!preserveSession){
+      localStorage.removeItem('is_admin');
+    }
     if(reportsContainer) reportsContainer.innerHTML = '';
   }
 }
