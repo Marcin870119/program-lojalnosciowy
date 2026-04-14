@@ -19,6 +19,8 @@ const USERS_COLLECTION = 'app_users';
 const SALES_REPORTS_ROOT = 'raporty - maspo';
 const STORAGE_BUCKET = 'gs://pdf-creator-f7a8b.firebasestorage.app';
 const SALES_REP_HEADER_KEYS = ['opiekun_klienta'];
+const ADMIN_EMAILS = ['admin@admin.info', 'admin@admin.com'];
+const PENDING_USER_SYNC_STORAGE_KEY = 'admin_pending_app_users_sync_v1';
 const PINNED_TEST_USER = {
   uid: '9MB4MF77sRayF6jjgvLCMpphBJM2',
   email: 'robert.bubula@maspo.pl',
@@ -30,6 +32,10 @@ let pinnedUserEnsured = false;
 let userBlockControlsEnabled = true;
 let firestoreDb = null;
 let storageService = null;
+let salesReportRepOptions = [];
+let latestUserDocs = [];
+let pendingUserSyncInFlight = false;
+let pendingUserSyncTimer = null;
 
 if(!localStorage.getItem('is_admin')){
   window.location.href = 'index.html';
@@ -49,10 +55,26 @@ function escapeHtml(value){
     .replace(/"/g, '&quot;');
 }
 
+function isAdminEmail(email){
+  return ADMIN_EMAILS.includes(String(email || '').toLowerCase());
+}
+
+function parseDateLike(value){
+  if(!value) return null;
+  if(value instanceof Date){
+    return Number.isNaN(value.getTime()) ? null : value;
+  }
+  const parsedDate = new Date(value);
+  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
+}
+
 function formatUserDate(timestamp){
-  if(!timestamp?.toDate) return 'brak daty';
   try{
-    return timestamp.toDate().toLocaleString('pl-PL');
+    if(timestamp?.toDate){
+      return timestamp.toDate().toLocaleString('pl-PL');
+    }
+    const parsedDate = parseDateLike(timestamp);
+    return parsedDate ? parsedDate.toLocaleString('pl-PL') : 'brak daty';
   }catch(e){
     return 'brak daty';
   }
@@ -92,6 +114,252 @@ function renderSalesReportResults(items, summary){
       <div class="admin-import-path">${escapeHtml(item.path)}</div>
     </div>
   `).join('')}`;
+}
+
+function normalizePendingUserSyncEntry(entry){
+  const uid = String(entry?.uid || '').trim();
+  if(!uid) return null;
+
+  return {
+    uid,
+    email: String(entry?.email || '').trim(),
+    source: String(entry?.source || 'admin-panel').trim() || 'admin-panel',
+    createdAt: parseDateLike(entry?.createdAt)?.toISOString() || '',
+    blocked: Boolean(entry?.blocked),
+    syncBlocked: Boolean(entry?.syncBlocked),
+    salesReportFolder: String(entry?.salesReportFolder || '').trim(),
+    salesRepName: String(entry?.salesRepName || '').trim(),
+    syncSalesReport: Boolean(entry?.syncSalesReport),
+    queuedAt: parseDateLike(entry?.queuedAt)?.toISOString() || new Date().toISOString(),
+    lastSyncAttemptAt: parseDateLike(entry?.lastSyncAttemptAt)?.toISOString() || '',
+    lastSyncError: String(entry?.lastSyncError || '').trim()
+  };
+}
+
+function readPendingUserSyncQueue(){
+  try{
+    const raw = localStorage.getItem(PENDING_USER_SYNC_STORAGE_KEY);
+    const parsed = JSON.parse(raw || '[]');
+    if(!Array.isArray(parsed)) return [];
+    return parsed
+      .map(normalizePendingUserSyncEntry)
+      .filter(Boolean);
+  }catch(error){
+    console.error('Pending user sync queue read error', error);
+    return [];
+  }
+}
+
+function writePendingUserSyncQueue(entries){
+  const normalizedEntries = (entries || [])
+    .map(normalizePendingUserSyncEntry)
+    .filter(entry => entry && (entry.syncBlocked || entry.syncSalesReport));
+
+  if(!normalizedEntries.length){
+    localStorage.removeItem(PENDING_USER_SYNC_STORAGE_KEY);
+    return;
+  }
+
+  localStorage.setItem(PENDING_USER_SYNC_STORAGE_KEY, JSON.stringify(normalizedEntries));
+}
+
+function upsertPendingUserSyncEntry(entry){
+  const normalizedEntry = normalizePendingUserSyncEntry(entry);
+  if(!normalizedEntry) return;
+
+  const hasSyncBlocked = Object.prototype.hasOwnProperty.call(entry || {}, 'syncBlocked');
+  const hasSyncSalesReport = Object.prototype.hasOwnProperty.call(entry || {}, 'syncSalesReport');
+  const hasBlocked = Object.prototype.hasOwnProperty.call(entry || {}, 'blocked');
+  const hasSalesReportFolder = Object.prototype.hasOwnProperty.call(entry || {}, 'salesReportFolder');
+  const hasSalesRepName = Object.prototype.hasOwnProperty.call(entry || {}, 'salesRepName');
+  const hasLastSyncError = Object.prototype.hasOwnProperty.call(entry || {}, 'lastSyncError');
+
+  const queue = readPendingUserSyncQueue();
+  const queueMap = new Map(queue.map(item => [item.uid, item]));
+  const current = queueMap.get(normalizedEntry.uid) || {};
+
+  queueMap.set(normalizedEntry.uid, normalizePendingUserSyncEntry({
+    ...current,
+    ...normalizedEntry,
+    uid: normalizedEntry.uid,
+    email: normalizedEntry.email || current.email || '',
+    source: normalizedEntry.source || current.source || 'admin-panel',
+    queuedAt: current.queuedAt || normalizedEntry.queuedAt || new Date().toISOString(),
+    createdAt: normalizedEntry.createdAt || current.createdAt || '',
+    blocked: hasBlocked ? normalizedEntry.blocked : Boolean(current.blocked),
+    syncBlocked: hasSyncBlocked ? normalizedEntry.syncBlocked : Boolean(current.syncBlocked),
+    salesReportFolder: hasSalesReportFolder ? normalizedEntry.salesReportFolder : String(current.salesReportFolder || ''),
+    salesRepName: hasSalesRepName ? normalizedEntry.salesRepName : String(current.salesRepName || ''),
+    syncSalesReport: hasSyncSalesReport ? normalizedEntry.syncSalesReport : Boolean(current.syncSalesReport),
+    lastSyncError: hasLastSyncError ? normalizedEntry.lastSyncError : (current.lastSyncError || '')
+  }));
+
+  writePendingUserSyncQueue(Array.from(queueMap.values()));
+}
+
+function buildPendingUserSyncPayload(entry){
+  const payload = {
+    uid: entry.uid,
+    email: entry.email || '',
+    source: entry.source || 'admin-panel',
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  const createdAtDate = parseDateLike(entry.createdAt);
+  if(createdAtDate){
+    payload.createdAt = createdAtDate;
+  }
+
+  if(entry.syncBlocked){
+    payload.blocked = Boolean(entry.blocked);
+  }
+
+  if(entry.syncSalesReport){
+    const normalizedFolder = String(entry.salesReportFolder || '').trim();
+    payload.salesReportFolder = normalizedFolder;
+    payload.salesRepName = normalizedFolder
+      ? (String(entry.salesRepName || '').trim() || normalizedFolder)
+      : '';
+  }
+
+  return payload;
+}
+
+function schedulePendingUserSync(delay = 0){
+  if(pendingUserSyncTimer){
+    clearTimeout(pendingUserSyncTimer);
+  }
+
+  pendingUserSyncTimer = setTimeout(() => {
+    pendingUserSyncTimer = null;
+    void flushPendingUserSyncQueue();
+  }, Math.max(0, delay));
+}
+
+async function flushPendingUserSyncQueue(){
+  if(pendingUserSyncInFlight || !firestoreDb || typeof firebase?.firestore !== 'function'){
+    return;
+  }
+
+  const queue = readPendingUserSyncQueue();
+  if(!queue.length){
+    return;
+  }
+
+  pendingUserSyncInFlight = true;
+
+  try{
+    const remainingEntries = [];
+
+    for(const entry of queue){
+      try{
+        await firestoreDb
+          .collection(USERS_COLLECTION)
+          .doc(entry.uid)
+          .set(buildPendingUserSyncPayload(entry), { merge: true });
+      }catch(error){
+        console.error('Pending user sync write error', error);
+        remainingEntries.push(normalizePendingUserSyncEntry({
+          ...entry,
+          lastSyncAttemptAt: new Date().toISOString(),
+          lastSyncError: error?.code || error?.message || 'unknown'
+        }));
+      }
+    }
+
+    writePendingUserSyncQueue(remainingEntries);
+  }finally{
+    pendingUserSyncInFlight = false;
+    renderUsers(latestUserDocs);
+  }
+}
+
+function normalizeUserSalesConfig(data){
+  if(!data) return { reportFolder: '', reportName: '' };
+  const reportFolder = String(data.salesReportFolder || data.storageFolder || '').trim();
+  const reportName = String(data.salesRepName || data.displayName || '').trim() || reportFolder;
+  return { reportFolder, reportName };
+}
+
+function mergeSalesReportRepOptions(options){
+  const map = new Map();
+  (options || []).forEach(item => {
+    const folder = String(item?.folder || '').trim();
+    if(!folder) return;
+    const name = String(item?.name || '').trim() || folder;
+    if(!map.has(folder)){
+      map.set(folder, { folder, name });
+      return;
+    }
+    const current = map.get(folder);
+    if(!current.name && name){
+      current.name = name;
+    }
+  });
+  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name, 'pl'));
+}
+
+function buildSalesReportRepSelectOptions(selectedFolder, selectedName){
+  const fallbackOption = selectedFolder
+    ? [{ folder: selectedFolder, name: selectedName || selectedFolder }]
+    : [];
+  const options = mergeSalesReportRepOptions([
+    ...salesReportRepOptions,
+    ...fallbackOption
+  ]);
+
+  return `
+    <option value="">Brak przypisania</option>
+    ${options.map(option => `
+      <option
+        value="${escapeHtml(option.folder)}"
+        data-name="${escapeHtml(option.name)}"
+        ${selectedFolder === option.folder ? 'selected' : ''}
+      >${escapeHtml(option.name)}</option>
+    `).join('')}
+  `;
+}
+
+function extractFolderFromStoragePath(path){
+  const normalizedPath = String(path || '').trim();
+  const prefix = `${SALES_REPORTS_ROOT}/`;
+  if(!normalizedPath.startsWith(prefix)) return '';
+  return normalizedPath.slice(prefix.length).split('/')[0] || '';
+}
+
+function collectAssignedReportOptionsFromDocs(docs){
+  return (docs || []).map(doc => {
+    const data = doc?.data?.() || {};
+    const config = normalizeUserSalesConfig(data);
+    return {
+      folder: config.reportFolder,
+      name: config.reportName
+    };
+  }).filter(item => item.folder);
+}
+
+async function refreshSalesReportRepOptionsFromStorage(){
+  if(!storageService) return;
+  try{
+    const rootRef = storageService.ref().child(SALES_REPORTS_ROOT);
+    const listResult = await rootRef.listAll();
+    const fromStorage = (listResult.prefixes || []).map(prefix => {
+      const folder = String(prefix?.name || '').trim();
+      return folder ? { folder, name: folder } : null;
+    }).filter(Boolean);
+
+    salesReportRepOptions = mergeSalesReportRepOptions([
+      ...salesReportRepOptions,
+      ...fromStorage,
+      ...collectAssignedReportOptionsFromDocs(latestUserDocs)
+    ]);
+
+    if(latestUserDocs.length){
+      renderUsers(latestUserDocs);
+    }
+  }catch(error){
+    console.error('Sales report options load error', error);
+  }
 }
 
 function normalizeLookupValue(value){
@@ -405,13 +673,34 @@ function updateUserItemStatus(toggle, blocked){
   statusNode.classList.toggle('is-blocked', blocked);
 }
 
-function buildUserItem({ uid, email, createdAt, source, blocked }){
+function buildUserItem({
+  uid,
+  email,
+  createdAt,
+  source,
+  blocked,
+  reportFolder,
+  reportName,
+  syncPending,
+  syncError
+}){
   const createdLabel = formatUserDate(createdAt);
-  const sourceLabel = source === 'test-seed' ? 'Testowy wpis panelu' : 'Konto zapisane w panelu';
+  const sourceLabel = syncPending
+    ? 'Oczekuje na synchronizację z bazą'
+    : source === 'test-seed'
+      ? 'Testowy wpis panelu'
+      : source === 'auth-login'
+        ? 'Konto dopisane po pierwszym logowaniu'
+        : 'Konto zapisane w panelu';
   const statusLabel = blocked ? 'Konto zablokowane' : 'Konto aktywne';
   const switchDisabled = userBlockControlsEnabled ? '' : 'disabled';
   const switchChecked = blocked ? 'checked' : '';
   const statusClass = blocked ? ' is-blocked' : '';
+  const assignmentLabel = reportFolder
+    ? (reportName && reportName !== reportFolder ? `${reportName} (${reportFolder})` : (reportName || reportFolder))
+    : 'Brak przypisania';
+  const assignDisabled = userBlockControlsEnabled ? '' : 'disabled';
+  const reportOptions = buildSalesReportRepSelectOptions(reportFolder, reportName);
   return `
     <div class="admin-user-item">
       <div class="admin-user-top">
@@ -435,6 +724,25 @@ function buildUserItem({ uid, email, createdAt, source, blocked }){
       <div class="admin-user-meta">UID: ${escapeHtml(uid || 'Brak UID')}</div>
       <div class="admin-user-meta">Dodano: ${escapeHtml(createdLabel)}</div>
       <div class="admin-user-meta">${escapeHtml(sourceLabel)}</div>
+      <div class="admin-user-meta">Raport PH: ${escapeHtml(assignmentLabel)}</div>
+      ${syncError ? `<div class="admin-user-meta">Ostatni błąd synchronizacji: ${escapeHtml(syncError)}</div>` : ''}
+      <div class="admin-user-assignment">
+        <select
+          class="admin-user-report-select"
+          data-uid="${escapeHtml(uid || '')}"
+          data-email="${escapeHtml(email || '')}"
+          ${assignDisabled}
+        >
+          ${reportOptions}
+        </select>
+        <button
+          class="btn-outline admin-user-assign-btn"
+          type="button"
+          data-uid="${escapeHtml(uid || '')}"
+          data-email="${escapeHtml(email || '')}"
+          ${assignDisabled}
+        >Zapisz raport</button>
+      </div>
     </div>
   `;
 }
@@ -444,14 +752,19 @@ function renderFallbackUsers(){
   userList.innerHTML = buildUserItem({
     ...PINNED_TEST_USER,
     createdAt: null,
-    blocked: false
+    blocked: false,
+    syncPending: false,
+    syncError: ''
   });
 }
 
 function getTimestampValue(timestamp){
-  if(!timestamp?.toDate) return 0;
   try{
-    return timestamp.toDate().getTime();
+    if(timestamp?.toDate){
+      return timestamp.toDate().getTime();
+    }
+    const parsedDate = parseDateLike(timestamp);
+    return parsedDate ? parsedDate.getTime() : 0;
   }catch(error){
     return 0;
   }
@@ -459,29 +772,70 @@ function getTimestampValue(timestamp){
 
 function renderUsers(docs){
   if(!userList) return;
-  if(!docs.length){
-    renderFallbackUsers();
-    return;
-  }
-
-  const items = docs.map(doc => {
+  latestUserDocs = Array.isArray(docs) ? [...docs] : [];
+  const items = (docs || []).map(doc => {
     const data = doc.data() || {};
+    const config = normalizeUserSalesConfig(data);
     return {
       uid: doc.id,
       email: data.email,
       createdAt: data.createdAt,
       source: data.source,
-      blocked: Boolean(data.blocked)
+      blocked: Boolean(data.blocked),
+      reportFolder: config.reportFolder,
+      reportName: config.reportName,
+      syncPending: false,
+      syncError: ''
     };
   });
+
+  const itemMap = new Map(items.map(item => [item.uid, item]));
+  const pendingQueue = readPendingUserSyncQueue();
+
+  pendingQueue.forEach(entry => {
+    const existingItem = itemMap.get(entry.uid);
+    const pendingValues = {
+      uid: entry.uid,
+      email: entry.email || existingItem?.email || '',
+      createdAt: existingItem?.createdAt || entry.createdAt || entry.queuedAt || null,
+      source: existingItem?.source || entry.source || 'admin-panel',
+      blocked: entry.syncBlocked ? Boolean(entry.blocked) : Boolean(existingItem?.blocked),
+      reportFolder: entry.syncSalesReport ? entry.salesReportFolder : (existingItem?.reportFolder || ''),
+      reportName: entry.syncSalesReport ? (entry.salesRepName || entry.salesReportFolder) : (existingItem?.reportName || ''),
+      syncPending: true,
+      syncError: entry.lastSyncError || ''
+    };
+
+    if(existingItem){
+      Object.assign(existingItem, pendingValues);
+      return;
+    }
+
+    itemMap.set(entry.uid, pendingValues);
+    items.push(pendingValues);
+  });
+
+  if(!items.length){
+    renderFallbackUsers();
+    return;
+  }
 
   if(!items.some(item => item.uid === PINNED_TEST_USER.uid)){
     items.unshift({
       ...PINNED_TEST_USER,
       createdAt: null,
-      blocked: false
+      blocked: false,
+      reportFolder: '',
+      reportName: '',
+      syncPending: false,
+      syncError: ''
     });
   }
+
+  salesReportRepOptions = mergeSalesReportRepOptions([
+    ...salesReportRepOptions,
+    ...items.map(item => ({ folder: item.reportFolder, name: item.reportName })).filter(item => item.folder)
+  ]);
 
   items.sort((a, b) => getTimestampValue(b.createdAt) - getTimestampValue(a.createdAt));
   userList.innerHTML = items.map(buildUserItem).join('');
@@ -503,6 +857,13 @@ async function ensurePinnedTestUser(db){
         blocked: false
       }, { merge: true });
     }
+    if(!String(currentData.salesReportFolder || '').trim()){
+      await ref.set({
+        salesReportFolder: 'Bubula Robert',
+        salesRepName: 'Robert Bubula',
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+    }
   }catch(error){
     console.error('Pinned user seed error', error);
   }
@@ -517,6 +878,23 @@ async function updateUserBlockedState(uid, email, blocked){
     uid,
     email: email || '',
     blocked: Boolean(blocked),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+}
+
+async function updateUserSalesReportAssignment(uid, email, reportFolder, reportName){
+  if(!firestoreDb || !uid){
+    throw new Error('Brak dostepu do bazy danych.');
+  }
+
+  const normalizedFolder = String(reportFolder || '').trim();
+  const normalizedName = String(reportName || '').trim() || normalizedFolder;
+
+  await firestoreDb.collection(USERS_COLLECTION).doc(uid).set({
+    uid,
+    email: email || '',
+    salesReportFolder: normalizedFolder,
+    salesRepName: normalizedFolder ? normalizedName : '',
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   }, { merge: true });
 }
@@ -539,6 +917,12 @@ async function handleUserBlockToggle(event){
 
   try{
     await updateUserBlockedState(uid, email, nextBlocked);
+    upsertPendingUserSyncEntry({
+      uid,
+      email,
+      syncBlocked: false,
+      lastSyncError: ''
+    });
     if(msg){
       msg.textContent = nextBlocked
         ? 'Konto zostało zablokowane.'
@@ -546,13 +930,20 @@ async function handleUserBlockToggle(event){
     }
   }catch(error){
     console.error('Block user error', error);
-    toggle.checked = !nextBlocked;
-    updateUserItemStatus(toggle, !nextBlocked);
+    upsertPendingUserSyncEntry({
+      uid,
+      email,
+      blocked: nextBlocked,
+      syncBlocked: true,
+      lastSyncError: error?.code || error?.message || 'unknown'
+    });
+    renderUsers(latestUserDocs);
+    schedulePendingUserSync(1200);
     if(msg){
-      msg.textContent = 'Nie udało się zmienić blokady konta.';
+      msg.textContent = 'Nie udało się teraz zmienić blokady. Synchronizacja zostanie ponowiona automatycznie.';
     }
     setTimeout(() => {
-      if(msg && msg.textContent === 'Nie udało się zmienić blokady konta.'){
+      if(msg && msg.textContent === 'Nie udało się teraz zmienić blokady. Synchronizacja zostanie ponowiona automatycznie.'){
         msg.textContent = previousMessage;
       }
     }, 2500);
@@ -561,8 +952,75 @@ async function handleUserBlockToggle(event){
   }
 }
 
+async function handleUserAssignmentSave(button){
+  if(!button) return;
+  const { uid, email } = button.dataset;
+  if(!uid){
+    return;
+  }
+
+  const userItem = button.closest('.admin-user-item');
+  const select = userItem?.querySelector('.admin-user-report-select');
+  if(!select){
+    return;
+  }
+
+  const selectedOption = select.options[select.selectedIndex];
+  const selectedFolder = String(select.value || '').trim();
+  const selectedName = String(selectedOption?.dataset?.name || selectedOption?.textContent || '').trim();
+  const previousMessage = msg ? msg.textContent : '';
+
+  button.disabled = true;
+  select.disabled = true;
+
+  try{
+    await updateUserSalesReportAssignment(uid, email, selectedFolder, selectedName);
+    upsertPendingUserSyncEntry({
+      uid,
+      email,
+      syncSalesReport: false,
+      lastSyncError: ''
+    });
+    if(msg){
+      msg.textContent = selectedFolder
+        ? 'Przypisanie raportu zapisane.'
+        : 'Przypisanie raportu usunięte.';
+    }
+  }catch(error){
+    console.error('User report assignment error', error);
+    upsertPendingUserSyncEntry({
+      uid,
+      email,
+      salesReportFolder: selectedFolder,
+      salesRepName: selectedFolder ? selectedName : '',
+      syncSalesReport: true,
+      lastSyncError: error?.code || error?.message || 'unknown'
+    });
+    renderUsers(latestUserDocs);
+    schedulePendingUserSync(1200);
+    if(msg){
+      msg.textContent = 'Nie udało się teraz zapisać przypisania. Synchronizacja zostanie ponowiona automatycznie.';
+    }
+    setTimeout(() => {
+      if(msg && msg.textContent === 'Nie udało się teraz zapisać przypisania. Synchronizacja zostanie ponowiona automatycznie.'){
+        msg.textContent = previousMessage;
+      }
+    }, 2500);
+  }finally{
+    button.disabled = !userBlockControlsEnabled;
+    select.disabled = !userBlockControlsEnabled;
+  }
+}
+
+function handleUserListClick(event){
+  const assignButton = event.target.closest('.admin-user-assign-btn');
+  if(!assignButton) return;
+  void handleUserAssignmentSave(assignButton);
+}
+
 if(userList){
   userList.addEventListener('change', handleUserBlockToggle);
+  userList.addEventListener('click', handleUserListClick);
 }
 
 if(salesReportUploadBtn){
@@ -581,6 +1039,17 @@ if(salesReportUploadBtn){
 
     try{
       const result = await uploadSalesReportGroups(file);
+      const uploadedOptions = result.items.map(item => ({
+        folder: extractFolderFromStoragePath(item.path),
+        name: item.repName
+      })).filter(item => item.folder);
+      salesReportRepOptions = mergeSalesReportRepOptions([
+        ...salesReportRepOptions,
+        ...uploadedOptions
+      ]);
+      if(latestUserDocs.length){
+        renderUsers(latestUserDocs);
+      }
       renderSalesReportResults(result.items, result.summary);
       setSalesReportMessage(`Import zakończony. Utworzono ${result.summary.filesCount} plików.`, 'success');
     }catch(error){
@@ -600,13 +1069,28 @@ if(typeof firebase !== 'undefined'){
   if(!firebase.apps.some(a => a.name === 'adminApp')){
     firebase.initializeApp(firebaseConfig, 'adminApp');
   }
+  const appAuth = firebase.auth();
   const adminAuth = firebase.app('adminApp').auth();
   const db = firebase.firestore();
   firestoreDb = db;
   if(typeof firebase.storage === 'function'){
     storageService = firebase.app().storage(STORAGE_BUCKET);
+    void refreshSalesReportRepOptionsFromStorage();
   }
   ensurePinnedTestUser(db);
+  window.addEventListener('online', () => {
+    schedulePendingUserSync(400);
+  });
+  schedulePendingUserSync(250);
+
+  appAuth.onAuthStateChanged(user => {
+    if(user && isAdminEmail(user.email)){
+      localStorage.setItem('is_admin', '1');
+      return;
+    }
+    localStorage.removeItem('is_admin');
+    window.location.href = 'index.html';
+  });
 
   unsubscribeUsers = db
     .collection(USERS_COLLECTION)
@@ -614,7 +1098,7 @@ if(typeof firebase !== 'undefined'){
       renderUsers(snapshot.docs);
     }, error => {
       console.error('Users list error', error);
-      renderFallbackUsers();
+      renderUsers([]);
     });
 
   createBtn.addEventListener('click', async () => {
@@ -634,24 +1118,45 @@ if(typeof firebase !== 'undefined'){
       const credential = await adminAuth.createUserWithEmailAndPassword(email, pass);
       const createdUser = credential.user;
       let savedToList = false;
+      let saveErrorMessage = '';
       if(createdUser){
+        const pendingUserSeed = {
+          uid: createdUser.uid,
+          email,
+          createdAt: createdUser.metadata?.creationTime || new Date().toISOString(),
+          source: 'admin-panel',
+          blocked: false,
+          syncBlocked: true
+        };
         try{
           await db.collection(USERS_COLLECTION).doc(createdUser.uid).set({
             email,
             uid: createdUser.uid,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             source: 'admin-panel',
-            blocked: false
+            blocked: false,
+            salesReportFolder: '',
+            salesRepName: ''
           }, { merge: true });
           savedToList = true;
+          writePendingUserSyncQueue(
+            readPendingUserSyncQueue().filter(item => item.uid !== createdUser.uid)
+          );
         }catch(saveError){
           console.error('Save user list error', saveError);
+          saveErrorMessage = saveError?.code || saveError?.message || '';
+          upsertPendingUserSyncEntry({
+            ...pendingUserSeed,
+            lastSyncError: saveErrorMessage
+          });
+          renderUsers(latestUserDocs);
+          schedulePendingUserSync(1200);
         }
       }
       await adminAuth.signOut();
       msg.textContent = savedToList
         ? 'Konto utworzone.'
-        : 'Konto utworzone, ale nie zapisano go na liście.';
+        : `Konto utworzone. Profil jest w kolejce automatycznej synchronizacji${saveErrorMessage ? ` (${saveErrorMessage})` : ''}.`;
       emailInput.value = '';
       passwordInput.value = '';
     }catch(e){
