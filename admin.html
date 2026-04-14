@@ -8,30 +8,72 @@
 </head>
 <body>
   <div id="admin-view">
-    <header>
-      <img class="brand-logo" alt="World Food – Oferta" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2Fmaspo%20logo.png?alt=media&token=8fe33ebe-04d2-42cb-acb0-10379dbd7e11">
-      <div class="header-actions">
-        <button class="btn-outline" id="admin-back-btn">Powrót</button>
+    <header class="site-header site-header--admin">
+      <div class="site-header-main">
+        <div class="brand-lockup">
+          <img class="brand-logo" alt="World Food – Oferta" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2Fmaspo%20logo.png?alt=media&token=8fe33ebe-04d2-42cb-acb0-10379dbd7e11">
+          <div class="brand-copy">
+            <span class="brand-title">World Food</span>
+            <span class="brand-subtitle">Panel administracyjny</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-outline" id="admin-back-btn">Powrót</button>
+        </div>
       </div>
     </header>
 
     <main>
-      <section class="admin-panel">
-        <h2>Panel admin</h2>
-        <div class="login-form">
-          <label class="login-label" for="admin-user-email">Email użytkownika</label>
-          <input id="admin-user-email" type="email" placeholder="nowy@firma.com">
-          <label class="login-label" for="admin-user-password">Hasło użytkownika</label>
-          <input id="admin-user-password" type="password" placeholder="Minimum 6 znaków">
-          <button id="admin-create-user" class="btn-outline">Utwórz konto</button>
+      <section class="admin-layout">
+        <div class="admin-panel">
+          <h2>Panel admin</h2>
+          <div class="login-form">
+            <label class="login-label" for="admin-user-email">Email użytkownika</label>
+            <input id="admin-user-email" type="email" placeholder="nowy@firma.com">
+            <label class="login-label" for="admin-user-password">Hasło użytkownika</label>
+            <input id="admin-user-password" type="password" placeholder="Minimum 6 znaków">
+            <button id="admin-create-user" class="btn-outline">Utwórz konto</button>
+          </div>
+          <div id="admin-create-msg" class="login-error"></div>
+
+          <div class="admin-tool-divider"></div>
+
+          <div class="admin-panel-head admin-panel-head--compact">
+            <h2>Import raportu sprzedaży</h2>
+            <div class="admin-panel-note">
+              Podzieli plik Excel po kolumnie przedstawiciela handlowego i zapisze osobne pliki do
+              <strong>raporty - maspo/{przedstawiciel}/</strong>.
+            </div>
+          </div>
+          <div class="login-form">
+            <label class="login-label" for="admin-sales-report-file">Plik Excel raportu</label>
+            <input id="admin-sales-report-file" type="file" accept=".xlsx,.xls">
+            <button id="admin-sales-report-upload" class="btn-outline">Podziel i wyślij do Storage</button>
+          </div>
+          <div id="admin-sales-report-msg" class="admin-inline-msg"></div>
+          <div id="admin-sales-report-results" class="admin-import-results">
+            <div class="admin-user-empty">Wybierz plik i uruchom podział na przedstawicieli.</div>
+          </div>
         </div>
-        <div id="admin-create-msg" class="login-error"></div>
+
+        <aside class="admin-panel admin-panel--side">
+          <div class="admin-panel-head">
+            <h2>Użytkownicy</h2>
+            <div class="admin-panel-note">Lista kont zapisanych przez panel admina.</div>
+          </div>
+          <div id="admin-user-list" class="admin-user-list">
+            <div class="admin-user-empty">Ładuję listę użytkowników...</div>
+          </div>
+        </aside>
       </section>
     </main>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>
