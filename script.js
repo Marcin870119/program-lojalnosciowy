@@ -1,5 +1,6 @@
 const jsonUrl =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Slodycze%20Ranking%20Rumunia.json';
+window.__wfScriptLoaded = true;
 const jsonUrlMieso =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Mieso%20Wedliny%20-%20Rumunia.json';
 const jsonUrlNabial =
@@ -194,6 +195,7 @@ let weeklySalesSelectedProducer = '';
 let weeklySalesSelectedWeek = '';
 let weeklySalesOnlyLastWeek250 = false;
 let weeklySalesRepComparison = false;
+let weeklySalesSortOrder = 'sales-desc';
 let customerDiscountMapCache = null;
 let topSuggestionSourceRows = [];
 let topSuggestionGeneratedRows = [];
@@ -220,6 +222,10 @@ let lastLoginEmail = '';
 let lastLoginPassword = '';
 let authStateVersion = 0;
 let preserveAdminSessionAfterBlockedLogout = false;
+let personalSalesDetailsLoading = false;
+let phReportsAutoLoading = false;
+let currentUserIsAdmin = false;
+let personalSalesConfigCache = new Map();
 
 const REPORT_GROUP_CONFIGS = [
   {
@@ -384,6 +390,7 @@ function resetAppState(){
   weeklySalesSelectedWeek = '';
   weeklySalesOnlyLastWeek250 = false;
   weeklySalesRepComparison = false;
+  weeklySalesSortOrder = 'sales-desc';
   topSuggestionSourceRows = [];
   topSuggestionGeneratedRows = [];
   topSuggestionPurchasedRows = [];
@@ -392,6 +399,7 @@ function resetAppState(){
   topSuggestionSelectedCustomer = '';
   topSuggestionLimit = '';
   topSuggestionSummary = null;
+  personalSalesConfigCache = new Map();
   reportsGroupLimits = createDefaultReportLimits();
   resetFilters();
 
@@ -469,6 +477,60 @@ function setLoginError(message){
   if(loginError) loginError.textContent = message || '';
 }
 
+function getFriendlyAuthErrorMessage(error){
+  const code = String(error?.code || '').trim();
+
+  if(code === 'auth/network-request-failed'){
+    return 'Brak połączenia z Firebase. Sprawdź hotspot, VPN i internet.';
+  }
+  if(code === 'auth/network-timeout'){
+    return 'Logowanie przekroczyło czas oczekiwania. Sprawdź internet i spróbuj ponownie.';
+  }
+  if(code === 'auth/unauthorized-domain'){
+    return 'Ten adres nie jest dozwolony w Firebase Auth (Authorized domains).';
+  }
+  if(
+    code === 'auth/invalid-credential' ||
+    code === 'auth/wrong-password' ||
+    code === 'auth/user-not-found' ||
+    code === 'auth/invalid-email'
+  ){
+    return 'Nieprawidłowy email lub hasło.';
+  }
+  if(code === 'auth/too-many-requests'){
+    return 'Za dużo prób logowania. Spróbuj ponownie za chwilę.';
+  }
+  if(code === 'auth/user-disabled'){
+    return 'To konto jest wyłączone.';
+  }
+
+  return code || error?.message || 'Błąd logowania';
+}
+
+function withTimeout(promise, timeoutMs, fallbackValue){
+  return Promise.race([
+    promise,
+    new Promise(resolve => {
+      setTimeout(() => resolve(fallbackValue), timeoutMs);
+    })
+  ]);
+}
+
+async function signInWithTimeout(email, password, timeoutMs = 15000){
+  if(!auth){
+    throw { code: 'auth/internal-error', message: 'Firebase Auth nie jest gotowy.' };
+  }
+
+  return Promise.race([
+    auth.signInWithEmailAndPassword(email, password),
+    new Promise((_, reject) => {
+      setTimeout(() => {
+        reject({ code: 'auth/network-timeout' });
+      }, timeoutMs);
+    })
+  ]);
+}
+
 function hidePersonalSalesInsight(){
   if(personalSalesInsight) personalSalesInsight.classList.add('hidden');
   if(personalSalesInsightContent) personalSalesInsightContent.innerHTML = '';
@@ -525,7 +587,7 @@ function renderPersonalSalesInsightLoading(config){
         <p>Ładuję porównanie dwóch ostatnich tygodni sprzedaży z najnowszego raportu.</p>
       </div>
       <div class="sales-insight-side">
-        <div class="admin-user-empty">Pobieram raport z folderu ${escapeHtml(config.storageFolder)}...</div>
+        <div class="admin-user-empty">Pobieram dane raportu...</div>
       </div>
     </div>
   `);
@@ -571,6 +633,14 @@ function renderPersonalSalesInsight(config, insight){
           <span>${statusIcon}</span>
           <strong>${escapeHtml(statusText)}</strong>
         </div>
+        <div class="sales-insight-actions">
+          <button
+            type="button"
+            class="sales-insight-details-btn"
+            onclick="openPersonalSalesReportDetails()"
+            data-personal-sales-details-btn="1"
+          >Pokaż szczegóły</button>
+        </div>
         <div class="sales-insight-change">
           <div class="sales-insight-delta">${escapeHtml(formatSalesDelta(insight.difference))}</div>
           <div class="sales-insight-percent">${escapeHtml(formatPercentageDelta(insight.percentChange))}</div>
@@ -594,12 +664,219 @@ function renderPersonalSalesInsight(config, insight){
           </div>
         </div>
         <div class="sales-insight-footnote">
-          Raport: ${escapeHtml(insight.fileName)}<br>
           Ostatnia aktualizacja: ${escapeHtml(formatInsightDate(insight.updatedAt))}
         </div>
       </div>
     </div>
   `);
+}
+
+function findBestWeeklyRepresentativeMatch(representatives, config){
+  const options = Array.isArray(representatives) ? representatives.filter(Boolean) : [];
+  if(!options.length) return '';
+
+  const normalizedCandidates = [
+    String(config?.displayName || '').trim(),
+    String(config?.storageFolder || '').trim()
+  ]
+    .map(value => normalizeProducerValue(value))
+    .filter(Boolean);
+
+  for(const candidate of normalizedCandidates){
+    const exactMatch = options.find(rep => normalizeProducerValue(rep) === candidate);
+    if(exactMatch) return exactMatch;
+  }
+
+  const candidateTokens = normalizedCandidates
+    .flatMap(value => value.split(' '))
+    .filter(token => token.length >= 3);
+
+  let bestMatch = '';
+  let bestScore = 0;
+  options.forEach(rep => {
+    const normalizedRep = normalizeProducerValue(rep);
+    let score = 0;
+    candidateTokens.forEach(token => {
+      if(normalizedRep.includes(token)){
+        score += 1;
+      }
+    });
+    if(score > bestScore){
+      bestScore = score;
+      bestMatch = rep;
+    }
+  });
+
+  if(bestScore > 0){
+    return bestMatch;
+  }
+
+  return options.length === 1 ? options[0] : '';
+}
+
+async function loadWeeklySalesRowsFromFirebaseReport(config){
+  const latestReport = await getLatestPersonalSalesReport(config);
+  if(!latestReport){
+    throw new Error('Brak pliku raportu sprzedaży.');
+  }
+
+  const buffer = await readReportEntryArrayBuffer(latestReport);
+  const workbook = XLSX.read(buffer, { type: 'array' });
+  const sheetName = workbook.SheetNames.includes('Export') ? 'Export' : workbook.SheetNames[0];
+  if(!sheetName){
+    throw new Error('Raport sprzedaży nie zawiera żadnego arkusza.');
+  }
+
+  const sheet = workbook.Sheets[sheetName];
+  const matrix = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+  const rows = normalizeWeeklySalesRowsFromMatrix(matrix);
+  if(!rows.length){
+    throw new Error('Raport sprzedaży nie zawiera danych do wyświetlenia.');
+  }
+
+  return {
+    rows,
+    fileName: latestReport.item.name
+  };
+}
+
+async function applyPersonalWeeklySalesReport(config){
+  const reportData = await loadWeeklySalesRowsFromFirebaseReport(config);
+  weeklySalesSourceRows = reportData.rows;
+  weeklySalesImportFile = reportData.fileName;
+
+  const representatives = getWeeklySalesRepresentatives();
+  weeklySalesSelectedRepresentative = findBestWeeklyRepresentativeMatch(representatives, config)
+    || representatives[0]
+    || '';
+  weeklySalesSelectedWeek = '__all__';
+  weeklySalesOnlyLastWeek250 = false;
+  weeklySalesRepComparison = false;
+  weeklySalesSortOrder = 'sales-desc';
+
+  await loadCustomerDiscountMap();
+  generateWeeklySalesReport();
+}
+
+function normalizePersonalSalesConfig(source){
+  if(!source) return null;
+  const storageFolder = String(source.salesReportFolder || source.storageFolder || '').trim();
+  if(!storageFolder) return null;
+  const displayName = String(source.salesRepName || source.displayName || '').trim() || storageFolder;
+  return { displayName, storageFolder };
+}
+
+async function getPersonalSalesConfig(uid, options = {}){
+  if(!uid) return null;
+  const forceRefresh = Boolean(options.forceRefresh);
+  if(forceRefresh){
+    personalSalesConfigCache.delete(uid);
+  }
+  if(personalSalesConfigCache.has(uid)){
+    return personalSalesConfigCache.get(uid);
+  }
+
+  let config = null;
+  if(db){
+    try{
+      const userDoc = await db.collection(USERS_COLLECTION).doc(uid).get();
+      if(userDoc.exists){
+        config = normalizePersonalSalesConfig(userDoc.data() || {});
+      }
+    }catch(error){
+      console.error('Personal sales config read error', error);
+    }
+  }
+
+  if(!config){
+    config = normalizePersonalSalesConfig(PERSONAL_SALES_USERS[uid]);
+  }
+
+  personalSalesConfigCache.set(uid, config);
+  return config;
+}
+
+async function ensurePhWeeklySalesDataLoaded(){
+  if(isCurrentUserAdmin()) return;
+  if(personalSalesDetailsLoading || phReportsAutoLoading) return;
+  if(weeklySalesSourceRows.length) return;
+
+  const user = auth?.currentUser;
+  const config = await getPersonalSalesConfig(user?.uid);
+  if(!config) return;
+
+  phReportsAutoLoading = true;
+  try{
+    await applyPersonalWeeklySalesReport(config);
+    reportsMode = 'weekly-sales';
+    renderReportsView();
+  }catch(error){
+    console.error('PH weekly sales auto-load error', error);
+  }finally{
+    phReportsAutoLoading = false;
+  }
+}
+
+async function openPersonalSalesReportDetails(){
+  if(personalSalesDetailsLoading) return;
+  const user = auth?.currentUser;
+  const config = await getPersonalSalesConfig(user?.uid, { forceRefresh: true });
+  if(!config){
+    alert('Brak przypisanego raportu sprzedaży. Skontaktuj się z administratorem.');
+    return;
+  }
+
+  const detailsButton = personalSalesInsightContent?.querySelector('[data-personal-sales-details-btn="1"]');
+  const initialLabel = detailsButton?.textContent || 'Pokaż szczegóły';
+
+  personalSalesDetailsLoading = true;
+  if(detailsButton){
+    detailsButton.disabled = true;
+    detailsButton.textContent = 'Ładowanie...';
+  }
+
+  try{
+    openReportsView();
+    setReportsMode('weekly-sales');
+
+    weeklySalesSourceRows = [];
+    weeklySalesGeneratedRows = [];
+    weeklySalesImportFile = '';
+    weeklySalesSelectedRepresentative = '';
+    weeklySalesSelectedCustomer = '';
+    weeklySalesSelectedProducer = '';
+    weeklySalesSelectedWeek = '';
+    weeklySalesOnlyLastWeek250 = false;
+    weeklySalesRepComparison = false;
+    weeklySalesSortOrder = 'sales-desc';
+    renderReportsView();
+
+    await applyPersonalWeeklySalesReport(config);
+
+    reportsMode = 'weekly-sales';
+    renderReportsView();
+  }catch(error){
+    console.error('Personal sales details load error', error);
+    weeklySalesSourceRows = [];
+    weeklySalesGeneratedRows = [];
+    weeklySalesImportFile = '';
+    weeklySalesSelectedRepresentative = '';
+    weeklySalesSelectedCustomer = '';
+    weeklySalesSelectedProducer = '';
+    weeklySalesSelectedWeek = '';
+    weeklySalesOnlyLastWeek250 = false;
+    weeklySalesRepComparison = false;
+    weeklySalesSortOrder = 'sales-desc';
+    reportsMode = 'weekly-sales';
+    renderReportsView();
+    alert(error?.message || 'Nie udało się wczytać raportu sprzedaży.');
+  }finally{
+    personalSalesDetailsLoading = false;
+    if(detailsButton){
+      detailsButton.disabled = false;
+      detailsButton.textContent = initialLabel;
+    }
+  }
 }
 
 async function getLatestPersonalSalesReport(config){
@@ -751,76 +1028,93 @@ async function readReportEntryArrayBuffer(reportEntry){
 }
 
 async function readPersonalSalesInsight(reportEntry){
-  const metadataInsight = readPersonalSalesInsightFromMetadata(reportEntry);
-  if(metadataInsight){
-    return metadataInsight;
-  }
+  try{
+    const buffer = await readReportEntryArrayBuffer(reportEntry);
+    const workbook = XLSX.read(buffer, { type: 'array', raw: true, cellDates: true });
+    const sheetName = workbook.SheetNames?.[0];
 
-  const buffer = await readReportEntryArrayBuffer(reportEntry);
-  const workbook = XLSX.read(buffer, { type: 'array', raw: true, cellDates: true });
-  const sheetName = workbook.SheetNames?.[0];
-
-  if(!sheetName){
-    throw new Error('Raport sprzedaży nie zawiera arkusza.');
-  }
-
-  const sheet = workbook.Sheets[sheetName];
-  const rows = XLSX.utils.sheet_to_json(sheet, {
-    header: 1,
-    raw: true,
-    defval: ''
-  });
-
-  if(rows.length < 3){
-    throw new Error('Raport sprzedaży ma zbyt mało danych do porównania.');
-  }
-
-  const weekLabels = [];
-  const headerRow = Array.isArray(rows[0]) ? rows[0] : [];
-
-  for(let columnIndex = 3; columnIndex < headerRow.length; columnIndex += 1){
-    const label = String(headerRow[columnIndex] ?? '').trim();
-    if(label){
-      weekLabels.push({ columnIndex, label });
+    if(!sheetName){
+      throw new Error('Raport sprzedaży nie zawiera arkusza.');
     }
+
+    const sheet = workbook.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(sheet, {
+      header: 1,
+      raw: true,
+      defval: ''
+    });
+
+    if(rows.length < 3){
+      throw new Error('Raport sprzedaży ma zbyt mało danych do porównania.');
+    }
+
+    const weekLabels = [];
+    const headerRow = Array.isArray(rows[0]) ? rows[0] : [];
+    const secondHeaderRow = Array.isArray(rows[1]) ? rows[1] : [];
+    const salesColumns = secondHeaderRow
+      .map((header, columnIndex) => ({ header, columnIndex }))
+      .filter(item => normalizeHeaderKey(item.header).includes('sprzedaz waluta'));
+
+    if(salesColumns.length >= 2){
+      salesColumns.forEach(item => {
+        const label = String(headerRow[item.columnIndex] ?? '').trim();
+        if(label){
+          weekLabels.push({ columnIndex: item.columnIndex, label });
+        }
+      });
+    }else{
+      for(let columnIndex = 3; columnIndex < headerRow.length; columnIndex += 1){
+        const label = String(headerRow[columnIndex] ?? '').trim();
+        if(label){
+          weekLabels.push({ columnIndex, label });
+        }
+      }
+    }
+
+    if(weekLabels.length < 2){
+      throw new Error('Raport sprzedaży nie zawiera dwóch tygodni do porównania.');
+    }
+
+    const previousWeek = weekLabels[weekLabels.length - 2];
+    const lastWeek = weekLabels[weekLabels.length - 1];
+    let previousTotal = 0;
+    let lastTotal = 0;
+
+    rows.slice(2).forEach(row => {
+      if(!Array.isArray(row)) return;
+      previousTotal += parseSalesValue(row[previousWeek.columnIndex]);
+      lastTotal += parseSalesValue(row[lastWeek.columnIndex]);
+    });
+
+    const difference = lastTotal - previousTotal;
+    const percentChange = previousTotal !== 0
+      ? (difference / previousTotal) * 100
+      : (lastTotal === 0 ? 0 : 100);
+    const direction = difference > 0.005 ? 'up' : difference < -0.005 ? 'down' : 'flat';
+
+    return {
+      previousWeek: previousWeek.label,
+      lastWeek: lastWeek.label,
+      previousTotal,
+      lastTotal,
+      difference,
+      percentChange,
+      direction,
+      fileName: reportEntry.item.name,
+      updatedAt: reportEntry.metadata?.updated || reportEntry.metadata?.timeCreated || ''
+    };
+  }catch(parseError){
+    const metadataInsight = readPersonalSalesInsightFromMetadata(reportEntry);
+    if(metadataInsight){
+      return metadataInsight;
+    }
+    throw parseError;
   }
-
-  if(weekLabels.length < 2){
-    throw new Error('Raport sprzedaży nie zawiera dwóch tygodni do porównania.');
-  }
-
-  const previousWeek = weekLabels[weekLabels.length - 2];
-  const lastWeek = weekLabels[weekLabels.length - 1];
-  let previousTotal = 0;
-  let lastTotal = 0;
-
-  rows.slice(2).forEach(row => {
-    if(!Array.isArray(row)) return;
-    previousTotal += parseSalesValue(row[previousWeek.columnIndex]);
-    lastTotal += parseSalesValue(row[lastWeek.columnIndex]);
-  });
-
-  const difference = lastTotal - previousTotal;
-  const percentChange = previousTotal !== 0
-    ? (difference / previousTotal) * 100
-    : (lastTotal === 0 ? 0 : 100);
-  const direction = difference > 0.005 ? 'up' : difference < -0.005 ? 'down' : 'flat';
-
-  return {
-    previousWeek: previousWeek.label,
-    lastWeek: lastWeek.label,
-    previousTotal,
-    lastTotal,
-    difference,
-    percentChange,
-    direction,
-    fileName: reportEntry.item.name,
-    updatedAt: reportEntry.metadata?.updated || reportEntry.metadata?.timeCreated || ''
-  };
 }
 
 async function loadPersonalSalesInsightForUser(user, version){
-  const config = PERSONAL_SALES_USERS[user?.uid];
+  const config = await getPersonalSalesConfig(user?.uid, { forceRefresh: true });
+  if(version !== authStateVersion) return;
 
   if(!config){
     hidePersonalSalesInsight();
@@ -852,11 +1146,48 @@ async function getUserBlockState(uid){
   if(!db || !uid) return false;
 
   try{
-    const doc = await db.collection(USERS_COLLECTION).doc(uid).get();
-    return Boolean(doc.exists && doc.data()?.blocked);
+    const readStatePromise = db.collection(USERS_COLLECTION).doc(uid).get()
+      .then(doc => Boolean(doc.exists && doc.data()?.blocked))
+      .catch(error => {
+        console.error('User block check error', error);
+        return false;
+      });
+    return await withTimeout(readStatePromise, 5000, false);
   }catch(error){
     console.error('User block check error', error);
     return false;
+  }
+}
+
+async function ensureUserProfileDoc(user){
+  if(!db || !user?.uid || typeof firebase?.firestore !== 'function') return;
+
+  try{
+    const userRef = db.collection(USERS_COLLECTION).doc(user.uid);
+    const userSnap = await userRef.get();
+    const currentData = userSnap.exists ? (userSnap.data() || {}) : {};
+    const payload = {
+      uid: user.uid,
+      email: user.email || '',
+      lastLoginAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    if(!String(currentData.source || '').trim()){
+      payload.source = 'auth-login';
+    }
+
+    if(!userSnap.exists || !currentData.createdAt){
+      payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+    }
+
+    if(typeof currentData.blocked !== 'boolean'){
+      payload.blocked = false;
+    }
+
+    await userRef.set(payload, { merge: true });
+  }catch(error){
+    console.error('Ensure user profile doc error', error);
   }
 }
 
@@ -880,6 +1211,7 @@ if(typeof firebase !== 'undefined'){
       const currentVersion = ++authStateVersion;
 
       if(user){
+        void ensureUserProfileDoc(user);
         const isBlocked = await getUserBlockState(user.uid);
         if(currentVersion !== authStateVersion){
           return;
@@ -915,22 +1247,30 @@ if(typeof firebase !== 'undefined'){
 }
 
 if(loginBtn){
-    loginBtn.addEventListener('click', async () => {
-      if(!authReady || !auth){
-        setLoginError('Firebase Auth nie jest gotowy.');
-        return;
-      }
-    setLoginError('');
+  window.__wfLoginHandlerBound = true;
+  loginBtn.addEventListener('click', async () => {
+    if(!authReady || !auth){
+      setLoginError('Firebase Auth nie jest gotowy.');
+      return;
+    }
+    if(typeof navigator !== 'undefined' && navigator.onLine === false){
+      setLoginError('Brak internetu. Sprawdź hotspot i spróbuj ponownie.');
+      return;
+    }
+    setLoginError('Logowanie...');
     lastLoginEmail = loginEmail.value.trim();
     lastLoginPassword = loginPassword.value;
-    console.log('LOGIN CLICK');
-    console.log('EMAIL:', loginEmail.value);
-    console.log('AUTH READY:', authReady, auth);
+    const initialLabel = loginBtn.textContent;
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Logowanie...';
     try{
-      await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value);
+      await signInWithTimeout(loginEmail.value.trim(), loginPassword.value);
     }catch(err){
       console.error('LOGIN ERROR:', err.code, err.message, err);
-      setLoginError(err.code || err.message || 'Błąd logowania');
+      setLoginError(getFriendlyAuthErrorMessage(err));
+    }finally{
+      loginBtn.disabled = false;
+      loginBtn.textContent = initialLabel;
     }
   });
 }
@@ -1448,7 +1788,7 @@ function renderTopSalesReportContent(){
         <button class="btn-outline" onclick="exportReportsXlsx()" ${reportsGeneratedRows.length ? '' : 'disabled'}>Zapisz XLSX</button>
       </div>
       <div class="import-info">
-        ${reportsImportFile ? `Źródło: ${escapeHtml(reportsImportFile)}` : 'Brak zaimportowanego pliku'}
+        ${reportsImportFile ? 'Status: plik zaimportowany' : 'Status: oczekuje na import'}
       </div>
     </div>
 
@@ -1584,7 +1924,7 @@ function normalizeWeeklySalesRowsFromMatrix(matrix){
         quantity: 0,
         value: Number.isFinite(value) ? value : 0
       };
-    }).filter(row => row.value);
+    });
   });
 }
 
@@ -1668,10 +2008,83 @@ function getWeeklySalesRepresentativeComparisonRows(){
     .sort((a, b) => b.latestValue - a.latestValue || a.representative.localeCompare(b.representative, 'pl'));
 }
 
+function sortWeeklySalesRows(rows){
+  const source = Array.isArray(rows) ? [...rows] : [];
+  const sortByDropDesc = weeklySalesSortOrder === 'sales-drop-desc';
+  const sortBySalesAsc = weeklySalesSortOrder === 'sales-asc';
+
+  source.sort((a, b) => {
+    if(sortByDropDesc){
+      const aTrend = Number.isFinite(a?.trendValue) ? Number(a.trendValue) : null;
+      const bTrend = Number.isFinite(b?.trendValue) ? Number(b.trendValue) : null;
+      const aIsDrop = Number.isFinite(aTrend) && aTrend < 0;
+      const bIsDrop = Number.isFinite(bTrend) && bTrend < 0;
+      if(aIsDrop !== bIsDrop){
+        return aIsDrop ? -1 : 1;
+      }
+      if(aIsDrop && bIsDrop){
+        const aDrop = Math.abs(aTrend);
+        const bDrop = Math.abs(bTrend);
+        if(aDrop !== bDrop){
+          return bDrop - aDrop;
+        }
+      }
+    }
+
+    const aValue = Number(a?.quantity || a?.value || 0);
+    const bValue = Number(b?.quantity || b?.value || 0);
+    if(aValue !== bValue){
+      return sortBySalesAsc ? aValue - bValue : bValue - aValue;
+    }
+    const weekCompare = String(a?.week || '').localeCompare(String(b?.week || ''), 'pl', { numeric: true });
+    if(weekCompare) return weekCompare;
+    const customerCompare = String(a?.customerName || '').localeCompare(String(b?.customerName || ''), 'pl');
+    if(customerCompare) return customerCompare;
+    return String(a?.index || '').localeCompare(String(b?.index || ''), 'pl', { numeric: true });
+  });
+
+  return source;
+}
+
+function sortWeeklyComparisonRows(rows){
+  const source = Array.isArray(rows) ? [...rows] : [];
+  const sortByDropDesc = weeklySalesSortOrder === 'sales-drop-desc';
+  const sortBySalesAsc = weeklySalesSortOrder === 'sales-asc';
+
+  source.sort((a, b) => {
+    if(sortByDropDesc){
+      const aTrend = Number(a?.trendValue || 0);
+      const bTrend = Number(b?.trendValue || 0);
+      const aIsDrop = aTrend < 0;
+      const bIsDrop = bTrend < 0;
+      if(aIsDrop !== bIsDrop){
+        return aIsDrop ? -1 : 1;
+      }
+      if(aIsDrop && bIsDrop){
+        const aDrop = Math.abs(aTrend);
+        const bDrop = Math.abs(bTrend);
+        if(aDrop !== bDrop){
+          return bDrop - aDrop;
+        }
+      }
+    }
+
+    const aValue = Number(a?.latestValue || 0);
+    const bValue = Number(b?.latestValue || 0);
+    if(aValue !== bValue){
+      return sortBySalesAsc ? aValue - bValue : bValue - aValue;
+    }
+    return String(a?.representative || '').localeCompare(String(b?.representative || ''), 'pl');
+  });
+
+  return source;
+}
+
 function getFilteredWeeklySalesRows(){
   let rows = weeklySalesGeneratedRows;
   const latestWeek = getLatestWeeklySalesWeek();
-  const activeWeek = weeklySalesSelectedWeek || latestWeek;
+  const showAllWeeks = weeklySalesSelectedWeek === '__all__';
+  const activeWeek = showAllWeeks ? '' : (weeklySalesSelectedWeek || latestWeek);
 
   if(weeklySalesOnlyLastWeek250){
     const totalsByCustomer = new Map();
@@ -1683,7 +2096,7 @@ function getFilteredWeeklySalesRows(){
       const key = `${row.representative}|||${row.customerCode}|||${row.customerName}`;
       return String(row.week || '') === latestWeek && (totalsByCustomer.get(key) || 0) >= 250;
     });
-  }else if(activeWeek){
+  }else if(!showAllWeeks && activeWeek){
     rows = rows.filter(row => String(row.week || '') === activeWeek);
   }
 
@@ -1691,7 +2104,7 @@ function getFilteredWeeklySalesRows(){
     rows = rows.filter(row => String(row.producer || '').trim() === weeklySalesSelectedProducer);
   }
 
-  return rows;
+  return sortWeeklySalesRows(rows);
 }
 
 function getLatestWeeksFromRows(rows, count){
@@ -2309,7 +2722,7 @@ function renderClientComparisonContent(){
         <button class="btn-outline" onclick="createClientRecommendationCatalog()" ${selectedMissingCount ? '' : 'disabled'}>Utwórz katalog</button>
       </div>
       <div class="import-info">
-        ${clientReportImportFile ? `Źródło: ${escapeHtml(clientReportImportFile)}` : 'Brak zaimportowanego pliku'}
+        ${clientReportImportFile ? 'Status: plik zaimportowany' : 'Status: oczekuje na import'}
         ${clientReportSelectedCustomer ? ` | Zaznaczone rekomendacje: ${selectedMissingCount}` : ''}
       </div>
     </div>
@@ -2380,8 +2793,9 @@ function renderWeeklySalesContent(){
   const producers = getWeeklySalesProducers();
   const weeks = getWeeklySalesWeeks();
   const latestWeek = getLatestWeeklySalesWeek();
+  const isAdminReports = isCurrentUserAdmin();
   const filteredRows = getFilteredWeeklySalesRows();
-  const comparisonRows = getWeeklySalesRepresentativeComparisonRows();
+  const comparisonRows = sortWeeklyComparisonRows(getWeeklySalesRepresentativeComparisonRows());
   const comparisonWeeks = getWeeklySalesComparisonWeeks();
   const activeRowsCount = weeklySalesRepComparison ? comparisonRows.length : filteredRows.length;
   const activeSalesTotal = weeklySalesRepComparison
@@ -2390,9 +2804,12 @@ function renderWeeklySalesContent(){
   const previousSalesTotal = comparisonRows.reduce((sum, row) => sum + row.previousValue, 0);
   const comparisonTrendValue = activeSalesTotal - previousSalesTotal;
   const customerLabel = weeklySalesSelectedCustomer ? 'wybrany klient' : 'wszyscy klienci';
+  const selectedWeekLabel = weeklySalesSelectedWeek === '__all__'
+    ? 'wszystkie tygodnie'
+    : (weeklySalesSelectedWeek || latestWeek || 'brak tygodnia');
   const weekLabel = weeklySalesOnlyLastWeek250
     ? `ostatni tydzień ${latestWeek || ''}, min. 250 GBP`
-    : (weeklySalesSelectedWeek || latestWeek || 'brak tygodnia');
+    : selectedWeekLabel;
   const scopeLabel = weeklySalesRepComparison
     ? `wszyscy PH | ${comparisonWeeks.join(' do ') || 'brak tygodni'}`
     : `${weeklySalesSelectedRepresentative || 'Wybierz przedstawiciela'} | ${customerLabel} | ${weekLabel}`;
@@ -2407,6 +2824,13 @@ function renderWeeklySalesContent(){
     const discountHtml = row.discountLabel
       ? `<span title="${escapeAttr(discountTitle)}">${escapeHtml(row.discountLabel)}</span>`
       : '';
+    const adminOnlyCellsHtml = isAdminReports
+      ? `
+        <td>${escapeHtml(row.index)}</td>
+        <td>${escapeHtml(row.name)}</td>
+        <td>${escapeHtml(row.producer)}</td>
+      `
+      : '';
     return `
       <tr>
         <td>${index + 1}</td>
@@ -2414,9 +2838,7 @@ function renderWeeklySalesContent(){
         <td>${escapeHtml(row.customerCode)}</td>
         <td>${escapeHtml(row.customerName)}</td>
         <td>${discountHtml}</td>
-        <td>${escapeHtml(row.index)}</td>
-        <td>${escapeHtml(row.name)}</td>
-        <td>${escapeHtml(row.producer)}</td>
+        ${adminOnlyCellsHtml}
         <td>${formatNumber(row.quantity || row.value)}</td>
         <td>${trendHtml}</td>
       </tr>
@@ -2467,21 +2889,23 @@ function renderWeeklySalesContent(){
               <th>Kod klienta</th>
               <th>Nazwa klienta</th>
               <th>Rabat</th>
-              <th>INDEKS</th>
-              <th>NAZWA</th>
-              <th>Producent</th>
+              ${isAdminReports ? `
+                <th>INDEKS</th>
+                <th>NAZWA</th>
+                <th>Producent</th>
+              ` : ''}
               <th>Sprzedaż</th>
               <th>Trend</th>
             </tr>
           </thead>
           <tbody>
-            ${rowsHtml || `<tr><td colspan="10" class="reports-empty">Zaimportuj plik Excel i wybierz przedstawiciela.</td></tr>`}
+            ${rowsHtml || `<tr><td colspan="${isAdminReports ? '10' : '7'}" class="reports-empty">${isAdminReports ? 'Zaimportuj plik Excel i wybierz przedstawiciela.' : 'Brak danych tygodniowych dla Twojego konta.'}</td></tr>`}
           </tbody>
         </table>
       </div>
     `;
-
-  return `
+  const toolbarHtml = isAdminReports
+    ? `
     <div class="reports-toolbar">
       <div>
         <div class="import-title">Sprzedaż per indeks per tydzień</div>
@@ -2493,18 +2917,23 @@ function renderWeeklySalesContent(){
         <button class="btn-outline" onclick="exportWeeklySalesXlsx()" ${(weeklySalesGeneratedRows.length || weeklySalesSourceRows.length) ? '' : 'disabled'}>Zapisz XLSX</button>
       </div>
       <div class="import-info">
-        ${weeklySalesImportFile ? `Źródło: ${escapeHtml(weeklySalesImportFile)}` : 'Brak zaimportowanego pliku'}
+        ${weeklySalesImportFile ? 'Status: plik zaimportowany' : 'Status: oczekuje na import'}
       </div>
     </div>
+  `
+    : '';
+
+  return `
+    ${toolbarHtml}
 
     ${weeklySalesRepComparison ? '' : `<div class="reports-filters">
-      <label class="reports-filter-card">
+      ${isAdminReports ? `<label class="reports-filter-card">
         <span class="reports-limit-title">Przedstawiciel handlowy</span>
         <select onchange="setWeeklySalesRepresentative(this.value)">
           <option value="">Wybierz</option>
           ${representatives.map(rep => `<option value="${escapeAttr(rep)}" ${weeklySalesSelectedRepresentative === rep ? 'selected' : ''}>${escapeHtml(rep)}</option>`).join('')}
         </select>
-      </label>
+      </label>` : ''}
       <label class="reports-filter-card">
         <span class="reports-limit-title">Klient</span>
         <select onchange="setWeeklySalesCustomer(this.value)" ${weeklySalesSelectedRepresentative ? '' : 'disabled'}>
@@ -2516,26 +2945,35 @@ function renderWeeklySalesContent(){
           }).join('')}
         </select>
       </label>
-      <label class="reports-filter-card">
+      ${isAdminReports ? `<label class="reports-filter-card">
         <span class="reports-limit-title">Producent</span>
         <select onchange="setWeeklySalesProducer(this.value)" ${weeklySalesGeneratedRows.length ? '' : 'disabled'}>
           <option value="">Wszyscy producenci</option>
           ${producers.map(producer => `<option value="${escapeAttr(producer)}" ${weeklySalesSelectedProducer === producer ? 'selected' : ''}>${escapeHtml(producer)}</option>`).join('')}
         </select>
-      </label>
+      </label>` : ''}
       <label class="reports-filter-card">
         <span class="reports-limit-title">Tydzień sprzedaży</span>
         <select onchange="setWeeklySalesWeek(this.value)" ${weeklySalesGeneratedRows.length || weeklySalesOnlyLastWeek250 ? '' : 'disabled'}>
           <option value="">Ostatni tydzień</option>
+          <option value="__all__" ${weeklySalesSelectedWeek === '__all__' ? 'selected' : ''}>Wszystkie tygodnie</option>
           ${weeks.map(week => `<option value="${escapeAttr(week)}" ${weeklySalesSelectedWeek === week ? 'selected' : ''}>${escapeHtml(week)}</option>`).join('')}
+        </select>
+      </label>
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Sortowanie sprzedaży</span>
+        <select onchange="setWeeklySalesSortOrder(this.value)">
+          <option value="sales-desc" ${weeklySalesSortOrder === 'sales-desc' ? 'selected' : ''}>Sprzedaż: od największej do najmniejszej</option>
+          <option value="sales-asc" ${weeklySalesSortOrder === 'sales-asc' ? 'selected' : ''}>Sprzedaż: od najmniejszej do największej</option>
+          <option value="sales-drop-desc" ${weeklySalesSortOrder === 'sales-drop-desc' ? 'selected' : ''}>Spadki sprzedaży: od największych do najmniejszych</option>
         </select>
       </label>
     </div>`}
 
-    <div class="reports-inline-actions">
+    ${isAdminReports ? `<div class="reports-inline-actions">
       <button class="btn-outline ${weeklySalesOnlyLastWeek250 ? 'reports-mode-active' : ''}" onclick="setWeeklySalesLastWeek250(!weeklySalesOnlyLastWeek250)" ${weeklySalesGeneratedRows.length ? '' : 'disabled'}>Klienci >= 250 GBP w ostatnim tygodniu</button>
       <button class="btn-outline ${weeklySalesRepComparison ? 'reports-mode-active' : ''}" onclick="setWeeklySalesRepComparison(!weeklySalesRepComparison)" ${weeklySalesSourceRows.length ? '' : 'disabled'}>Porównanie PH tydzień do tygodnia</button>
-    </div>
+    </div>` : ''}
 
     <div class="reports-summary">
       <div class="reports-summary-card">
@@ -2598,7 +3036,7 @@ function renderTopSuggestionsContent(){
         <button class="btn-outline" onclick="exportTopSuggestionsXlsx()" ${topSuggestionGeneratedRows.length ? '' : 'disabled'}>Zapisz XLSX</button>
       </div>
       <div class="import-info">
-        ${topSuggestionImportFile ? `Źródło: ${escapeHtml(topSuggestionImportFile)}` : 'Brak zaimportowanego pliku'}
+        ${topSuggestionImportFile ? 'Status: plik zaimportowany' : 'Status: oczekuje na import'}
       </div>
     </div>
 
@@ -2644,22 +3082,29 @@ function renderTopSuggestionsContent(){
 
 function renderReportsView(){
   if(!reportsContainer) return;
+  const isAdminReports = isCurrentUserAdmin();
   const contentByMode = {
     'top-sales': renderTopSalesReportContent,
     'client-gap': renderClientComparisonContent,
     'weekly-sales': renderWeeklySalesContent,
     'top-suggestions': renderTopSuggestionsContent
   };
-  const renderContent = contentByMode[reportsMode] || renderTopSalesReportContent;
+  if(!isAdminReports && reportsMode !== 'weekly-sales'){
+    reportsMode = 'weekly-sales';
+  }
+  const renderContent = isAdminReports
+    ? (contentByMode[reportsMode] || renderTopSalesReportContent)
+    : renderWeeklySalesContent;
 
   reportsContainer.innerHTML = `
     <div class="reports-panel">
+      ${isAdminReports ? `
       <div class="reports-mode-switch">
         <button class="btn-outline ${reportsMode === 'top-sales' ? 'reports-mode-active' : ''}" onclick="setReportsMode('top-sales')">Top sprzedaż</button>
         <button class="btn-outline ${reportsMode === 'client-gap' ? 'reports-mode-active' : ''}" onclick="setReportsMode('client-gap')">Potencjał klienta Top Rumunia</button>
         <button class="btn-outline ${reportsMode === 'weekly-sales' ? 'reports-mode-active' : ''}" onclick="setReportsMode('weekly-sales')">Sprzedaż tygodniowa</button>
         <button class="btn-outline ${reportsMode === 'top-suggestions' ? 'reports-mode-active' : ''}" onclick="setReportsMode('top-suggestions')">Propozycje Top</button>
-      </div>
+      </div>` : ''}
       ${renderContent()}
     </div>
   `;
@@ -2667,6 +3112,7 @@ function renderReportsView(){
 }
 
 function openReportsView(){
+  const isAdminReports = isCurrentUserAdmin();
   document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
   setPrimaryNavState('reports');
   showTabSection('reports-sales');
@@ -2679,7 +3125,14 @@ function openReportsView(){
   currentCategorySlug = 'raporty';
   resetFilters();
   clearAllContentContainers();
+  if(!isAdminReports){
+    reportsMode = 'weekly-sales';
+    weeklySalesRepComparison = false;
+  }
   renderReportsView();
+  if(!isAdminReports){
+    void ensurePhWeeklySalesDataLoaded();
+  }
 }
 
 async function importReportsExcel(){
@@ -2723,6 +3176,11 @@ function setReportGroupLimit(groupId, value){
 }
 
 function setReportsMode(mode){
+  if(!isCurrentUserAdmin() && mode !== 'weekly-sales'){
+    reportsMode = 'weekly-sales';
+    renderReportsView();
+    return;
+  }
   reportsMode = mode;
   renderReportsView();
 }
@@ -2811,6 +3269,7 @@ async function importWeeklySalesExcel(){
     weeklySalesSelectedWeek = '';
     weeklySalesOnlyLastWeek250 = false;
     weeklySalesRepComparison = false;
+    weeklySalesSortOrder = 'sales-desc';
     weeklySalesGeneratedRows = [];
     await loadCustomerDiscountMap();
 
@@ -2830,6 +3289,7 @@ async function importWeeklySalesExcel(){
     weeklySalesSelectedWeek = '';
     weeklySalesOnlyLastWeek250 = false;
     weeklySalesRepComparison = false;
+    weeklySalesSortOrder = 'sales-desc';
   }
 
   renderReportsView();
@@ -2926,6 +3386,13 @@ function setWeeklySalesWeek(value){
   renderReportsView();
 }
 
+function setWeeklySalesSortOrder(value){
+  weeklySalesSortOrder = ['sales-desc', 'sales-asc', 'sales-drop-desc'].includes(value)
+    ? value
+    : 'sales-desc';
+  renderReportsView();
+}
+
 function setWeeklySalesLastWeek250(enabled){
   weeklySalesOnlyLastWeek250 = !!enabled;
   weeklySalesRepComparison = false;
@@ -2936,6 +3403,11 @@ function setWeeklySalesLastWeek250(enabled){
 }
 
 function setWeeklySalesRepComparison(enabled){
+  if(!isCurrentUserAdmin()){
+    weeklySalesRepComparison = false;
+    renderReportsView();
+    return;
+  }
   weeklySalesRepComparison = !!enabled;
   if(weeklySalesRepComparison){
     weeklySalesOnlyLastWeek250 = false;
@@ -4725,10 +5197,15 @@ function setActiveCard(id){
   if(el) el.classList.add('active');
 }
 
+function isCurrentUserAdmin(){
+  return Boolean(currentUserIsAdmin);
+}
+
 function toggleAdminPanel(email, options = {}){
   const isAdminEmail = ADMIN_EMAILS.includes(String(email || '').toLowerCase());
   const isAdminSession = localStorage.getItem('is_admin') === '1';
   const isAdmin = isAdminEmail || (isAdminSession && isAdminEmail);
+  currentUserIsAdmin = isAdmin;
   const preserveSession = Boolean(options.preserveSession);
   if(adminPanelBtn) adminPanelBtn.classList.toggle('hidden', !isAdmin);
   if(reportsCard) reportsCard.classList.toggle('hidden', !isAdmin);
