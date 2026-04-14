@@ -20,7 +20,10 @@
       <input id="login-email" type="email" placeholder="Email">
       <label class="login-label" for="login-password">Hasło</label>
       <input id="login-password" type="password" placeholder="Hasło">
-      <button id="login-btn">Zaloguj</button>
+      <button
+        id="login-btn"
+        onclick="if(!window.__wfLoginHandlerBound){const err=document.getElementById('login-error');if(err){err.textContent='Nie zaladowal sie glowny skrypt logowania. Odswiez strone (Cmd+Shift+R) albo uruchom Live Server z folderu projektu.';}}"
+      >Zaloguj</button>
     </div>
 
     <div id="login-error" class="login-error"></div>
@@ -371,6 +374,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.2.6/dist/quagga.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="katalog.js"></script>
-<script src="script.js?v=2026-02-18"></script>
+<script src="script.js?v=2026-04-14-login-fix-4"></script>
 </body>
 </html>
