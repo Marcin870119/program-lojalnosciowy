@@ -1,4 +1,31 @@
 (() => {
+  function normalizeCatalogPdfText(value){
+    return String(value ?? '')
+      .replace(/[\u0000-\u001f\u007f]/g, ' ')
+      .replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/g, char => ({
+        'ą': 'a',
+        'ć': 'c',
+        'ę': 'e',
+        'ł': 'l',
+        'ń': 'n',
+        'ó': 'o',
+        'ś': 's',
+        'ź': 'z',
+        'ż': 'z',
+        'Ą': 'A',
+        'Ć': 'C',
+        'Ę': 'E',
+        'Ł': 'L',
+        'Ń': 'N',
+        'Ó': 'O',
+        'Ś': 'S',
+        'Ź': 'Z',
+        'Ż': 'Z'
+      }[char] || char))
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function findColumn(cols, variants){
     const lower = cols.map(c => c.toLowerCase());
     for(const v of variants){
@@ -134,7 +161,9 @@
     const watermarkPromise = loadImageAsPng(watermarkUrl).catch(() => null);
     const groupedSections = groupByField
       ? products.reduce((acc, product) => {
-          const groupName = String(getValueByVariants(product, [groupByField, 'grupa', 'group', 'grupa produktowa']) || product[groupByField] || '').trim();
+          const groupName = normalizeCatalogPdfText(
+            getValueByVariants(product, [groupByField, 'grupa', 'group', 'grupa produktowa']) || product[groupByField] || ''
+          );
           if(!groupName) return acc;
           let section = acc.find(item => item.name === groupName);
           if(!section){
@@ -235,7 +264,7 @@
         pdf.setFillColor(255, 255, 255);
         pdf.roundedRect(x, y, cardW, cardH, 12, 12, 'FD');
 
-        const name = String(getValueByVariants(p, ['nazwa', 'name']) || p[nameKey] || '').trim();
+        const name = normalizeCatalogPdfText(getValueByVariants(p, ['nazwa', 'name']) || p[nameKey] || '');
         pdf.setFont('helvetica', 'bold');
         pdf.setFontSize(12);
         const nameLines = pdf.splitTextToSize(name, cardW - 20).slice(0, 2);
