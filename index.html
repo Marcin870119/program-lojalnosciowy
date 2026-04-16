@@ -5,10 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>World Food – Oferta</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2026-04-14-13-producer-offer-coverage">
 </head>
 
-<body>
+<body class="auth-booting">
+
+<div id="auth-splash" class="auth-splash" aria-live="polite">
+  <div class="auth-splash-card">
+    <div class="auth-splash-spinner" aria-hidden="true"></div>
+    <div id="auth-splash-message" class="auth-splash-message">Sprawdzam sesję...</div>
+  </div>
+</div>
 
 <div id="login-view">
   <div class="login-card">
@@ -20,10 +27,7 @@
       <input id="login-email" type="email" placeholder="Email">
       <label class="login-label" for="login-password">Hasło</label>
       <input id="login-password" type="password" placeholder="Hasło">
-      <button
-        id="login-btn"
-        onclick="if(!window.__wfLoginHandlerBound){const err=document.getElementById('login-error');if(err){err.textContent='Nie zaladowal sie glowny skrypt logowania. Odswiez strone (Cmd+Shift+R) albo uruchom Live Server z folderu projektu.';}}"
-      >Zaloguj</button>
+      <button id="login-btn">Zaloguj</button>
     </div>
 
     <div id="login-error" class="login-error"></div>
@@ -354,8 +358,10 @@
   </section>
   <section id="reports-sales" class="tab-content hidden">
     <div class="country-banner">
-      <div class="flag-pill">
-        <span class="flag-text">Raporty Sprzedaży</span>
+      <div id="reports-banner-actions" class="reports-banner-actions">
+        <div class="flag-pill">
+          <span class="flag-text">Raporty Sprzedaży</span>
+        </div>
       </div>
       <div class="flag-stripe"></div>
     </div>
@@ -374,6 +380,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.2.6/dist/quagga.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="katalog.js"></script>
-<script src="script.js?v=2026-04-14-login-fix-4"></script>
+<script src="script.js?v=2026-04-14-20-top-rumunia-category-rollup-fix"></script>
 </body>
 </html>
