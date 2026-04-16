@@ -5,22 +5,32 @@ const firebaseConfig = {
   appId: '1:606744201676:web:6f8c1b2c323fbaf6f3b569'
 };
 
+const authSplash = document.getElementById('auth-splash');
+const authSplashMessage = document.getElementById('auth-splash-message');
 const emailInput = document.getElementById('admin-user-email');
 const passwordInput = document.getElementById('admin-user-password');
 const createBtn = document.getElementById('admin-create-user');
 const msg = document.getElementById('admin-create-msg');
 const backBtn = document.getElementById('admin-back-btn');
 const userList = document.getElementById('admin-user-list');
+const userPicker = document.getElementById('admin-user-picker');
+const userCount = document.getElementById('admin-user-count');
 const salesReportFileInput = document.getElementById('admin-sales-report-file');
 const salesReportUploadBtn = document.getElementById('admin-sales-report-upload');
 const salesReportMsg = document.getElementById('admin-sales-report-msg');
 const salesReportResults = document.getElementById('admin-sales-report-results');
+const salesIndexFileInput = document.getElementById('admin-sales-index-file');
+const salesIndexUploadBtn = document.getElementById('admin-sales-index-upload');
+const salesIndexMsg = document.getElementById('admin-sales-index-msg');
+const salesIndexResults = document.getElementById('admin-sales-index-results');
 const USERS_COLLECTION = 'app_users';
 const SALES_REPORTS_ROOT = 'raporty - maspo';
 const STORAGE_BUCKET = 'gs://pdf-creator-f7a8b.firebasestorage.app';
 const SALES_REP_HEADER_KEYS = ['opiekun_klienta'];
 const ADMIN_EMAILS = ['admin@admin.info', 'admin@admin.com'];
 const PENDING_USER_SYNC_STORAGE_KEY = 'admin_pending_app_users_sync_v1';
+const SALES_REPORT_EMPTY_MESSAGE = 'Wybierz plik i uruchom podział na przedstawicieli.';
+const SALES_INDEX_EMPTY_MESSAGE = 'Wybierz plik per indeks i uruchom podział na przedstawicieli.';
 const PINNED_TEST_USER = {
   uid: '9MB4MF77sRayF6jjgvLCMpphBJM2',
   email: 'robert.bubula@maspo.pl',
@@ -34,17 +44,34 @@ let firestoreDb = null;
 let storageService = null;
 let salesReportRepOptions = [];
 let latestUserDocs = [];
+let latestRenderedUsers = [];
 let pendingUserSyncInFlight = false;
 let pendingUserSyncTimer = null;
-
-if(!localStorage.getItem('is_admin')){
-  window.location.href = 'index.html';
-}
+let selectedAdminUserUid = '';
+let redirectToIndexScheduled = false;
 
 if(backBtn){
   backBtn.addEventListener('click', () => {
     window.location.href = 'index.html';
   });
+}
+
+function setAuthBootState(isLoading, message = 'Sprawdzam uprawnienia...'){
+  if(authSplashMessage){
+    authSplashMessage.textContent = message || 'Sprawdzam uprawnienia...';
+  }
+  if(document.body){
+    document.body.classList.toggle('auth-booting', Boolean(isLoading));
+  }
+  if(authSplash){
+    authSplash.classList.toggle('hidden', !isLoading);
+  }
+}
+
+function redirectToIndex(){
+  if(redirectToIndexScheduled) return;
+  redirectToIndexScheduled = true;
+  window.location.replace('index.html');
 }
 
 function escapeHtml(value){
@@ -85,18 +112,26 @@ function renderUserListMessage(message){
   userList.innerHTML = `<div class="admin-user-empty">${escapeHtml(message)}</div>`;
 }
 
-function setSalesReportMessage(message, type = 'info'){
-  if(!salesReportMsg) return;
-  salesReportMsg.textContent = message || '';
-  salesReportMsg.classList.toggle('is-error', type === 'error');
-  salesReportMsg.classList.toggle('is-success', type === 'success');
+function setInlineMessage(node, message, type = 'info'){
+  if(!node) return;
+  node.textContent = message || '';
+  node.classList.toggle('is-error', type === 'error');
+  node.classList.toggle('is-success', type === 'success');
 }
 
-function renderSalesReportResults(items, summary){
-  if(!salesReportResults) return;
+function setSalesReportMessage(message, type = 'info'){
+  setInlineMessage(salesReportMsg, message, type);
+}
+
+function setSalesIndexMessage(message, type = 'info'){
+  setInlineMessage(salesIndexMsg, message, type);
+}
+
+function renderImportResults(container, items, summary, emptyMessage){
+  if(!container) return;
 
   if(!items?.length){
-    salesReportResults.innerHTML = '<div class="admin-user-empty">Wybierz plik i uruchom podział na przedstawicieli.</div>';
+    container.innerHTML = `<div class="admin-user-empty">${escapeHtml(emptyMessage)}</div>`;
     return;
   }
 
@@ -104,7 +139,7 @@ function renderSalesReportResults(items, summary){
     ? `<div class="admin-user-empty">Utworzono ${escapeHtml(summary.filesCount)} plików dla ${escapeHtml(summary.repsCount)} przedstawicieli. Przetworzono ${escapeHtml(summary.rowsCount)} wierszy.</div>`
     : '';
 
-  salesReportResults.innerHTML = `${summaryLine}${items.map(item => `
+  container.innerHTML = `${summaryLine}${items.map(item => `
     <div class="admin-import-item">
       <div class="admin-import-item-title">
         <span>${escapeHtml(item.repName)}</span>
@@ -114,6 +149,14 @@ function renderSalesReportResults(items, summary){
       <div class="admin-import-path">${escapeHtml(item.path)}</div>
     </div>
   `).join('')}`;
+}
+
+function renderSalesReportResults(items, summary){
+  renderImportResults(salesReportResults, items, summary, SALES_REPORT_EMPTY_MESSAGE);
+}
+
+function renderSalesIndexResults(items, summary){
+  renderImportResults(salesIndexResults, items, summary, SALES_INDEX_EMPTY_MESSAGE);
 }
 
 function normalizePendingUserSyncEntry(entry){
@@ -567,13 +610,22 @@ function buildSalesInsightMetadataPayload(insight){
   };
 }
 
-async function uploadSalesReportGroups(file){
+async function uploadReportGroups(file, options = {}){
   if(typeof XLSX === 'undefined'){
     throw new Error('Biblioteka Excel nie została załadowana.');
   }
   if(!storageService){
     throw new Error('Firebase Storage nie jest gotowy.');
   }
+
+  const setProgressMessage = typeof options.setMessage === 'function'
+    ? options.setMessage
+    : () => {};
+  const buildMetadata = typeof options.buildMetadata === 'function'
+    ? options.buildMetadata
+    : () => ({});
+  const progressLabel = String(options.progressLabel || 'Wysyłam').trim();
+  const reportType = String(options.reportType || 'generic-report').trim() || 'generic-report';
 
   const buffer = await file.arrayBuffer();
   const workbook = XLSX.read(buffer, {
@@ -615,7 +667,13 @@ async function uploadSalesReportGroups(file){
     const outputFileName = `${sourceBaseName} - ${repFolderName}.xlsx`;
     const storagePath = `${SALES_REPORTS_ROOT}/${repFolderName}/${outputFileName}`;
     const sheetRows = [...headerRows, ...group.rows];
-    const insightMetadata = buildSalesInsightMetadataPayload(buildWeeklySalesInsightFromRows(sheetRows));
+    const extraMetadata = buildMetadata({
+      headerRows,
+      sheetRows,
+      group,
+      storagePath,
+      outputFileName
+    }) || {};
     const outputSheet = XLSX.utils.aoa_to_sheet(sheetRows);
 
     copyWorksheetLayout(sourceSheet, outputSheet, sheetRows.length);
@@ -634,14 +692,15 @@ async function uploadSalesReportGroups(file){
       { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
     );
 
-    setSalesReportMessage(`Wysyłam ${index + 1} z ${groups.length}: ${group.repName}`);
+    setProgressMessage(`${progressLabel} ${index + 1} z ${groups.length}: ${group.repName}`);
 
     await storageService.ref().child(storagePath).put(outputBlob, {
       contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       customMetadata: {
         salesRep: group.repName,
         sourceFile: file.name,
-        ...insightMetadata
+        reportType,
+        ...extraMetadata
       }
     });
 
@@ -664,6 +723,23 @@ async function uploadSalesReportGroups(file){
   };
 }
 
+async function uploadSalesReportGroups(file){
+  return uploadReportGroups(file, {
+    reportType: 'weekly-sales',
+    progressLabel: 'Wysyłam',
+    setMessage: setSalesReportMessage,
+    buildMetadata: ({ sheetRows }) => buildSalesInsightMetadataPayload(buildWeeklySalesInsightFromRows(sheetRows))
+  });
+}
+
+async function uploadSalesIndexGroups(file){
+  return uploadReportGroups(file, {
+    reportType: 'sales-by-index',
+    progressLabel: 'Wysyłam raport per indeks',
+    setMessage: setSalesIndexMessage
+  });
+}
+
 function updateUserItemStatus(toggle, blocked){
   const userItem = toggle?.closest('.admin-user-item');
   const statusNode = userItem?.querySelector('.admin-user-status');
@@ -671,6 +747,69 @@ function updateUserItemStatus(toggle, blocked){
 
   statusNode.textContent = blocked ? 'Konto zablokowane' : 'Konto aktywne';
   statusNode.classList.toggle('is-blocked', blocked);
+}
+
+function createPinnedUserItem(){
+  return {
+    ...PINNED_TEST_USER,
+    createdAt: null,
+    blocked: false,
+    reportFolder: '',
+    reportName: '',
+    syncPending: false,
+    syncError: ''
+  };
+}
+
+function formatAdminUserCountLabel(count){
+  if(count === 1) return '1 konto';
+  const lastTwoDigits = count % 100;
+  const lastDigit = count % 10;
+  if(lastDigit >= 2 && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14)){
+    return `${count} konta`;
+  }
+  return `${count} kont`;
+}
+
+function buildUserPickerLabel(item){
+  const email = String(item?.email || '').trim();
+  return email || `UID: ${String(item?.uid || 'brak')}`;
+}
+
+function renderAdminUserPicker(items){
+  if(userPicker){
+    userPicker.innerHTML = items.map(item => `
+      <option value="${escapeHtml(item.uid || '')}">
+        ${escapeHtml(buildUserPickerLabel(item))}
+      </option>
+    `).join('');
+    userPicker.value = selectedAdminUserUid;
+  }
+
+  if(userCount){
+    userCount.textContent = formatAdminUserCountLabel(items.length);
+  }
+}
+
+function renderSelectedAdminUserCard(){
+  if(!userList) return;
+  if(!latestRenderedUsers.length){
+    userList.innerHTML = '<div class="admin-user-empty">Brak użytkowników do wyświetlenia.</div>';
+    if(userPicker){
+      userPicker.innerHTML = '<option value="">Brak użytkowników</option>';
+      userPicker.value = '';
+    }
+    if(userCount){
+      userCount.textContent = '';
+    }
+    return;
+  }
+
+  const selectedUser = latestRenderedUsers.find(item => item.uid === selectedAdminUserUid)
+    || latestRenderedUsers[0];
+  selectedAdminUserUid = selectedUser.uid;
+  renderAdminUserPicker(latestRenderedUsers);
+  userList.innerHTML = buildUserItem(selectedUser);
 }
 
 function buildUserItem({
@@ -748,14 +887,9 @@ function buildUserItem({
 }
 
 function renderFallbackUsers(){
-  if(!userList) return;
-  userList.innerHTML = buildUserItem({
-    ...PINNED_TEST_USER,
-    createdAt: null,
-    blocked: false,
-    syncPending: false,
-    syncError: ''
-  });
+  latestRenderedUsers = [createPinnedUserItem()];
+  selectedAdminUserUid = latestRenderedUsers[0].uid;
+  renderSelectedAdminUserCard();
 }
 
 function getTimestampValue(timestamp){
@@ -838,7 +972,11 @@ function renderUsers(docs){
   ]);
 
   items.sort((a, b) => getTimestampValue(b.createdAt) - getTimestampValue(a.createdAt));
-  userList.innerHTML = items.map(buildUserItem).join('');
+  latestRenderedUsers = items;
+  if(!items.some(item => item.uid === selectedAdminUserUid)){
+    selectedAdminUserUid = items[0]?.uid || '';
+  }
+  renderSelectedAdminUserCard();
 }
 
 async function ensurePinnedTestUser(db){
@@ -1018,9 +1156,20 @@ function handleUserListClick(event){
   void handleUserAssignmentSave(assignButton);
 }
 
+function handleUserPickerChange(event){
+  const nextUid = String(event?.target?.value || '').trim();
+  if(!nextUid) return;
+  selectedAdminUserUid = nextUid;
+  renderSelectedAdminUserCard();
+}
+
 if(userList){
   userList.addEventListener('change', handleUserBlockToggle);
   userList.addEventListener('click', handleUserListClick);
+}
+
+if(userPicker){
+  userPicker.addEventListener('change', handleUserPickerChange);
 }
 
 if(salesReportUploadBtn){
@@ -1062,6 +1211,36 @@ if(salesReportUploadBtn){
   });
 }
 
+if(salesIndexUploadBtn){
+  salesIndexUploadBtn.addEventListener('click', async () => {
+    const file = salesIndexFileInput?.files?.[0];
+
+    setSalesIndexMessage('');
+
+    if(!file){
+      setSalesIndexMessage('Wybierz plik Excel raportu per indeks.', 'error');
+      return;
+    }
+
+    salesIndexUploadBtn.disabled = true;
+    renderSalesIndexResults([], null);
+
+    try{
+      const result = await uploadSalesIndexGroups(file);
+      renderSalesIndexResults(result.items, result.summary);
+      setSalesIndexMessage(`Import per indeks zakończony. Utworzono ${result.summary.filesCount} plików.`, 'success');
+    }catch(error){
+      console.error('Sales index import error', error);
+      setSalesIndexMessage(error?.message || 'Nie udało się podzielić i wysłać raportu per indeks.', 'error');
+      renderSalesIndexResults([], null);
+    }finally{
+      salesIndexUploadBtn.disabled = false;
+    }
+  });
+}
+
+setAuthBootState(true, 'Sprawdzam uprawnienia...');
+
 if(typeof firebase !== 'undefined'){
   if(!firebase.apps.length){
     firebase.initializeApp(firebaseConfig);
@@ -1085,11 +1264,12 @@ if(typeof firebase !== 'undefined'){
 
   appAuth.onAuthStateChanged(user => {
     if(user && isAdminEmail(user.email)){
-      localStorage.setItem('is_admin', '1');
+      setAuthBootState(false);
       return;
     }
-    localStorage.removeItem('is_admin');
-    window.location.href = 'index.html';
+    setAuthBootState(true, 'Przekierowuję do logowania...');
+    renderUserListMessage('Brak aktywnej sesji administratora. Trwa przekierowanie...');
+    redirectToIndex();
   });
 
   unsubscribeUsers = db
@@ -1167,5 +1347,6 @@ if(typeof firebase !== 'undefined'){
     }
   });
 }else{
+  setAuthBootState(false);
   renderFallbackUsers();
 }
