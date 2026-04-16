@@ -1,5 +1,8 @@
 const jsonUrl =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Slodycze%20Ranking%20Rumunia.json';
+if(window.__wfScriptLoaded){
+  console.warn('script.js loaded more than once; duplicate bindings will be skipped.');
+}
 window.__wfScriptLoaded = true;
 const jsonUrlMieso =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Mieso%20Wedliny%20-%20Rumunia.json';
@@ -74,6 +77,8 @@ const PERSONAL_SALES_USERS = {
   }
 };
 
+const authSplash = document.getElementById('auth-splash');
+const authSplashMessage = document.getElementById('auth-splash-message');
 const loginView = document.getElementById('login-view');
 const appView = document.getElementById('app-view');
 const loginEmail = document.getElementById('login-email');
@@ -120,6 +125,7 @@ const kawyHerbatyContainer = document.getElementById('kawy-herbaty-content');
 const topRumuniaContainer = document.getElementById('top-rumunia-content');
 const importDaneContainer = document.getElementById('import-dane-content');
 const reportsContainer = document.getElementById('reports-content');
+const reportsBannerActions = document.getElementById('reports-banner-actions');
 const ukrainaSlodyczeContainer = document.getElementById('ukraina-slodycze-content');
 const ukrainaMiesoContainer = document.getElementById('ukraina-mieso-wedliny-content');
 const ukrainaKawyContainer = document.getElementById('ukraina-kawy-herbaty-content');
@@ -196,6 +202,39 @@ let weeklySalesSelectedWeek = '';
 let weeklySalesOnlyLastWeek250 = false;
 let weeklySalesRepComparison = false;
 let weeklySalesSortOrder = 'sales-desc';
+let detailedSalesSourceRows = [];
+let detailedSalesGeneratedRows = [];
+let detailedSalesImportFile = '';
+let detailedSalesSelectedCustomer = '';
+let detailedSalesComparisonCustomer = '';
+let detailedSalesSelectedGroups = [];
+let detailedSalesSortOrder = 'sales-desc';
+let detailedSalesWeeksLimit = 1;
+let detailedSalesLoadedWeeksLimit = 0;
+let detailedSalesLoadedReportsCount = 0;
+let detailedSalesAvailableReportsCount = 0;
+let detailedSalesUpdatedAt = '';
+let detailedSalesLoading = false;
+let detailedSalesErrorMessage = '';
+let detailedSalesTopPurchasedRows = [];
+let detailedSalesTopMissingRows = [];
+let detailedSalesTopSummary = null;
+let detailedSalesTopComparisonLoading = false;
+let detailedSalesTopComparisonError = '';
+let detailedSalesTopComparisonRequestId = 0;
+let detailedSalesTopPurchasedFilters = { producer:'' };
+let detailedSalesTopMissingFilters = { producer:'' };
+let detailedSalesTopGroupSummaryRows = [];
+let detailedSalesTopSelectedGroupKey = '';
+let detailedSalesTopProducerSummaryRows = [];
+let detailedSalesTopSelectedProducerKey = '';
+let detailedSalesTopSelectedMissingKeys = new Set();
+let detailedSalesTopSection = 'summary';
+let detailedSalesTopCustomerSummaryRows = [];
+let detailedSalesTopCustomerSearch = '';
+let detailedSalesTopCustomerSort = 'purchased-desc';
+let detailedSalesTopCustomerToneFilter = '';
+let detailedSalesTopCustomerPortfolioExpanded = false;
 let customerDiscountMapCache = null;
 let topSuggestionSourceRows = [];
 let topSuggestionGeneratedRows = [];
@@ -221,62 +260,110 @@ let authReady = false;
 let lastLoginEmail = '';
 let lastLoginPassword = '';
 let authStateVersion = 0;
-let preserveAdminSessionAfterBlockedLogout = false;
 let personalSalesDetailsLoading = false;
 let phReportsAutoLoading = false;
 let currentUserIsAdmin = false;
 let personalSalesConfigCache = new Map();
+let personalSalesFolderEntriesCache = new Map();
+let detailedSalesParsedReportCache = new Map();
+let detailedSalesParsedReportPromiseCache = new Map();
+let detailedSalesGroupsDropdownOpen = false;
+
+function clearDetailedSalesTopComparisonResultState(options = {}){
+  const preserveCustomerSummaryRows = Boolean(options.preserveCustomerSummaryRows);
+  detailedSalesTopPurchasedRows = [];
+  detailedSalesTopMissingRows = [];
+  detailedSalesTopSummary = null;
+  detailedSalesTopComparisonError = '';
+  detailedSalesTopPurchasedFilters = { producer:'' };
+  detailedSalesTopMissingFilters = { producer:'' };
+  detailedSalesTopGroupSummaryRows = [];
+  detailedSalesTopSelectedGroupKey = '';
+  detailedSalesTopProducerSummaryRows = [];
+  detailedSalesTopSelectedProducerKey = '';
+  detailedSalesTopSelectedMissingKeys = new Set();
+  detailedSalesTopSection = 'summary';
+  if(!preserveCustomerSummaryRows){
+    detailedSalesTopCustomerSummaryRows = [];
+  }
+}
+
+function resetDetailedSalesTopCustomerPortfolioFilters(){
+  detailedSalesTopCustomerSearch = '';
+  detailedSalesTopCustomerSort = 'purchased-desc';
+  detailedSalesTopCustomerToneFilter = '';
+  detailedSalesTopCustomerPortfolioExpanded = false;
+}
 
 const REPORT_GROUP_CONFIGS = [
   {
     id: 'slodycze',
     label: 'SLODYCZE I PRZEKASKI RUMUNIA - SLODYCZE RUMUNIA',
-    groups: ['SŁODYCZE I PRZEKĄSKI RUMUNIA', 'SŁODYCZE RUMUNIA'],
+    dashboardLabel: 'SŁODYCZE RUMUNIA',
+    groups: ['SŁODYCZE I PRZEKĄSKI RUMUNIA', 'SŁODYCZE RUMUNIA', 'PRZEKĄSKI RUMUNIA'],
     sources: [jsonUrl]
   },
   {
     id: 'puszki',
     label: 'PUSZKI I SLOIKI CHLODZONE RUMUNIA - PUSZKI I SLOIKI RUMUNIA',
-    groups: ['PUSZKI I SŁOIKI CHŁODZONE RUMUNIA', 'PUSZKI I SŁOIKI RUMUNIA'],
+    dashboardLabel: 'PUSZKI I SŁOIKI RUMUNIA',
+    groups: ['PUSZKI I SŁOIKI CHŁODZONE RUMUNIA', 'PUSZKI I SŁOIKI RUMUNIA', 'SŁOIKI RUMUNIA'],
     sources: [jsonUrlPuszkiSloiki]
   },
   {
     id: 'kawa',
     label: 'HERBATA I KAWA RUMUNIA',
+    dashboardLabel: 'HERBATA I KAWA RUMUNIA',
     groups: ['HERBATA I KAWA RUMUNIA'],
     sources: [jsonUrlKawyHerbaty]
   },
   {
     id: 'mieso',
     label: 'MIESO I WEDLINY RUMUNIA',
+    dashboardLabel: 'MIĘSO I WĘDLINY RUMUNIA',
     groups: ['MIĘSO I WĘDLINY RUMUNIA'],
     sources: [jsonUrlMieso]
   },
   {
     id: 'nabial',
     label: 'NABIAL RUMUNIA - RUMUNIA CHLODNIA POZOSTALE',
+    dashboardLabel: 'NABIAŁ RUMUNIA',
     groups: ['NABIAŁ RUMUNIA', 'RUMUNIA CHŁODNIA POZOSTAŁE'],
     sources: [jsonUrlNabial]
   },
   {
     id: 'napoje',
     label: 'NAPOJE BEZALKOHOLOWE RUMUNIA',
+    dashboardLabel: 'NAPOJE BEZALKOHOLOWE RUMUNIA',
     groups: ['NAPOJE BEZALKOHOLOWE RUMUNIA'],
     sources: [jsonUrlNapoje]
   },
   {
     id: 'podstawowe',
     label: 'PRODUKTY PODSTAWOWE RUMUNIA',
+    dashboardLabel: 'PRODUKTY PODSTAWOWE RUMUNIA',
     groups: ['PRODUKTY PODSTAWOWE RUMUNIA'],
     sources: [jsonUrlProduktyPodstawowe]
   },
   {
     id: 'przyprawy',
     label: 'PRZYPRAWY I DODATKI W PROSZKU RUMUNIA',
-    groups: ['PRZYPRAWY I DODATKI W PROSZKU RUMUNIA'],
+    dashboardLabel: 'PRZYPRAWY I DODATKI W PROSZKU RUMUNIA',
+    groups: ['PRZYPRAWY I DODATKI W PROSZKU RUMUNIA', 'DODATKI DO POTRAW RUMUNIA'],
     sources: [jsonUrlPrzyprawyProszek]
   }
 ];
+
+const REPORT_GROUP_SHORT_LABELS = {
+  slodycze: 'Slodycze',
+  puszki: 'Puszki',
+  kawa: 'Kawa',
+  mieso: 'Mieso',
+  nabial: 'Nabial',
+  napoje: 'Napoje',
+  podstawowe: 'Podstawowe',
+  przyprawy: 'Przyprawy'
+};
 
 function createDefaultReportLimits(){
   return REPORT_GROUP_CONFIGS.reduce((acc, group) => {
@@ -331,13 +418,27 @@ function activateTab(tabId){
   }
 }
 
+function setAuthBootState(isLoading, message = 'Sprawdzam sesję...'){
+  if(authSplashMessage){
+    authSplashMessage.textContent = message || 'Sprawdzam sesję...';
+  }
+  if(document.body){
+    document.body.classList.toggle('auth-booting', Boolean(isLoading));
+  }
+  if(authSplash){
+    authSplash.classList.toggle('hidden', !isLoading);
+  }
+}
+
 function showApp(){
+  setAuthBootState(false);
   if(loginView) loginView.classList.add('hidden');
   if(appView) appView.classList.remove('hidden');
   showSecurityModalOnce();
 }
 
 function showLogin(){
+  setAuthBootState(false);
   if(appView) appView.classList.add('hidden');
   if(loginView) loginView.classList.remove('hidden');
 }
@@ -391,6 +492,24 @@ function resetAppState(){
   weeklySalesOnlyLastWeek250 = false;
   weeklySalesRepComparison = false;
   weeklySalesSortOrder = 'sales-desc';
+  detailedSalesSourceRows = [];
+  detailedSalesGeneratedRows = [];
+  detailedSalesImportFile = '';
+  detailedSalesSelectedCustomer = '';
+  detailedSalesComparisonCustomer = '';
+  detailedSalesSelectedGroups = [];
+  detailedSalesSortOrder = 'sales-desc';
+  detailedSalesWeeksLimit = 1;
+  detailedSalesLoadedWeeksLimit = 0;
+  detailedSalesLoadedReportsCount = 0;
+  detailedSalesAvailableReportsCount = 0;
+  detailedSalesUpdatedAt = '';
+  detailedSalesLoading = false;
+  detailedSalesErrorMessage = '';
+  clearDetailedSalesTopComparisonResultState();
+  detailedSalesTopComparisonLoading = false;
+  detailedSalesTopComparisonRequestId = 0;
+  resetDetailedSalesTopCustomerPortfolioFilters();
   topSuggestionSourceRows = [];
   topSuggestionGeneratedRows = [];
   topSuggestionPurchasedRows = [];
@@ -400,6 +519,10 @@ function resetAppState(){
   topSuggestionLimit = '';
   topSuggestionSummary = null;
   personalSalesConfigCache = new Map();
+  personalSalesFolderEntriesCache = new Map();
+  detailedSalesParsedReportCache = new Map();
+  detailedSalesParsedReportPromiseCache = new Map();
+  detailedSalesGroupsDropdownOpen = false;
   reportsGroupLimits = createDefaultReportLimits();
   resetFilters();
 
@@ -566,6 +689,39 @@ function formatInsightDate(value){
   return date.toLocaleString('pl-PL');
 }
 
+function formatWeeksCountLabel(value){
+  const count = Math.max(Number(value) || 0, 0);
+  if(count === 1) return '1 tydzień';
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if(mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)){
+    return `${count} tygodnie`;
+  }
+  return `${count} tygodni`;
+}
+
+function normalizeDetailedSalesWeeksLimit(value){
+  const parsed = Number.parseInt(String(value ?? '').trim(), 10);
+  return Number.isFinite(parsed) && parsed >= 1 ? parsed : 1;
+}
+
+function stripFileExtension(filename){
+  return String(filename || '').replace(/\.[^.]+$/, '');
+}
+
+function extractDetailedSalesReportLabel(reportEntry){
+  const sourceName = String(
+    reportEntry?.metadata?.customMetadata?.sourceFile
+    || reportEntry?.item?.name
+    || ''
+  ).trim();
+  const dateMatch = sourceName.match(/\b(\d{2}\.\d{2}\.\d{4})\b/);
+  if(dateMatch){
+    return dateMatch[1];
+  }
+  return stripFileExtension(sourceName) || 'Bez daty';
+}
+
 function parseSalesValue(value){
   if(typeof value === 'number'){
     return Number.isFinite(value) ? value : 0;
@@ -640,6 +796,12 @@ function renderPersonalSalesInsight(config, insight){
             onclick="openPersonalSalesReportDetails()"
             data-personal-sales-details-btn="1"
           >Pokaż szczegóły</button>
+          <button
+            type="button"
+            class="sales-insight-details-btn"
+            onclick="openPersonalSalesTopComparison()"
+            data-personal-sales-top-btn="1"
+          >Top Rumunia</button>
         </div>
         <div class="sales-insight-change">
           <div class="sales-insight-delta">${escapeHtml(formatSalesDelta(insight.difference))}</div>
@@ -740,6 +902,47 @@ async function loadWeeklySalesRowsFromFirebaseReport(config){
   };
 }
 
+async function loadDetailedSalesRowsFromFirebaseReport(config, options = {}){
+  const requestedWeeksLimit = normalizeDetailedSalesWeeksLimit(detailedSalesWeeksLimit);
+  const { entries, totalCount, allEntries } = await getLatestPersonalDetailedSalesReports(config, requestedWeeksLimit, options);
+  if(!entries.length){
+    throw new Error('Brak szczegółowego raportu sprzedaży.');
+  }
+
+  const reportResults = await Promise.all(
+    entries.map(async (reportEntry, reportIndex) => {
+      const reportData = await getCachedDetailedSalesReportData(reportEntry);
+      const rows = reportData.rows.map(row => ({
+        ...row,
+        reportLabel: reportData.reportLabel,
+        reportOrder: reportIndex
+      }));
+
+      return {
+        rows,
+        fileName: reportData.fileName,
+        updatedAt: reportData.updatedAt
+      };
+    })
+  );
+
+  warmDetailedSalesReportsCache(allEntries, Math.max(3, requestedWeeksLimit));
+
+  const rows = reportResults.flatMap(report => report.rows);
+  if(!rows.length){
+    throw new Error('Szczegółowy raport sprzedaży nie zawiera danych do wyświetlenia.');
+  }
+
+  return {
+    rows,
+    fileName: reportResults[0].fileName,
+    updatedAt: reportResults[0].updatedAt,
+    loadedWeeksLimit: requestedWeeksLimit,
+    loadedReportsCount: reportResults.length,
+    availableReportsCount: totalCount
+  };
+}
+
 async function applyPersonalWeeklySalesReport(config){
   const reportData = await loadWeeklySalesRowsFromFirebaseReport(config);
   weeklySalesSourceRows = reportData.rows;
@@ -749,13 +952,39 @@ async function applyPersonalWeeklySalesReport(config){
   weeklySalesSelectedRepresentative = findBestWeeklyRepresentativeMatch(representatives, config)
     || representatives[0]
     || '';
-  weeklySalesSelectedWeek = '__all__';
+  weeklySalesSelectedWeek = '';
   weeklySalesOnlyLastWeek250 = false;
   weeklySalesRepComparison = false;
   weeklySalesSortOrder = 'sales-desc';
 
   await loadCustomerDiscountMap();
   generateWeeklySalesReport();
+}
+
+async function applyPersonalDetailedSalesReport(config, options = {}){
+  const previousCustomer = detailedSalesSelectedCustomer;
+  const previousComparisonCustomer = detailedSalesComparisonCustomer;
+  const previousGroups = [...detailedSalesSelectedGroups];
+  const reportData = await loadDetailedSalesRowsFromFirebaseReport(config, options);
+  detailedSalesSourceRows = reportData.rows;
+  detailedSalesImportFile = reportData.fileName;
+  detailedSalesUpdatedAt = reportData.updatedAt;
+  detailedSalesLoadedWeeksLimit = reportData.loadedWeeksLimit;
+  detailedSalesLoadedReportsCount = reportData.loadedReportsCount;
+  detailedSalesAvailableReportsCount = reportData.availableReportsCount;
+  detailedSalesSelectedCustomer = reportData.rows.some(row => `${row.customerCode}|||${row.customerName}` === previousCustomer)
+    ? previousCustomer
+    : '';
+  const customerOptions = getDetailedSalesCustomers();
+  detailedSalesComparisonCustomer = customerOptions.some(customer => `${customer.code}|||${customer.name}` === previousComparisonCustomer)
+    ? previousComparisonCustomer
+    : (customerOptions[0] ? `${customerOptions[0].code}|||${customerOptions[0].name}` : '');
+  detailedSalesErrorMessage = '';
+
+  generateDetailedSalesReport();
+  const availableGroups = new Set(getDetailedSalesGroups());
+  detailedSalesSelectedGroups = previousGroups.filter(group => availableGroups.has(group));
+  await generateDetailedSalesTopComparison({ suppressRender: true });
 }
 
 function normalizePersonalSalesConfig(source){
@@ -808,12 +1037,59 @@ async function ensurePhWeeklySalesDataLoaded(){
   phReportsAutoLoading = true;
   try{
     await applyPersonalWeeklySalesReport(config);
-    reportsMode = 'weekly-sales';
     renderReportsView();
   }catch(error){
     console.error('PH weekly sales auto-load error', error);
   }finally{
     phReportsAutoLoading = false;
+    renderReportsView();
+  }
+}
+
+async function ensurePhDetailedSalesDataLoaded(options = {}){
+  const forceRefresh = Boolean(options.forceRefresh);
+  if(isCurrentUserAdmin()) return;
+  if(detailedSalesLoading) return;
+  if(!forceRefresh && detailedSalesSourceRows.length && detailedSalesLoadedWeeksLimit === detailedSalesWeeksLimit){
+    return;
+  }
+
+  const user = auth?.currentUser;
+  const config = await getPersonalSalesConfig(user?.uid);
+  if(!config){
+    detailedSalesErrorMessage = 'Brak przypisanego raportu sprzedaży. Skontaktuj się z administratorem.';
+    detailedSalesLoadedWeeksLimit = 0;
+    detailedSalesLoadedReportsCount = 0;
+    detailedSalesAvailableReportsCount = 0;
+    renderReportsView();
+    return;
+  }
+
+  detailedSalesLoading = true;
+  detailedSalesErrorMessage = '';
+  renderReportsView();
+
+  try{
+    await applyPersonalDetailedSalesReport(config, { forceRefresh });
+  }catch(error){
+    console.error('PH detailed sales auto-load error', error);
+    detailedSalesSourceRows = [];
+    detailedSalesGeneratedRows = [];
+    detailedSalesImportFile = '';
+    detailedSalesSelectedCustomer = '';
+    detailedSalesComparisonCustomer = '';
+    detailedSalesSelectedGroups = [];
+    detailedSalesLoadedWeeksLimit = 0;
+    detailedSalesLoadedReportsCount = 0;
+    detailedSalesAvailableReportsCount = 0;
+    detailedSalesUpdatedAt = '';
+    detailedSalesErrorMessage = error?.message || 'Nie udało się wczytać szczegółowego raportu sprzedaży.';
+    clearDetailedSalesTopComparisonResultState();
+    detailedSalesTopComparisonLoading = false;
+    detailedSalesTopComparisonRequestId += 1;
+  }finally{
+    detailedSalesLoading = false;
+    renderReportsView();
   }
 }
 
@@ -836,8 +1112,8 @@ async function openPersonalSalesReportDetails(){
   }
 
   try{
+    reportsMode = 'weekly-sales';
     openReportsView();
-    setReportsMode('weekly-sales');
 
     weeklySalesSourceRows = [];
     weeklySalesGeneratedRows = [];
@@ -879,20 +1155,122 @@ async function openPersonalSalesReportDetails(){
   }
 }
 
+async function openPersonalSalesTopComparison(){
+  if(personalSalesDetailsLoading) return;
+  const user = auth?.currentUser;
+  const config = await getPersonalSalesConfig(user?.uid, { forceRefresh: true });
+  if(!config){
+    alert('Brak przypisanego raportu sprzedaży. Skontaktuj się z administratorem.');
+    return;
+  }
+
+  const comparisonButton = personalSalesInsightContent?.querySelector('[data-personal-sales-top-btn="1"]');
+  const initialLabel = comparisonButton?.textContent || 'Top Rumunia';
+
+  personalSalesDetailsLoading = true;
+  if(comparisonButton){
+    comparisonButton.disabled = true;
+    comparisonButton.textContent = 'Ładowanie...';
+  }
+
+  try{
+    reportsMode = 'top-rumunia-comparison';
+    detailedSalesLoading = true;
+    openReportsView();
+    detailedSalesSourceRows = [];
+    detailedSalesGeneratedRows = [];
+    detailedSalesImportFile = '';
+    detailedSalesSelectedCustomer = '';
+    detailedSalesComparisonCustomer = '';
+    detailedSalesSelectedGroups = [];
+    detailedSalesLoadedWeeksLimit = 0;
+    detailedSalesLoadedReportsCount = 0;
+    detailedSalesAvailableReportsCount = 0;
+    detailedSalesUpdatedAt = '';
+    detailedSalesErrorMessage = '';
+    clearDetailedSalesTopComparisonResultState();
+    detailedSalesTopComparisonLoading = false;
+    renderReportsView();
+
+    await applyPersonalDetailedSalesReport(config);
+
+    reportsMode = 'top-rumunia-comparison';
+    detailedSalesLoading = false;
+    renderReportsView();
+  }catch(error){
+    console.error('Personal sales Top Rumunia load error', error);
+    detailedSalesSourceRows = [];
+    detailedSalesGeneratedRows = [];
+    detailedSalesImportFile = '';
+    detailedSalesSelectedCustomer = '';
+    detailedSalesComparisonCustomer = '';
+    detailedSalesSelectedGroups = [];
+    detailedSalesLoadedWeeksLimit = 0;
+    detailedSalesLoadedReportsCount = 0;
+    detailedSalesAvailableReportsCount = 0;
+    detailedSalesUpdatedAt = '';
+    detailedSalesErrorMessage = error?.message || 'Nie udało się wczytać raportu sprzedaży.';
+    clearDetailedSalesTopComparisonResultState();
+    detailedSalesTopComparisonLoading = false;
+    reportsMode = 'top-rumunia-comparison';
+    detailedSalesLoading = false;
+    renderReportsView();
+    alert(error?.message || 'Nie udało się wczytać raportu sprzedaży.');
+  }finally{
+    detailedSalesLoading = false;
+    personalSalesDetailsLoading = false;
+    if(comparisonButton){
+      comparisonButton.disabled = false;
+      comparisonButton.textContent = initialLabel;
+    }
+  }
+}
+
 async function getLatestPersonalSalesReport(config){
+  const { weeklyEntry } = await listPersonalSalesReportEntries(config);
+  return weeklyEntry || null;
+}
+
+function getPersonalSalesFolderPath(config){
+  return `${SALES_REPORTS_ROOT}/${config.storageFolder}`;
+}
+
+function getReportEntryUpdatedAt(reportEntry){
+  return String(reportEntry?.metadata?.updated || reportEntry?.metadata?.timeCreated || '').trim();
+}
+
+function getReportEntryCacheKey(reportEntry){
+  const fullPath = String(reportEntry?.item?.fullPath || reportEntry?.item?.name || '').trim();
+  return `${fullPath}::${getReportEntryUpdatedAt(reportEntry)}`;
+}
+
+async function listPersonalSalesReportEntries(config, options = {}){
   if(!storage){
     throw new Error('Firebase Storage nie jest dostępny.');
   }
 
-  const folderRef = storage.ref().child(`${SALES_REPORTS_ROOT}/${config.storageFolder}`);
+  const forceRefresh = Boolean(options.forceRefresh);
+  const folderPath = getPersonalSalesFolderPath(config);
+
+  if(!forceRefresh && personalSalesFolderEntriesCache.has(folderPath)){
+    return personalSalesFolderEntriesCache.get(folderPath);
+  }
+
+  const folderRef = storage.ref().child(folderPath);
   const listResult = await folderRef.listAll();
   const xlsxItems = listResult.items.filter(item => /\.xlsx$/i.test(item.name));
 
   if(!xlsxItems.length){
-    return null;
+    const emptyResult = {
+      allEntries: [],
+      weeklyEntry: null,
+      detailedEntries: []
+    };
+    personalSalesFolderEntriesCache.set(folderPath, emptyResult);
+    return emptyResult;
   }
 
-  const entries = await Promise.all(
+  const allEntries = await Promise.all(
     xlsxItems.map(async item => {
       const metadata = await item.getMetadata();
       const updatedAt = Date.parse(metadata.updated || metadata.timeCreated || '') || 0;
@@ -900,12 +1278,119 @@ async function getLatestPersonalSalesReport(config){
     })
   );
 
-  entries.sort((a, b) => {
+  allEntries.sort((a, b) => {
     if(b.updatedAt !== a.updatedAt) return b.updatedAt - a.updatedAt;
     return b.item.name.localeCompare(a.item.name, 'pl');
   });
 
-  return entries[0] || null;
+  const result = {
+    allEntries,
+    weeklyEntry: allEntries.find(isWeeklySalesReportEntry) || null,
+    detailedEntries: allEntries.filter(isSalesByIndexReportEntry)
+  };
+  personalSalesFolderEntriesCache.set(folderPath, result);
+  return result;
+}
+
+async function getLatestPersonalDetailedSalesReports(config, limit = 1, options = {}){
+  const { detailedEntries } = await listPersonalSalesReportEntries(config, options);
+  return {
+    entries: detailedEntries.slice(0, normalizeDetailedSalesWeeksLimit(limit)),
+    totalCount: detailedEntries.length,
+    allEntries: detailedEntries
+  };
+}
+
+async function getCachedDetailedSalesReportData(reportEntry){
+  const cacheKey = getReportEntryCacheKey(reportEntry);
+  if(cacheKey && detailedSalesParsedReportCache.has(cacheKey)){
+    return detailedSalesParsedReportCache.get(cacheKey);
+  }
+  if(cacheKey && detailedSalesParsedReportPromiseCache.has(cacheKey)){
+    return detailedSalesParsedReportPromiseCache.get(cacheKey);
+  }
+
+  const loadPromise = (async () => {
+    const buffer = await readReportEntryArrayBuffer(reportEntry);
+    const workbook = XLSX.read(buffer, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    if(!sheetName){
+      throw new Error('Szczegółowy raport sprzedaży nie zawiera żadnego arkusza.');
+    }
+
+    const sheet = workbook.Sheets[sheetName];
+    const matrix = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+    const rows = normalizeDetailedSalesRowsFromMatrix(matrix);
+
+    return {
+      rows,
+      fileName: reportEntry?.item?.name || '',
+      updatedAt: getReportEntryUpdatedAt(reportEntry),
+      reportLabel: extractDetailedSalesReportLabel(reportEntry)
+    };
+  })();
+
+  if(cacheKey){
+    detailedSalesParsedReportPromiseCache.set(cacheKey, loadPromise);
+  }
+
+  try{
+    const data = await loadPromise;
+    if(cacheKey){
+      detailedSalesParsedReportCache.set(cacheKey, data);
+    }
+    return data;
+  }finally{
+    if(cacheKey){
+      detailedSalesParsedReportPromiseCache.delete(cacheKey);
+    }
+  }
+}
+
+function warmDetailedSalesReportsCache(entries, limit = 3){
+  const warmEntries = (entries || []).slice(0, Math.max(0, limit));
+  if(!warmEntries.length) return;
+  void Promise.allSettled(warmEntries.map(reportEntry => getCachedDetailedSalesReportData(reportEntry)));
+}
+
+function isWeeklySalesReportEntry(reportEntry){
+  const customMetadata = reportEntry?.metadata?.customMetadata || {};
+  const reportType = String(customMetadata.reportType || '').trim().toLowerCase();
+
+  if(reportType === 'weekly-sales'){
+    return true;
+  }
+
+  if(reportType === 'sales-by-index'){
+    return false;
+  }
+
+  const hasWeeklyInsightMetadata =
+    String(customMetadata.insightPreviousWeek || '').trim()
+    && String(customMetadata.insightLastWeek || '').trim();
+
+  if(hasWeeklyInsightMetadata){
+    return true;
+  }
+
+  const fileName = String(reportEntry?.item?.name || '').trim().toLowerCase();
+  return fileName.includes('per tydzien') || fileName.includes('per tydzień');
+}
+
+function isSalesByIndexReportEntry(reportEntry){
+  const customMetadata = reportEntry?.metadata?.customMetadata || {};
+  const reportType = String(customMetadata.reportType || '').trim().toLowerCase();
+
+  if(reportType === 'sales-by-index'){
+    return true;
+  }
+
+  if(reportType === 'weekly-sales'){
+    return false;
+  }
+
+  const fileName = String(reportEntry?.item?.name || '').trim().toLowerCase();
+  return fileName.includes('per indeks');
 }
 
 function readPersonalSalesInsightFromMetadata(reportEntry){
@@ -1191,8 +1676,11 @@ async function ensureUserProfileDoc(user){
   }
 }
 
+setAuthBootState(true, 'Sprawdzam sesję...');
+
 if(typeof firebase !== 'undefined'){
   if(String(firebaseConfig.apiKey).startsWith('PASTE_')){
+    showLogin();
     setLoginError('Uzupełnij firebaseConfig w script.js');
   }else{
     if(!firebase.apps.length){
@@ -1207,7 +1695,15 @@ if(typeof firebase !== 'undefined'){
     }
     authReady = true;
 
-    auth.onAuthStateChanged(async user => {
+    if(typeof window.__wfAuthUnsubscribe === 'function'){
+      try{
+        window.__wfAuthUnsubscribe();
+      }catch(error){
+        console.error('Previous auth listener cleanup error', error);
+      }
+    }
+
+    window.__wfAuthUnsubscribe = auth.onAuthStateChanged(async user => {
       const currentVersion = ++authStateVersion;
 
       if(user){
@@ -1217,7 +1713,6 @@ if(typeof firebase !== 'undefined'){
           return;
         }
         if(isBlocked){
-          preserveAdminSessionAfterBlockedLogout = localStorage.getItem('is_admin') === '1';
           setLoginError('To konto jest zablokowane.');
           try{
             await auth.signOut();
@@ -1232,10 +1727,7 @@ if(typeof firebase !== 'undefined'){
         setLoginError('');
         loadPersonalSalesInsightForUser(user, currentVersion);
       }else{
-        toggleAdminPanel('', {
-          preserveSession: preserveAdminSessionAfterBlockedLogout
-        });
-        preserveAdminSessionAfterBlockedLogout = false;
+        toggleAdminPanel('');
         hidePersonalSalesInsight();
         resetAppState();
         showLogin();
@@ -1243,10 +1735,11 @@ if(typeof firebase !== 'undefined'){
     });
   }
 }else{
+  showLogin();
   setLoginError('Firebase nie załadował się. Sprawdź połączenie.');
 }
 
-if(loginBtn){
+if(loginBtn && !window.__wfLoginHandlerBound){
   window.__wfLoginHandlerBound = true;
   loginBtn.addEventListener('click', async () => {
     if(!authReady || !auth){
@@ -1263,10 +1756,12 @@ if(loginBtn){
     const initialLabel = loginBtn.textContent;
     loginBtn.disabled = true;
     loginBtn.textContent = 'Logowanie...';
+    setAuthBootState(true, 'Logowanie...');
     try{
       await signInWithTimeout(loginEmail.value.trim(), loginPassword.value);
     }catch(err){
       console.error('LOGIN ERROR:', err.code, err.message, err);
+      setAuthBootState(false);
       setLoginError(getFriendlyAuthErrorMessage(err));
     }finally{
       loginBtn.disabled = false;
@@ -1276,7 +1771,8 @@ if(loginBtn){
 }
 
 
-if(logoutBtn){
+if(logoutBtn && !window.__wfLogoutHandlerBound){
+  window.__wfLogoutHandlerBound = true;
   logoutBtn.addEventListener('click', async () => {
     try{
       if(auth){
@@ -1285,7 +1781,6 @@ if(logoutBtn){
     }catch(e){
       console.error(e);
     }finally{
-      localStorage.removeItem('is_admin');
       toggleAdminPanel('');
       resetAppState();
       showLogin();
@@ -1293,7 +1788,8 @@ if(logoutBtn){
   });
 }
 
-if(loginPassword){
+if(loginPassword && !window.__wfPasswordEnterHandlerBound){
+  window.__wfPasswordEnterHandlerBound = true;
   loginPassword.addEventListener('keydown', (e) => {
     if(e.key === 'Enter' && loginBtn){
       loginBtn.click();
@@ -1301,7 +1797,8 @@ if(loginPassword){
   });
 }
 
-if(appBrandLink){
+if(appBrandLink && !window.__wfBrandHandlerBound){
+  window.__wfBrandHandlerBound = true;
   appBrandLink.addEventListener('click', (e) => {
     if(auth && auth.currentUser){
       e.preventDefault();
@@ -1392,25 +1889,35 @@ if(passwordCancel){
   });
 }
 
-if(worldFoodBtn){
+if(worldFoodBtn && !window.__wfWorldFoodHandlerBound){
+  window.__wfWorldFoodHandlerBound = true;
   worldFoodBtn.addEventListener('click', () => {
     const activeTab = document.querySelector('.tab.active')?.dataset.tab || 'rumunia';
     activateTab(activeTab);
   });
 }
 
-if(salesReportsBtn){
+if(salesReportsBtn && !window.__wfSalesReportsHandlerBound){
+  window.__wfSalesReportsHandlerBound = true;
   salesReportsBtn.addEventListener('click', () => {
     openReportsView();
   });
 }
 
+if(!window.__wfDetailedGroupsOutsideClickBound){
+  window.__wfDetailedGroupsOutsideClickBound = true;
+  document.addEventListener('click', handleDetailedSalesGroupsDropdownOutsideClick);
+}
+
 // OBSŁUGA ZAKŁADEK
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    activateTab(tab.dataset.tab);
+if(!window.__wfTabsHandlerBound){
+  window.__wfTabsHandlerBound = true;
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      activateTab(tab.dataset.tab);
+    });
   });
-});
+}
 
 // KLIK KAFELKA "SŁODYCZE"
 document.getElementById('rumunia-slodycze').addEventListener('click', async () => {
@@ -1607,7 +2114,8 @@ if(importDaneCard){
   });
 }
 
-if(reportsCard){
+if(reportsCard && !window.__wfReportsCardHandlerBound){
+  window.__wfReportsCardHandlerBound = true;
   reportsCard.addEventListener('click', () => {
     openReportsView();
   });
@@ -1627,6 +2135,19 @@ function formatNumber(value){
   const number = Number(value);
   if(!Number.isFinite(number)) return '';
   return new Intl.NumberFormat('pl-PL', { maximumFractionDigits: 2 }).format(number);
+}
+
+function formatPercent(value, options = {}){
+  const number = Number(value);
+  if(!Number.isFinite(number)) return '0%';
+  const {
+    minimumFractionDigits = number > 0 && number < 10 ? 1 : 0,
+    maximumFractionDigits = number > 0 && number < 10 ? 1 : 0
+  } = options;
+  return `${new Intl.NumberFormat('pl-PL', {
+    minimumFractionDigits,
+    maximumFractionDigits
+  }).format(number)}%`;
 }
 
 function findHeaderKey(headers, variants){
@@ -1867,6 +2388,31 @@ function normalizeWeeklySalesRow(row, headers){
   };
 }
 
+function normalizeDetailedSalesRow(row, headers){
+  const indexKey = findHeaderKey(headers, ['indeks', 'index', 'id', 'numer katalogowy', 'sku number']);
+  const nameKey = findHeaderKey(headers, ['nazwa', 'name', 'nazwa towaru', 'nazwa produktu']);
+  const groupNameKey = findHeaderKey(headers, ['nazwa grupa', 'nazwa_grupa', 'grupa']);
+  const repKey = findHeaderKey(headers, ['opiekun klienta', 'opiekun_klienta', 'przedstawiciel handlowy', 'przedstawiciel', 'handlowiec']);
+  const customerCodeKey = findHeaderKey(headers, ['kod kh', 'kod_kh', 'numer klienta', 'kod klienta']);
+  const customerNameKey = findHeaderKey(headers, ['nazwa kh', 'nazwa_kh', 'nazwa klienta', 'klient']);
+  const valueKey = findHeaderKey(headers, ['sprzedaż_waluta', 'sprzedaz_waluta', 'sprzedaż wartościowa', 'sprzedaz wartosciowa', 'wartość', 'wartosc', 'value']);
+
+  const valueRaw = row[valueKey];
+  const valueNumber = Number(String(valueRaw ?? '').replace(/\s+/g, '').replace(',', '.'));
+
+  return {
+    representative: String(row[repKey] ?? '').trim() || 'Bez przedstawiciela',
+    customerCode: String(row[customerCodeKey] ?? '').trim(),
+    customerName: String(row[customerNameKey] ?? '').trim() || 'Bez nazwy klienta',
+    index: String(row[indexKey] ?? '').trim(),
+    name: String(row[nameKey] ?? '').trim(),
+    groupName: String(row[groupNameKey] ?? '').trim(),
+    value: Number.isFinite(valueNumber) ? valueNumber : 0,
+    reportLabel: '',
+    reportOrder: 0
+  };
+}
+
 function normalizeWeeklySalesRowsFromMatrix(matrix){
   const rows = Array.isArray(matrix) ? matrix : [];
   const firstRow = rows[0] || [];
@@ -1928,9 +2474,93 @@ function normalizeWeeklySalesRowsFromMatrix(matrix){
   });
 }
 
+function normalizeDetailedSalesRowsFromMatrix(matrix){
+  const rows = Array.isArray(matrix) ? matrix : [];
+  const headers = rows[0] || [];
+
+  return rows.slice(1)
+    .map(values => {
+      const row = {};
+      headers.forEach((header, index) => {
+        row[header] = values[index] ?? '';
+      });
+      return normalizeDetailedSalesRow(row, headers);
+    })
+    .filter(row => row.index || row.customerCode || row.customerName);
+}
+
 function getWeeklySalesRepresentatives(){
   return Array.from(new Set(weeklySalesSourceRows.map(row => row.representative).filter(Boolean)))
     .sort((a, b) => a.localeCompare(b, 'pl'));
+}
+
+function getDetailedSalesCustomers(){
+  const map = new Map();
+  detailedSalesSourceRows.forEach(row => {
+    const key = `${row.customerCode}|||${row.customerName}`;
+    if(!map.has(key)){
+      map.set(key, { code: row.customerCode, name: row.customerName });
+    }
+  });
+  return Array.from(map.values()).sort((a, b) => {
+    const nameCompare = a.name.localeCompare(b.name, 'pl');
+    return nameCompare || a.code.localeCompare(b.code, 'pl');
+  });
+}
+
+function getDetailedSalesGroups(){
+  return Array.from(new Set(
+    detailedSalesGeneratedRows.map(row => String(row.groupName || '').trim()).filter(Boolean)
+  )).sort((a, b) => a.localeCompare(b, 'pl'));
+}
+
+function normalizeDetailedSalesSelectedGroups(values){
+  const source = Array.isArray(values)
+    ? values
+    : [values];
+  return Array.from(new Set(
+    source.map(value => String(value || '').trim()).filter(Boolean)
+  ));
+}
+
+function expandDetailedSalesSelectedGroups(values){
+  const expandedGroups = new Set();
+  normalizeDetailedSalesSelectedGroups(values).forEach(value => {
+    const config = getDetailedSalesDashboardGroupConfig(value);
+    if(config?.groups?.length){
+      config.groups.forEach(groupName => {
+        const normalizedGroupName = String(groupName || '').trim();
+        if(normalizedGroupName){
+          expandedGroups.add(normalizedGroupName);
+        }
+      });
+      return;
+    }
+    expandedGroups.add(String(value || '').trim());
+  });
+  return Array.from(expandedGroups).filter(Boolean);
+}
+
+function getDetailedSalesSelectedGroups(){
+  return normalizeDetailedSalesSelectedGroups(detailedSalesSelectedGroups);
+}
+
+function matchesDetailedSalesRowGroup(groupName){
+  const selectedGroups = expandDetailedSalesSelectedGroups(detailedSalesSelectedGroups);
+  if(!selectedGroups.length) return true;
+  return selectedGroups.includes(String(groupName || '').trim());
+}
+
+function getDetailedSalesSelectedGroupsLabel(maxItems = 2){
+  const selectedGroups = Array.from(new Set(
+    getDetailedSalesSelectedGroups().map(groupName => getDetailedSalesDashboardGroupLabel(groupName))
+  ));
+  if(!selectedGroups.length) return 'Wszystkie grupy';
+  if(selectedGroups.length <= maxItems){
+    return selectedGroups.join(', ');
+  }
+  const visibleGroups = selectedGroups.slice(0, maxItems).join(', ');
+  return `${visibleGroups} +${selectedGroups.length - maxItems}`;
 }
 
 function getWeeklySalesCustomers(){
@@ -1956,22 +2586,30 @@ function getWeeklySalesProducers(){
   )).sort((a, b) => a.localeCompare(b, 'pl'));
 }
 
-function getWeeklySalesWeeks(){
+function compareWeeklySalesWeekLabels(a, b){
+  return String(a || '').localeCompare(String(b || ''), 'pl', { numeric: true });
+}
+
+function getWeeklySalesWeeks(options = {}){
+  const descending = options.descending !== false;
   const rows = weeklySalesGeneratedRows.length ? weeklySalesGeneratedRows : weeklySalesSourceRows;
   return Array.from(new Set(
     rows.map(row => String(row.week || '').trim()).filter(Boolean)
-  )).sort((a, b) => a.localeCompare(b, 'pl', { numeric: true }));
+  )).sort((a, b) => descending
+    ? compareWeeklySalesWeekLabels(b, a)
+    : compareWeeklySalesWeekLabels(a, b)
+  );
 }
 
 function getLatestWeeklySalesWeek(){
   const weeks = getWeeklySalesWeeks();
-  return weeks[weeks.length - 1] || '';
+  return weeks[0] || '';
 }
 
 function getWeeklySalesComparisonWeeks(){
   const weeks = Array.from(new Set(
     weeklySalesSourceRows.map(row => String(row.week || '').trim()).filter(Boolean)
-  )).sort((a, b) => a.localeCompare(b, 'pl', { numeric: true }));
+  )).sort((a, b) => compareWeeklySalesWeekLabels(a, b));
   return weeks.slice(Math.max(weeks.length - 2, 0));
 }
 
@@ -2113,6 +2751,26 @@ function getLatestWeeksFromRows(rows, count){
   return weeks.slice(Math.max(weeks.length - count, 0));
 }
 
+function sortDetailedSalesRows(rows){
+  const source = Array.isArray(rows) ? [...rows] : [];
+  const sortBySalesAsc = detailedSalesSortOrder === 'sales-asc';
+
+  source.sort((a, b) => {
+    const aValue = Number(a?.value || 0);
+    const bValue = Number(b?.value || 0);
+    if(aValue !== bValue){
+      return sortBySalesAsc ? aValue - bValue : bValue - aValue;
+    }
+    const reportOrderCompare = Number(a?.reportOrder || 0) - Number(b?.reportOrder || 0);
+    if(reportOrderCompare) return reportOrderCompare;
+    const customerCompare = String(a?.customerName || '').localeCompare(String(b?.customerName || ''), 'pl');
+    if(customerCompare) return customerCompare;
+    return String(a?.index || '').localeCompare(String(b?.index || ''), 'pl', { numeric: true });
+  });
+
+  return source;
+}
+
 function generateWeeklySalesReport(){
   weeklySalesGeneratedRows = [];
   if(!weeklySalesSelectedRepresentative) return;
@@ -2196,6 +2854,513 @@ function generateWeeklySalesReport(){
     if(customerCompare) return customerCompare;
     return String(a.index).localeCompare(String(b.index), 'pl', { numeric: true });
   });
+}
+
+function generateDetailedSalesReport(){
+  const selectedCustomer = detailedSalesSelectedCustomer;
+  const grouped = new Map();
+
+  detailedSalesSourceRows.forEach(row => {
+    if(selectedCustomer){
+      const [customerCode, customerName] = selectedCustomer.split('|||');
+      if(row.customerCode !== customerCode || row.customerName !== customerName){
+        return;
+      }
+    }
+
+    const key = [
+      row.reportOrder,
+      row.reportLabel,
+      row.customerCode,
+      row.customerName,
+      normalizeIndexValue(row.index),
+      row.name,
+      row.groupName
+    ].join('|||');
+    const current = grouped.get(key) || {
+      representative: row.representative,
+      reportLabel: row.reportLabel,
+      reportOrder: row.reportOrder,
+      customerCode: row.customerCode,
+      customerName: row.customerName,
+      index: row.index,
+      name: row.name,
+      groupName: row.groupName,
+      value: 0
+    };
+    current.value += row.value;
+    grouped.set(key, current);
+  });
+
+  detailedSalesGeneratedRows = sortDetailedSalesRows(Array.from(grouped.values()));
+}
+
+function getFilteredDetailedSalesRows(){
+  let rows = detailedSalesGeneratedRows;
+  rows = rows.filter(row => matchesDetailedSalesRowGroup(row.groupName));
+  return sortDetailedSalesRows(rows);
+}
+
+function normalizeDetailedSalesName(value){
+  return normalizeHeaderKey(value);
+}
+
+function matchesDetailedSalesTopGroup(topGroup, selectedGroups){
+  const normalizedTopGroup = normalizeHeaderKey(topGroup);
+  const normalizedSelectedGroups = expandDetailedSalesSelectedGroups(selectedGroups)
+    .map(value => normalizeHeaderKey(value))
+    .filter(Boolean);
+  if(!normalizedSelectedGroups.length) return true;
+  return normalizedSelectedGroups.some(normalizedSelectedGroup => (
+    normalizedTopGroup === normalizedSelectedGroup
+    || normalizedTopGroup.includes(normalizedSelectedGroup)
+    || normalizedSelectedGroup.includes(normalizedTopGroup)
+  ));
+}
+
+function getDetailedSalesDashboardGroupConfig(value){
+  const normalizedValue = normalizeHeaderKey(value);
+  if(!normalizedValue) return null;
+  return REPORT_GROUP_CONFIGS.find(group => (
+    (group.groups || []).some(groupName => normalizeHeaderKey(groupName) === normalizedValue)
+  )) || null;
+}
+
+function getDetailedSalesDashboardGroupLabel(value){
+  const fallbackLabel = String(value || '').trim() || 'Bez grupy';
+  return getDetailedSalesDashboardGroupConfig(value)?.dashboardLabel || fallbackLabel;
+}
+
+function getDetailedSalesShortGroupLabel(value){
+  const groupConfig = getDetailedSalesDashboardGroupConfig(value);
+  if(groupConfig?.id && REPORT_GROUP_SHORT_LABELS[groupConfig.id]){
+    return REPORT_GROUP_SHORT_LABELS[groupConfig.id];
+  }
+  return String(value || '').trim() || 'Bez grupy';
+}
+
+function buildDetailedSalesTopComparisonRow(row){
+  return {
+    INDEKS: row.index,
+    NAZWA: row.name,
+    SKROT_PRODUCENTA: row.producer,
+    'KOD EAN': row.ean || '',
+    Ranking: row.rankingLabel || (Number.isFinite(row.ranking) ? String(row.ranking) : ''),
+    'Grupa produktowa': row.group || ''
+  };
+}
+
+function getDetailedSalesCustomerKey(code, name){
+  return `${String(code || '').trim()}|||${String(name || '').trim()}`;
+}
+
+function buildDetailedSalesTopCustomerSummaryRows(scopedTopRows){
+  const topRows = Array.isArray(scopedTopRows) ? scopedTopRows : [];
+  if(!topRows.length) return [];
+
+  const groupOrder = new Map(REPORT_GROUP_CONFIGS.map((group, index) => [group.dashboardLabel, index]));
+
+  const customerRowsMap = new Map();
+  detailedSalesSourceRows.forEach(row => {
+    const customerKey = getDetailedSalesCustomerKey(row.customerCode, row.customerName);
+    if(!customerKey || customerKey === '|||') return;
+    const current = customerRowsMap.get(customerKey) || {
+      customerKey,
+      customerCode: row.customerCode,
+      customerName: row.customerName,
+      rows: [],
+      scopedSalesValue: 0
+    };
+    current.rows.push(row);
+    if(matchesDetailedSalesRowGroup(row.groupName)){
+      current.scopedSalesValue += Number(row.value || 0);
+    }
+    customerRowsMap.set(customerKey, current);
+  });
+
+  return Array.from(customerRowsMap.values())
+    .map(customer => {
+      const purchasedIndexSet = new Set(
+        customer.rows.map(row => normalizeIndexValue(row.index)).filter(Boolean)
+      );
+      const purchasedNameSet = new Set(
+        customer.rows.map(row => normalizeDetailedSalesName(row.name)).filter(Boolean)
+      );
+      const purchasedCompositeSet = new Set(
+        customer.rows
+          .map(row => {
+            const normalizedIndex = normalizeIndexValue(row.index);
+            const normalizedName = normalizeDetailedSalesName(row.name);
+            if(!normalizedIndex || !normalizedName) return '';
+            return `${normalizedIndex}|||${normalizedName}`;
+          })
+          .filter(Boolean)
+      );
+
+      let purchasedCount = 0;
+      let missingCount = 0;
+      const groupStats = new Map();
+
+      topRows.forEach(topRow => {
+        const isPurchased = isDetailedSalesTopMatch(topRow, purchasedIndexSet, purchasedNameSet, purchasedCompositeSet);
+        const groupLabel = getDetailedSalesDashboardGroupLabel(topRow.group);
+        const groupKey = getDetailedSalesTopGroupKey(groupLabel) || 'bez-grupy';
+        const currentGroup = groupStats.get(groupKey) || {
+          groupLabel,
+          offerCount: 0,
+          purchasedCount: 0
+        };
+        currentGroup.offerCount += 1;
+        if(isPurchased){
+          purchasedCount += 1;
+          currentGroup.purchasedCount += 1;
+        }else{
+          missingCount += 1;
+        }
+        groupStats.set(groupKey, currentGroup);
+      });
+
+      const purchasedGroupCount = Array.from(groupStats.values()).filter(group => group.purchasedCount > 0).length;
+      const missingOnlyGroupCount = Array.from(groupStats.values()).filter(group => group.purchasedCount === 0 && group.offerCount > 0).length;
+      const coveragePercent = getDetailedSalesTopCoveragePercent(purchasedCount, topRows.length);
+      const coverageTone = getDetailedSalesTopCoverageTone(coveragePercent);
+      const groupBreakdown = Array.from(groupStats.values())
+        .map(group => {
+          const missingCount = Math.max(group.offerCount - group.purchasedCount, 0);
+          const groupCoveragePercent = getDetailedSalesTopCoveragePercent(group.purchasedCount, group.offerCount);
+          return {
+            groupLabel: group.groupLabel,
+            shortLabel: getDetailedSalesShortGroupLabel(group.groupLabel),
+            offerCount: group.offerCount,
+            purchasedCount: group.purchasedCount,
+            missingCount,
+            coveragePercent: groupCoveragePercent,
+            coverageTone: getDetailedSalesTopCoverageTone(groupCoveragePercent)
+          };
+        })
+        .sort((a, b) => {
+          const aOrder = groupOrder.has(a.groupLabel) ? groupOrder.get(a.groupLabel) : Number.POSITIVE_INFINITY;
+          const bOrder = groupOrder.has(b.groupLabel) ? groupOrder.get(b.groupLabel) : Number.POSITIVE_INFINITY;
+          if(aOrder !== bOrder) return aOrder - bOrder;
+          return String(a.groupLabel || '').localeCompare(String(b.groupLabel || ''), 'pl');
+        });
+      const topOpportunityGroup = groupBreakdown.reduce((best, group) => {
+        if(!best) return group;
+        if(group.missingCount !== best.missingCount) return group.missingCount > best.missingCount ? group : best;
+        if(group.offerCount !== best.offerCount) return group.offerCount > best.offerCount ? group : best;
+        return String(group.groupLabel || '').localeCompare(String(best.groupLabel || ''), 'pl') < 0 ? group : best;
+      }, null);
+
+      return {
+        customerKey: customer.customerKey,
+        customerCode: customer.customerCode,
+        customerName: customer.customerName,
+        offerCount: topRows.length,
+        purchasedCount,
+        missingCount,
+        purchasedGroupCount,
+        missingOnlyGroupCount,
+        totalGroupCount: groupBreakdown.length,
+        coveragePercent,
+        coverageTone,
+        salesValue: customer.scopedSalesValue,
+        groupBreakdown,
+        topOpportunityGroupLabel: topOpportunityGroup?.groupLabel || '',
+        topOpportunityMissingCount: topOpportunityGroup?.missingCount || 0
+      };
+    })
+    .sort((a, b) => {
+      if(b.purchasedCount !== a.purchasedCount) return b.purchasedCount - a.purchasedCount;
+      if(b.coveragePercent !== a.coveragePercent) return b.coveragePercent - a.coveragePercent;
+      if(b.salesValue !== a.salesValue) return b.salesValue - a.salesValue;
+      const nameCompare = String(a.customerName || '').localeCompare(String(b.customerName || ''), 'pl');
+      if(nameCompare) return nameCompare;
+      return String(a.customerCode || '').localeCompare(String(b.customerCode || ''), 'pl', { numeric: true });
+    });
+}
+
+function buildDetailedSalesTopMeetingRecommendationRows(scopedTopRows){
+  const topRows = Array.isArray(scopedTopRows) ? scopedTopRows : [];
+  if(!topRows.length || !detailedSalesSourceRows.length) return [];
+
+  const customerPurchaseMap = new Map();
+  detailedSalesSourceRows.forEach(row => {
+    const customerKey = getDetailedSalesCustomerKey(row.customerCode, row.customerName);
+    if(!customerKey || customerKey === '|||') return;
+    const current = customerPurchaseMap.get(customerKey) || {
+      purchasedIndexSet: new Set(),
+      purchasedNameSet: new Set(),
+      purchasedCompositeSet: new Set()
+    };
+    const normalizedIndex = normalizeIndexValue(row.index);
+    const normalizedName = normalizeDetailedSalesName(row.name);
+    if(normalizedIndex){
+      current.purchasedIndexSet.add(normalizedIndex);
+    }
+    if(normalizedName){
+      current.purchasedNameSet.add(normalizedName);
+    }
+    if(normalizedIndex && normalizedName){
+      current.purchasedCompositeSet.add(`${normalizedIndex}|||${normalizedName}`);
+    }
+    customerPurchaseMap.set(customerKey, current);
+  });
+
+  const totalCustomers = customerPurchaseMap.size;
+  if(!totalCustomers) return [];
+
+  return topRows
+    .map(row => {
+      let purchasedCustomers = 0;
+      customerPurchaseMap.forEach(customer => {
+        if(isDetailedSalesTopMatch(row, customer.purchasedIndexSet, customer.purchasedNameSet, customer.purchasedCompositeSet)){
+          purchasedCustomers += 1;
+        }
+      });
+      const missingCustomers = Math.max(totalCustomers - purchasedCustomers, 0);
+      return {
+        index: row.index,
+        name: row.name,
+        producer: row.producer,
+        groupLabel: getDetailedSalesDashboardGroupLabel(row.group),
+        shortGroupLabel: getDetailedSalesShortGroupLabel(row.group),
+        ranking: Number.isFinite(row.ranking) ? row.ranking : Number.POSITIVE_INFINITY,
+        rankingLabel: row.rankingLabel || (Number.isFinite(row.ranking) ? String(row.ranking) : ''),
+        purchasedCustomers,
+        missingCustomers,
+        totalCustomers
+      };
+    })
+    .filter(row => row.missingCustomers > 0)
+    .sort((a, b) => {
+      if(a.ranking !== b.ranking) return a.ranking - b.ranking;
+      if(b.missingCustomers !== a.missingCustomers) return b.missingCustomers - a.missingCustomers;
+      if(a.groupLabel !== b.groupLabel) return String(a.groupLabel || '').localeCompare(String(b.groupLabel || ''), 'pl');
+      return String(a.name || '').localeCompare(String(b.name || ''), 'pl');
+    })
+    .slice(0, 40);
+}
+
+function buildWeeklySalesRepresentativePdfSummary(){
+  const representatives = getWeeklySalesRepresentatives();
+  const representativeLabel = weeklySalesSelectedRepresentative || (representatives.length === 1 ? representatives[0] : '');
+  let sourceRows = Array.isArray(weeklySalesSourceRows) ? [...weeklySalesSourceRows] : [];
+  if(representativeLabel){
+    sourceRows = sourceRows.filter(row => row.representative === representativeLabel);
+  }
+  if(!sourceRows.length){
+    return {
+      representativeLabel,
+      activeWeekLabel: '',
+      activeSalesTotal: 0,
+      activeCustomersCount: 0,
+      previousWeekLabel: '',
+      previousSalesTotal: 0,
+      trendValue: null,
+      topCustomers: []
+    };
+  }
+
+  const availableWeeks = Array.from(new Set(
+    sourceRows.map(row => String(row.week || '').trim()).filter(Boolean)
+  )).sort((a, b) => compareWeeklySalesWeekLabels(a, b));
+  const latestWeek = availableWeeks[availableWeeks.length - 1] || '';
+  const explicitWeek = weeklySalesSelectedWeek === '__all__'
+    ? '__all__'
+    : (weeklySalesSelectedWeek || latestWeek);
+  let activeRows = sourceRows;
+
+  if(weeklySalesOnlyLastWeek250 && latestWeek){
+    const totalsByCustomer = new Map();
+    sourceRows
+      .filter(row => String(row.week || '') === latestWeek)
+      .forEach(row => {
+        const key = `${row.customerCode}|||${row.customerName}`;
+        totalsByCustomer.set(key, (totalsByCustomer.get(key) || 0) + Number(row.quantity || row.value || 0));
+      });
+    activeRows = sourceRows.filter(row => {
+      const key = `${row.customerCode}|||${row.customerName}`;
+      return String(row.week || '') === latestWeek && (totalsByCustomer.get(key) || 0) >= 250;
+    });
+  }else if(explicitWeek !== '__all__' && explicitWeek){
+    activeRows = sourceRows.filter(row => String(row.week || '') === explicitWeek);
+  }
+
+  const activeSalesTotal = activeRows.reduce((sum, row) => sum + Number(row.quantity || row.value || 0), 0);
+  const totalsByCustomer = new Map();
+  activeRows.forEach(row => {
+    const key = `${row.customerCode}|||${row.customerName}`;
+    const current = totalsByCustomer.get(key) || {
+      customerCode: row.customerCode,
+      customerName: row.customerName,
+      salesValue: 0
+    };
+    current.salesValue += Number(row.quantity || row.value || 0);
+    totalsByCustomer.set(key, current);
+  });
+
+  const activeWeekLabel = weeklySalesOnlyLastWeek250
+    ? `Ostatni tydzien ${latestWeek || ''} | min. 250 GBP`
+    : (explicitWeek === '__all__' ? 'Wszystkie tygodnie' : (explicitWeek || latestWeek || ''));
+  const activeWeekIndex = explicitWeek && explicitWeek !== '__all__'
+    ? availableWeeks.indexOf(explicitWeek)
+    : availableWeeks.length - 1;
+  const previousWeekLabel = activeWeekIndex > 0 ? availableWeeks[activeWeekIndex - 1] : '';
+  const previousSalesTotal = previousWeekLabel
+    ? sourceRows
+      .filter(row => String(row.week || '') === previousWeekLabel)
+      .reduce((sum, row) => sum + Number(row.quantity || row.value || 0), 0)
+    : 0;
+
+  return {
+    representativeLabel,
+    activeWeekLabel,
+    activeSalesTotal,
+    activeCustomersCount: totalsByCustomer.size,
+    previousWeekLabel,
+    previousSalesTotal,
+    trendValue: previousWeekLabel ? activeSalesTotal - previousSalesTotal : null,
+    topCustomers: Array.from(totalsByCustomer.values())
+      .sort((a, b) => b.salesValue - a.salesValue || String(a.customerName || '').localeCompare(String(b.customerName || ''), 'pl'))
+      .slice(0, 5)
+  };
+}
+
+function isDetailedSalesTopMatch(topRow, purchasedIndexSet, purchasedNameSet, purchasedCompositeSet){
+  const normalizedIndex = normalizeIndexValue(topRow.index);
+  const normalizedName = normalizeDetailedSalesName(topRow.name);
+  if(normalizedIndex && purchasedIndexSet.has(normalizedIndex)){
+    return true;
+  }
+  if(normalizedIndex && normalizedName){
+    if(purchasedCompositeSet.has(`${normalizedIndex}|||${normalizedName}`)){
+      return true;
+    }
+  }
+  return normalizedName ? purchasedNameSet.has(normalizedName) : false;
+}
+
+async function generateDetailedSalesTopComparison(options = {}){
+  const suppressRender = Boolean(options.suppressRender);
+  const requestId = ++detailedSalesTopComparisonRequestId;
+  const previousSelectedGroupKey = detailedSalesTopSelectedGroupKey;
+  const previousSelectedProducerKey = detailedSalesTopSelectedProducerKey;
+
+  clearDetailedSalesTopComparisonResultState({ preserveCustomerSummaryRows: true });
+
+  if(!detailedSalesSourceRows.length){
+    detailedSalesTopCustomerSummaryRows = [];
+    detailedSalesTopComparisonLoading = false;
+    if(!suppressRender){
+      renderReportsView();
+    }
+    return;
+  }
+
+  detailedSalesTopComparisonLoading = true;
+  if(!suppressRender){
+    renderReportsView();
+  }
+
+  try{
+    const scopedTopRows = dedupeReportRows(
+      (await loadTopRumuniaOfferRows()).filter(row => matchesDetailedSalesTopGroup(row.group, detailedSalesSelectedGroups))
+    ).sort((a, b) => {
+      if(a.ranking !== b.ranking) return a.ranking - b.ranking;
+      return String(a.name).localeCompare(String(b.name), 'pl');
+    });
+
+    if(requestId !== detailedSalesTopComparisonRequestId){
+      return;
+    }
+
+    detailedSalesTopCustomerSummaryRows = buildDetailedSalesTopCustomerSummaryRows(scopedTopRows);
+
+    if(!detailedSalesComparisonCustomer){
+      return;
+    }
+
+    const [customerCode, customerName] = detailedSalesComparisonCustomer.split('|||');
+    const selectedCustomerRows = detailedSalesSourceRows.filter(row => {
+      return row.customerCode === customerCode && row.customerName === customerName;
+    });
+    const purchasedIndexSet = new Set(
+      selectedCustomerRows.map(row => normalizeIndexValue(row.index)).filter(Boolean)
+    );
+    const purchasedNameSet = new Set(
+      selectedCustomerRows.map(row => normalizeDetailedSalesName(row.name)).filter(Boolean)
+    );
+    const purchasedCompositeSet = new Set(
+      selectedCustomerRows
+        .map(row => {
+          const normalizedIndex = normalizeIndexValue(row.index);
+          const normalizedName = normalizeDetailedSalesName(row.name);
+          if(!normalizedIndex || !normalizedName) return '';
+          return `${normalizedIndex}|||${normalizedName}`;
+        })
+        .filter(Boolean)
+    );
+
+    const purchasedRows = [];
+    const missingRows = [];
+
+    scopedTopRows.forEach(row => {
+      const enrichedRow = buildDetailedSalesTopComparisonRow(row);
+      if(isDetailedSalesTopMatch(row, purchasedIndexSet, purchasedNameSet, purchasedCompositeSet)){
+        purchasedRows.push(enrichedRow);
+      }else{
+        missingRows.push(enrichedRow);
+      }
+    });
+
+    if(requestId !== detailedSalesTopComparisonRequestId){
+      return;
+    }
+
+    detailedSalesTopPurchasedRows = purchasedRows;
+    detailedSalesTopMissingRows = missingRows;
+    const availableSelectionKeys = new Set(
+      missingRows.map(getDetailedSalesTopMissingRowKey).filter(Boolean)
+    );
+    detailedSalesTopSelectedMissingKeys = new Set(
+      Array.from(detailedSalesTopSelectedMissingKeys).filter(key => availableSelectionKeys.has(key))
+    );
+    detailedSalesTopGroupSummaryRows = buildDetailedSalesTopGroupSummaryRows(purchasedRows, missingRows);
+    detailedSalesTopSelectedGroupKey = detailedSalesTopGroupSummaryRows.some(row => row.groupKey === previousSelectedGroupKey)
+      ? previousSelectedGroupKey
+      : (detailedSalesTopGroupSummaryRows[0]?.groupKey || '');
+    detailedSalesTopProducerSummaryRows = buildDetailedSalesTopProducerSummaryRows(
+      purchasedRows,
+      missingRows,
+      detailedSalesTopSelectedGroupKey
+    );
+    detailedSalesTopSelectedProducerKey = detailedSalesTopProducerSummaryRows.some(row => row.producerKey === previousSelectedProducerKey)
+      ? previousSelectedProducerKey
+      : (detailedSalesTopProducerSummaryRows[0]?.producerKey || '');
+    detailedSalesTopSummary = {
+      customerCode,
+      customerName,
+      groupLabel: getDetailedSalesSelectedGroupsLabel(3),
+      purchasedCount: purchasedRows.length,
+      missingCount: missingRows.length,
+      offerCount: scopedTopRows.length
+    };
+  }catch(error){
+    if(requestId !== detailedSalesTopComparisonRequestId){
+      return;
+    }
+    console.error('Detailed sales Top Rumunia comparison error', error);
+    clearDetailedSalesTopComparisonResultState();
+    detailedSalesTopComparisonError = error?.message || 'Nie udało się porównać klienta z Top Rumunia.';
+  }finally{
+    if(requestId !== detailedSalesTopComparisonRequestId){
+      return;
+    }
+    detailedSalesTopComparisonLoading = false;
+    if(!suppressRender){
+      renderReportsView();
+    }
+  }
 }
 
 async function loadCustomerDiscountMap(){
@@ -2691,6 +3856,989 @@ function renderClientTableFilters(type, filters){
   `;
 }
 
+function getFilteredDetailedSalesTopRows(rows, filters){
+  return rows.filter(row => {
+    if(filters.producer && !includesText(row.SKROT_PRODUCENTA, filters.producer)) return false;
+    return true;
+  });
+}
+
+function renderDetailedSalesTopTableFilters(type, rows, filters){
+  const producerOptions = Array.from(new Set(
+    (rows || []).map(row => String(row.SKROT_PRODUCENTA || '').trim()).filter(Boolean)
+  ))
+    .sort((a, b) => a.localeCompare(b, 'pl'))
+    .map(producer => `<option value="${escapeAttr(producer)}" ${filters.producer === producer ? 'selected' : ''}>${escapeHtml(producer)}</option>`)
+    .join('');
+
+  return `
+    <div class="reports-table-filters">
+      <select onchange="setDetailedSalesTopTableFilter('${type}', 'producer', this.value)">
+        <option value="">Wszyscy producenci</option>
+        ${producerOptions}
+      </select>
+    </div>
+  `;
+}
+
+function getDetailedSalesTopMissingRowKey(row){
+  const normalizedIndex = normalizeIndexValue(row?.INDEKS);
+  const normalizedName = normalizeDetailedSalesName(row?.NAZWA);
+  const producerKey = normalizeProducerValue(row?.SKROT_PRODUCENTA) || String(row?.SKROT_PRODUCENTA || '').trim().toLowerCase();
+  const groupKey = String(row?.['Grupa produktowa'] || '').trim().toLowerCase();
+  if(!normalizedIndex && !normalizedName) return '';
+  return [normalizedIndex || '', normalizedName || '', producerKey || '', groupKey || ''].join('|||');
+}
+
+function isDetailedSalesTopMissingRowSelected(row){
+  const rowKey = getDetailedSalesTopMissingRowKey(row);
+  return !!rowKey && detailedSalesTopSelectedMissingKeys.has(rowKey);
+}
+
+function getSelectedDetailedSalesTopMissingRows(){
+  return detailedSalesTopMissingRows.filter(row => isDetailedSalesTopMissingRowSelected(row));
+}
+
+function getDetailedSalesTopVisibleMissingRows(scope = 'filtered'){
+  if(scope === 'producer'){
+    return getDetailedSalesTopMissingRowsForSelectedProducer();
+  }
+  return getFilteredDetailedSalesTopRows(detailedSalesTopMissingRows, detailedSalesTopMissingFilters);
+}
+
+function getDetailedSalesTopRecommendationFileName(){
+  const [customerCode = '', customerName = ''] = String(detailedSalesComparisonCustomer || '').split('|||');
+  const safePart = (value, fallback) => String(value || fallback)
+    .trim()
+    .replace(/[\\/:*?"<>|]+/g, ' ')
+    .replace(/\s+/g, ' ');
+  return `${safePart(customerCode, 'Klient')} ${safePart(customerName, 'Bez nazwy')} - rekomendacje Top Rumunia`;
+}
+
+function getDetailedSalesTopImageUrl(index){
+  const idx = String(index || '').trim();
+  if(!idx) return '';
+  const ext = getPreferredImageExt(idx, imageBaseUrlRumunia);
+  return buildImageUrl(idx, ext, imageBaseUrlRumunia);
+}
+
+function getDetailedSalesTopMissingExportRows(){
+  return getSelectedDetailedSalesTopMissingRows().map(row => ({
+    INDEKS: row.INDEKS ?? '',
+    NAZWA: row.NAZWA ?? '',
+    SKROT_PRODUCENTA: row.SKROT_PRODUCENTA ?? '',
+    Ranking: row.Ranking ?? '',
+    'Grupa produktowa': row['Grupa produktowa'] ?? '',
+    'Zdjęcie URL': getDetailedSalesTopImageUrl(row.INDEKS)
+  }));
+}
+
+function renderDetailedSalesTopSelectionToolbar(summaryText, actionsHtml = '', className = ''){
+  return `
+    <div class="reports-selection-toolbar${className ? ` ${className}` : ''}">
+      <div class="reports-selection-summary">${escapeHtml(summaryText)}</div>
+      ${actionsHtml ? `<div class="reports-selection-actions">${actionsHtml}</div>` : ''}
+    </div>
+  `;
+}
+
+function renderDetailedSalesTopTableToolbar(summaryText, actionsHtml = ''){
+  return `
+    <div class="reports-selection-toolbar reports-selection-toolbar--table">
+      <div class="reports-selection-summary">${escapeHtml(summaryText)}</div>
+      ${actionsHtml
+        ? `<div class="reports-selection-actions">${actionsHtml}</div>`
+        : `<div class="reports-selection-actions reports-selection-actions--placeholder" aria-hidden="true"></div>`
+      }
+    </div>
+  `;
+}
+
+function renderDetailedSalesTopInfoToolbar(rows, options = {}){
+  const {
+    emptyText = 'Brak pozycji w tym widoku.',
+    label = 'Widoczne'
+  } = options;
+  const visibleRows = Array.isArray(rows) ? rows : [];
+  const summaryText = visibleRows.length
+    ? `${label}: ${visibleRows.length}`
+    : emptyText;
+
+  return renderDetailedSalesTopTableToolbar(summaryText);
+}
+
+function renderDetailedSalesTopExportToolbar(){
+  const selectedCount = getSelectedDetailedSalesTopMissingRows().length;
+  const canExportRepresentativePdf = !!detailedSalesSourceRows.length;
+  const summaryText = selectedCount
+    ? `Zaznaczone rekomendacje: ${selectedCount}`
+    : 'Zaznacz brakujące produkty w tabelach poniżej, aby zapisać listę lub utworzyć katalog.';
+
+  return renderDetailedSalesTopSelectionToolbar(summaryText, `
+    <button class="btn-outline" onclick="clearAllDetailedSalesTopMissing()" ${selectedCount ? '' : 'disabled'}>Wyczyść zaznaczenie</button>
+    <button class="btn-outline" onclick="exportDetailedSalesTopMissingCsv()" ${selectedCount ? '' : 'disabled'}>Zapisz CSV</button>
+    <button class="btn-outline" onclick="exportDetailedSalesTopMissingXls()" ${selectedCount ? '' : 'disabled'}>Zapisz XLS</button>
+    <button class="btn-outline" onclick="createDetailedSalesTopRecommendationCatalog()" ${selectedCount ? '' : 'disabled'}>Utwórz katalog</button>
+    <button class="btn-outline" onclick="exportDetailedSalesRepresentativeSummaryPdf()" ${canExportRepresentativePdf ? '' : 'disabled'}>Raport PDF PH</button>
+  `, 'reports-selection-toolbar--export');
+}
+
+function renderDetailedSalesTopQuickSelectionToolbar(rows, options = {}){
+  const {
+    scope = 'filtered',
+    selectLabel = 'Zaznacz widoczne',
+    clearLabel = 'Odznacz widoczne'
+  } = options;
+  const visibleRows = Array.isArray(rows) ? rows : [];
+  const visibleSelectedCount = visibleRows.filter(row => isDetailedSalesTopMissingRowSelected(row)).length;
+  const selectedCount = getSelectedDetailedSalesTopMissingRows().length;
+  const summaryText = visibleRows.length
+    ? `Widoczne: ${visibleRows.length} | zaznaczone w tym widoku: ${visibleSelectedCount} | łącznie: ${selectedCount}`
+    : `Brak pozycji do zaznaczenia${selectedCount ? ` | łącznie zaznaczone: ${selectedCount}` : ''}`;
+
+  return renderDetailedSalesTopTableToolbar(summaryText, `
+    <button class="btn-outline" onclick="selectVisibleDetailedSalesTopMissing('${scope}')" ${visibleRows.length ? '' : 'disabled'}>${escapeHtml(selectLabel)}</button>
+    <button class="btn-outline" onclick="clearVisibleDetailedSalesTopMissing('${scope}')" ${visibleSelectedCount ? '' : 'disabled'}>${escapeHtml(clearLabel)}</button>
+  `);
+}
+
+function renderDetailedSalesTopRowsTable(rows, emptyText, options = {}){
+  const { selectable = false } = options;
+  const html = rows.map((row, index) => {
+    const idx = String(row.INDEKS ?? '').trim();
+    const rowKey = getDetailedSalesTopMissingRowKey(row);
+    const canSelect = selectable && !!rowKey;
+    const isSelected = canSelect && detailedSalesTopSelectedMissingKeys.has(rowKey);
+    const rowClass = canSelect ? ` class="reports-selectable-row${isSelected ? ' is-active' : ''}"` : '';
+    const rowAttrs = canSelect
+      ? ` data-selection-key="${escapeAttr(rowKey)}" onclick="toggleDetailedSalesTopMissingSelectionByKey(this.getAttribute('data-selection-key'))"`
+      : '';
+    const checked = isSelected ? 'checked' : '';
+
+    return `
+      <tr${rowClass}${rowAttrs}>
+        <td>${index + 1}</td>
+        ${selectable ? `
+          <td class="reports-selection-cell">
+            <input
+              type="checkbox"
+              class="reports-row-checkbox"
+              data-selection-key="${escapeAttr(rowKey)}"
+              onchange="setDetailedSalesTopMissingSelectionByKey(this.getAttribute('data-selection-key'), this.checked)"
+              onclick="event.stopPropagation()"
+              ${checked}
+              ${canSelect ? '' : 'disabled'}
+            >
+          </td>
+        ` : ''}
+        <td class="reports-image-cell">
+          ${idx ? buildProductImageTag(idx, imageBaseUrlRumunia, 'reports-image') : ''}
+        </td>
+        <td>${escapeHtml(row.INDEKS ?? '')}</td>
+        <td>${escapeHtml(row.NAZWA ?? '')}</td>
+        <td>${escapeHtml(row.SKROT_PRODUCENTA ?? '')}</td>
+        <td>${escapeHtml(row.Ranking ?? '')}</td>
+        <td>${escapeHtml(row['Grupa produktowa'] ?? '')}</td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            ${selectable ? '<th>Wybór</th>' : ''}
+            <th>Zdjęcie</th>
+            <th>INDEKS</th>
+            <th>NAZWA</th>
+            <th>SKROT_PRODUCENTA</th>
+            <th>Ranking</th>
+            <th>Grupa produktowa</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${html || `<tr><td colspan="${selectable ? 8 : 7}" class="reports-empty">${escapeHtml(emptyText)}</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function getDetailedSalesTopGroupKey(value){
+  return String(value || '').trim().toLowerCase();
+}
+
+function buildDetailedSalesTopGroupSummaryRows(purchasedRows, missingRows){
+  const summaryMap = new Map();
+
+  const ensureGroupRow = (row) => {
+    const groupLabel = getDetailedSalesDashboardGroupLabel(row['Grupa produktowa']);
+    const groupKey = getDetailedSalesTopGroupKey(groupLabel);
+    if(!groupKey) return null;
+    const current = summaryMap.get(groupKey) || {
+      groupKey,
+      groupLabel,
+      purchasedIndexSet: new Set(),
+      offerIndexSet: new Set()
+    };
+    summaryMap.set(groupKey, current);
+    return current;
+  };
+
+  (purchasedRows || []).forEach(row => {
+    const current = ensureGroupRow(row);
+    const indexKey = getDetailedSalesTopMissingRowKey(row);
+    if(!current || !indexKey) return;
+    current.purchasedIndexSet.add(indexKey);
+    current.offerIndexSet.add(indexKey);
+  });
+
+  (missingRows || []).forEach(row => {
+    const current = ensureGroupRow(row);
+    const indexKey = getDetailedSalesTopMissingRowKey(row);
+    if(!current || !indexKey) return;
+    current.offerIndexSet.add(indexKey);
+  });
+
+  return Array.from(summaryMap.values())
+    .map(row => ({
+      groupKey: row.groupKey,
+      groupLabel: row.groupLabel,
+      purchasedCount: row.purchasedIndexSet.size,
+      offerCount: row.offerIndexSet.size,
+      missingCount: Math.max(0, row.offerIndexSet.size - row.purchasedIndexSet.size)
+    }))
+    .sort((a, b) => {
+      if(b.missingCount !== a.missingCount) return b.missingCount - a.missingCount;
+      if(a.purchasedCount !== b.purchasedCount) return a.purchasedCount - b.purchasedCount;
+      if(b.offerCount !== a.offerCount) return b.offerCount - a.offerCount;
+      return String(a.groupLabel).localeCompare(String(b.groupLabel), 'pl');
+    });
+}
+
+function getDetailedSalesTopCoveragePercent(purchasedCount, offerCount){
+  const purchased = Number(purchasedCount || 0);
+  const offer = Number(offerCount || 0);
+  if(!Number.isFinite(purchased) || !Number.isFinite(offer) || offer <= 0){
+    return 0;
+  }
+  return (purchased / offer) * 100;
+}
+
+function getDetailedSalesTopCoverageTone(percent){
+  if(percent < 30) return 'low';
+  if(percent < 60) return 'medium';
+  return 'high';
+}
+
+function getDetailedSalesTopCoverageLabel(percent){
+  const tone = getDetailedSalesTopCoverageTone(percent);
+  if(tone === 'low') return 'Niski udział';
+  if(tone === 'medium') return 'Średni udział';
+  return 'Wysoki udział';
+}
+
+function wrapDetailedSalesTopCompactContent(content){
+  return `<div class="reports-compact-mode">${content}</div>`;
+}
+
+function renderDetailedSalesTopSectionSwitch(){
+  return `
+    <div class="reports-mode-switch reports-mode-switch--secondary">
+      <button
+        type="button"
+        class="btn-outline ${detailedSalesTopSection === 'summary' ? 'reports-mode-active' : ''}"
+        onclick="setDetailedSalesTopSection('summary')"
+      >
+        Skrót klienta
+      </button>
+      <button
+        type="button"
+        class="btn-outline ${detailedSalesTopSection === 'full' ? 'reports-mode-active' : ''}"
+        onclick="setDetailedSalesTopSection('full')"
+      >
+        Pełna lista Top
+      </button>
+    </div>
+  `;
+}
+
+function getDetailedSalesTopCustomerLabel(row){
+  return [row?.customerCode, row?.customerName].filter(Boolean).join(' - ') || 'Bez nazwy klienta';
+}
+
+function sortDetailedSalesTopCustomerSummaryRows(rows){
+  const source = Array.isArray(rows) ? [...rows] : [];
+  const compareText = (a, b) => {
+    const nameCompare = String(a?.customerName || '').localeCompare(String(b?.customerName || ''), 'pl');
+    if(nameCompare) return nameCompare;
+    return String(a?.customerCode || '').localeCompare(String(b?.customerCode || ''), 'pl', { numeric: true });
+  };
+
+  source.sort((a, b) => {
+    switch(detailedSalesTopCustomerSort){
+      case 'purchased-asc':
+        if(a.purchasedCount !== b.purchasedCount) return a.purchasedCount - b.purchasedCount;
+        break;
+      case 'coverage-desc':
+        if(a.coveragePercent !== b.coveragePercent) return b.coveragePercent - a.coveragePercent;
+        break;
+      case 'coverage-asc':
+        if(a.coveragePercent !== b.coveragePercent) return a.coveragePercent - b.coveragePercent;
+        break;
+      case 'groups-desc':
+        if(a.purchasedGroupCount !== b.purchasedGroupCount) return b.purchasedGroupCount - a.purchasedGroupCount;
+        break;
+      case 'sales-desc':
+        if(a.salesValue !== b.salesValue) return b.salesValue - a.salesValue;
+        break;
+      case 'missing-desc':
+        if(a.missingCount !== b.missingCount) return b.missingCount - a.missingCount;
+        break;
+      case 'purchased-desc':
+      default:
+        if(a.purchasedCount !== b.purchasedCount) return b.purchasedCount - a.purchasedCount;
+        break;
+    }
+
+    if(b.coveragePercent !== a.coveragePercent) return b.coveragePercent - a.coveragePercent;
+    if(b.salesValue !== a.salesValue) return b.salesValue - a.salesValue;
+    return compareText(a, b);
+  });
+
+  return source;
+}
+
+function getFilteredDetailedSalesTopCustomerSummaryRows(){
+  let rows = Array.isArray(detailedSalesTopCustomerSummaryRows)
+    ? [...detailedSalesTopCustomerSummaryRows]
+    : [];
+
+  if(detailedSalesTopCustomerSearch){
+    rows = rows.filter(row => includesText(
+      `${row.customerCode || ''} ${row.customerName || ''}`,
+      detailedSalesTopCustomerSearch
+    ));
+  }
+
+  if(detailedSalesTopCustomerToneFilter){
+    rows = rows.filter(row => row.coverageTone === detailedSalesTopCustomerToneFilter);
+  }
+
+  return sortDetailedSalesTopCustomerSummaryRows(rows);
+}
+
+function renderDetailedSalesTopCustomerPortfolioSection(){
+  const allRows = Array.isArray(detailedSalesTopCustomerSummaryRows)
+    ? detailedSalesTopCustomerSummaryRows
+    : [];
+  const visibleRows = getFilteredDetailedSalesTopCustomerSummaryRows();
+  const summaryRows = visibleRows.length ? visibleRows : allRows;
+  const isExpanded = Boolean(detailedSalesTopCustomerPortfolioExpanded);
+  const strongestRow = [...summaryRows].sort((a, b) => b.coveragePercent - a.coveragePercent || b.purchasedCount - a.purchasedCount)[0] || null;
+  const biggestRow = [...summaryRows].sort((a, b) => b.purchasedCount - a.purchasedCount || b.salesValue - a.salesValue)[0] || null;
+  const potentialRow = [...summaryRows].sort((a, b) => b.missingCount - a.missingCount || a.coveragePercent - b.coveragePercent)[0] || null;
+  const activeCustomerRow = allRows.find(row => row.customerKey === detailedSalesComparisonCustomer) || null;
+  const toggleLabel = isExpanded
+    ? 'Zwiń listę klientów'
+    : 'Rozwiń listę klientów';
+  const currentVisibleCount = isExpanded ? visibleRows.length : allRows.length;
+
+  const rowsHtml = visibleRows.map(row => {
+    const isActive = row.customerKey === detailedSalesComparisonCustomer;
+    const activeClass = isActive ? ' is-active' : '';
+    const tone = row.coverageTone || 'low';
+    return `
+      <button
+        type="button"
+        class="reports-overview-row reports-customer-row is-${tone}${activeClass}"
+        onclick="setDetailedSalesComparisonCustomer(${escapeAttr(JSON.stringify(row.customerKey))})"
+      >
+        <span class="reports-overview-row-main">
+          <span class="reports-customer-row-heading">
+            <span class="reports-customer-row-code">${escapeHtml(row.customerCode || 'Brak kodu')}</span>
+            <span class="reports-overview-row-title">${escapeHtml(row.customerName || 'Bez nazwy klienta')}</span>
+          </span>
+          <span class="reports-customer-row-sub">Sprzedaż w zakresie: ${formatNumber(row.salesValue)}</span>
+          <span class="reports-overview-row-copy reports-overview-row-copy--stats">
+            <span class="reports-mini-stat">
+              <strong>${formatNumber(row.purchasedCount)}</strong>
+              <em>kupione</em>
+            </span>
+            <span class="reports-mini-stat is-gap">
+              <strong>${formatNumber(row.missingCount)}</strong>
+              <em>braki</em>
+            </span>
+            <span class="reports-mini-stat">
+              <strong>${formatNumber(row.purchasedGroupCount)}</strong>
+              <em>kategorie</em>
+            </span>
+            <span class="reports-mini-stat">
+              <strong>${formatNumber(row.offerCount)}</strong>
+              <em>w top</em>
+            </span>
+          </span>
+        </span>
+        <span class="reports-overview-row-side">
+          ${isActive ? `<span class="reports-active-pill">Wybrany klient</span>` : ''}
+          <span class="reports-tone-badge is-${tone}">${escapeHtml(getDetailedSalesTopCoverageLabel(row.coveragePercent))}</span>
+          <span class="reports-overview-row-percent">${escapeHtml(formatPercent(row.coveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 }))}</span>
+          <span class="reports-progress-track">
+            <span class="reports-progress-fill is-${tone}" style="width:${Math.max(0, Math.min(row.coveragePercent, 100))}%"></span>
+          </span>
+        </span>
+      </button>
+    `;
+  }).join('');
+
+  const emptyMessage = detailedSalesTopComparisonLoading && !allRows.length
+    ? 'Liczę ranking klientów względem Top Rumunia.'
+    : 'Brak klientów pasujących do wybranych filtrów.';
+
+  return `
+    <div class="reports-analysis-card reports-analysis-card--customer-portfolio${isExpanded ? ' is-expanded' : ' is-collapsed'}">
+      <div class="reports-analysis-card-head reports-analysis-card-head--wide reports-analysis-card-head--portfolio">
+        <div>
+          <div class="reports-analysis-card-title">Portfel klientów z raportu</div>
+          <div class="reports-analysis-card-sub">Lista jest na górze, ale schowana na start. Rozwiń ją, gdy chcesz szybko przełączyć się między klientami.</div>
+        </div>
+        <button
+          type="button"
+          class="btn-outline reports-customer-portfolio-toggle"
+          onclick="toggleDetailedSalesTopCustomerPortfolioExpanded()"
+          ${allRows.length ? '' : 'disabled'}
+        >
+          ${escapeHtml(toggleLabel)}
+        </button>
+      </div>
+
+      <div class="reports-customer-portfolio-bar">
+        <span class="reports-mini-stat">
+          <strong>${formatNumber(currentVisibleCount)}</strong>
+          <em>${isExpanded ? 'klientów w widoku' : 'klientów'}</em>
+        </span>
+        ${activeCustomerRow ? `
+          <span class="reports-mini-stat">
+            <strong>${escapeHtml(activeCustomerRow.customerCode || 'Klient')}</strong>
+            <em>aktywny klient</em>
+          </span>
+        ` : ''}
+        ${strongestRow ? `
+          <span class="reports-mini-stat">
+            <strong>${escapeHtml(formatPercent(strongestRow.coveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 }))}</strong>
+            <em>najwyższy udział</em>
+          </span>
+        ` : ''}
+        ${biggestRow ? `
+          <span class="reports-mini-stat">
+            <strong>${formatNumber(biggestRow.purchasedCount)}</strong>
+            <em>max kupione z top</em>
+          </span>
+        ` : ''}
+      </div>
+
+      ${isExpanded ? `
+        <div class="reports-summary reports-summary--compact">
+          <div class="reports-summary-card">
+            <div class="reports-summary-title">Klienci w widoku</div>
+            <div class="reports-summary-meta">${formatNumber(visibleRows.length)} z ${formatNumber(allRows.length)}</div>
+          </div>
+          <div class="reports-summary-card">
+            <div class="reports-summary-title">Najwyższy udział</div>
+            <div class="reports-summary-meta">${strongestRow ? `${escapeHtml(getDetailedSalesTopCustomerLabel(strongestRow))} | ${escapeHtml(formatPercent(strongestRow.coveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 }))}` : 'Brak danych'}</div>
+          </div>
+          <div class="reports-summary-card">
+            <div class="reports-summary-title">Najwięcej kupionych z Top</div>
+            <div class="reports-summary-meta">${biggestRow ? `${escapeHtml(getDetailedSalesTopCustomerLabel(biggestRow))} | ${formatNumber(biggestRow.purchasedCount)}` : 'Brak danych'}</div>
+          </div>
+          <div class="reports-summary-card">
+            <div class="reports-summary-title">Największy potencjał</div>
+            <div class="reports-summary-meta">${potentialRow ? `${escapeHtml(getDetailedSalesTopCustomerLabel(potentialRow))} | braki ${formatNumber(potentialRow.missingCount)}` : 'Brak danych'}</div>
+          </div>
+        </div>
+
+        <div class="reports-filters reports-filters--customer-portfolio">
+          <label class="reports-filter-card">
+            <span class="reports-limit-title">Szukaj klienta</span>
+            <input
+              type="text"
+              value="${escapeAttr(detailedSalesTopCustomerSearch)}"
+              placeholder="Kod lub nazwa klienta"
+              oninput="setDetailedSalesTopCustomerSearch(this.value)"
+            >
+          </label>
+          <label class="reports-filter-card">
+            <span class="reports-limit-title">Filtr udziału</span>
+            <select onchange="setDetailedSalesTopCustomerToneFilter(this.value)">
+              <option value="">Wszyscy klienci</option>
+              <option value="high" ${detailedSalesTopCustomerToneFilter === 'high' ? 'selected' : ''}>Wysoki udział</option>
+              <option value="medium" ${detailedSalesTopCustomerToneFilter === 'medium' ? 'selected' : ''}>Średni udział</option>
+              <option value="low" ${detailedSalesTopCustomerToneFilter === 'low' ? 'selected' : ''}>Niski udział</option>
+            </select>
+          </label>
+          <label class="reports-filter-card">
+            <span class="reports-limit-title">Sortowanie klientów</span>
+            <select onchange="setDetailedSalesTopCustomerSort(this.value)">
+              <option value="purchased-desc" ${detailedSalesTopCustomerSort === 'purchased-desc' ? 'selected' : ''}>Kupione z Top: od największej do najmniejszej</option>
+              <option value="purchased-asc" ${detailedSalesTopCustomerSort === 'purchased-asc' ? 'selected' : ''}>Kupione z Top: od najmniejszej do największej</option>
+              <option value="coverage-desc" ${detailedSalesTopCustomerSort === 'coverage-desc' ? 'selected' : ''}>Udział Top: od największego do najmniejszego</option>
+              <option value="coverage-asc" ${detailedSalesTopCustomerSort === 'coverage-asc' ? 'selected' : ''}>Udział Top: od najmniejszego do największego</option>
+              <option value="groups-desc" ${detailedSalesTopCustomerSort === 'groups-desc' ? 'selected' : ''}>Kupowane kategorie: od największej liczby</option>
+              <option value="sales-desc" ${detailedSalesTopCustomerSort === 'sales-desc' ? 'selected' : ''}>Sprzedaż w zakresie: od największej do najmniejszej</option>
+              <option value="missing-desc" ${detailedSalesTopCustomerSort === 'missing-desc' ? 'selected' : ''}>Potencjał: najwięcej braków</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="reports-customer-ranking-list">
+          ${rowsHtml || `<div class="reports-analysis-empty">${escapeHtml(emptyMessage)}</div>`}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderDetailedSalesTopFullComparisonSection(filteredPurchasedRows, filteredMissingRows){
+  return `
+    <div class="reports-two-columns">
+      <div class="reports-column">
+        <h3 class="reports-table-title">Kupione z Top Rumunia</h3>
+        ${renderDetailedSalesTopTableFilters('purchased', detailedSalesTopPurchasedRows, detailedSalesTopPurchasedFilters)}
+        ${renderDetailedSalesTopInfoToolbar(filteredPurchasedRows, {
+          emptyText: 'Brak kupionych pozycji w tym widoku.',
+          label: 'Widoczne'
+        })}
+        ${renderDetailedSalesTopRowsTable(filteredPurchasedRows, 'Klient nie kupił żadnego indeksu z Top Rumunia w wybranym zakresie.')}
+      </div>
+      <div class="reports-column">
+        <h3 class="reports-table-title">Brakujące z Top Rumunia</h3>
+        ${renderDetailedSalesTopTableFilters('missing', detailedSalesTopMissingRows, detailedSalesTopMissingFilters)}
+        ${renderDetailedSalesTopQuickSelectionToolbar(filteredMissingRows, {
+          scope: 'filtered',
+          selectLabel: 'Zaznacz widoczne',
+          clearLabel: 'Odznacz widoczne'
+        })}
+        ${renderDetailedSalesTopRowsTable(filteredMissingRows, 'Klient kupił wszystkie indeksy z Top Rumunia w wybranym zakresie.', { selectable: true })}
+      </div>
+    </div>
+  `;
+}
+
+function buildDetailedSalesTopProducerSummaryRows(purchasedRows, missingRows, selectedGroupKey = ''){
+  const summaryMap = new Map();
+  const normalizedGroupKey = getDetailedSalesTopGroupKey(selectedGroupKey);
+
+  const ensureProducerSummary = (row) => {
+    const rowGroupKey = getDetailedSalesTopGroupKey(getDetailedSalesDashboardGroupLabel(row['Grupa produktowa']));
+    if(normalizedGroupKey && rowGroupKey !== normalizedGroupKey) return;
+    const producer = String(row.SKROT_PRODUCENTA || '').trim() || 'Bez producenta';
+    const producerKey = normalizeProducerValue(producer) || producer.toLowerCase();
+    if(!producerKey) return null;
+
+    const current = summaryMap.get(producerKey) || {
+      producerKey,
+      producer,
+      purchasedIndexSet: new Set(),
+      missingIndexSet: new Set()
+    };
+    summaryMap.set(producerKey, current);
+    return current;
+  };
+
+  (purchasedRows || []).forEach(row => {
+    const current = ensureProducerSummary(row);
+    const indexKey = getDetailedSalesTopMissingRowKey(row);
+    if(!current || !indexKey) return;
+    current.purchasedIndexSet.add(indexKey);
+  });
+
+  (missingRows || []).forEach(row => {
+    const current = ensureProducerSummary(row);
+    const indexKey = getDetailedSalesTopMissingRowKey(row);
+    if(!current || !indexKey) return;
+    current.missingIndexSet.add(indexKey);
+  });
+
+  return Array.from(summaryMap.values())
+    .map(row => ({
+      producerKey: row.producerKey,
+      producer: row.producer,
+      purchasedCount: row.purchasedIndexSet.size,
+      missingCount: row.missingIndexSet.size,
+      totalCount: row.purchasedIndexSet.size + row.missingIndexSet.size
+    }))
+    .sort((a, b) => {
+      if(b.purchasedCount !== a.purchasedCount) return b.purchasedCount - a.purchasedCount;
+      if(b.missingCount !== a.missingCount) return b.missingCount - a.missingCount;
+      return String(a.producer).localeCompare(String(b.producer), 'pl');
+    });
+}
+
+function getDetailedSalesTopMissingRowsForSelectedProducer(){
+  if(!detailedSalesTopSelectedGroupKey || !detailedSalesTopSelectedProducerKey){
+    return [];
+  }
+  return detailedSalesTopMissingRows.filter(row => {
+    const groupKey = getDetailedSalesTopGroupKey(getDetailedSalesDashboardGroupLabel(row['Grupa produktowa']));
+    const producer = String(row.SKROT_PRODUCENTA || '').trim() || 'Bez producenta';
+    const producerKey = normalizeProducerValue(producer) || producer.toLowerCase();
+    return groupKey === detailedSalesTopSelectedGroupKey && producerKey === detailedSalesTopSelectedProducerKey;
+  });
+}
+
+function getDetailedSalesTopPurchasedRowsForSelectedProducer(){
+  if(!detailedSalesTopSelectedGroupKey || !detailedSalesTopSelectedProducerKey){
+    return [];
+  }
+  return detailedSalesTopPurchasedRows.filter(row => {
+    const groupKey = getDetailedSalesTopGroupKey(getDetailedSalesDashboardGroupLabel(row['Grupa produktowa']));
+    const producer = String(row.SKROT_PRODUCENTA || '').trim() || 'Bez producenta';
+    const producerKey = normalizeProducerValue(producer) || producer.toLowerCase();
+    return groupKey === detailedSalesTopSelectedGroupKey && producerKey === detailedSalesTopSelectedProducerKey;
+  });
+}
+
+function renderDetailedSalesTopGroupButtons(rows){
+  return (rows || []).map(row => {
+    const activeClass = row.groupKey === detailedSalesTopSelectedGroupKey ? ' is-active' : '';
+    const serializedKey = escapeAttr(JSON.stringify(row.groupKey));
+    return `
+      <button
+        type="button"
+        class="reports-producer-chip${activeClass}"
+        onclick="setDetailedSalesTopGroup(${serializedKey})"
+      >
+        <span class="reports-producer-chip-name">${escapeHtml(row.groupLabel)}</span>
+        <span class="reports-producer-chip-meta">Kupione: ${row.purchasedCount} | Dostępne: ${row.offerCount}</span>
+      </button>
+    `;
+  }).join('');
+}
+
+function renderDetailedSalesTopProducerButtons(rows){
+  return (rows || []).map(row => {
+    const activeClass = row.producerKey === detailedSalesTopSelectedProducerKey ? ' is-active' : '';
+    const serializedKey = escapeAttr(JSON.stringify(row.producerKey));
+    return `
+      <button
+        type="button"
+        class="reports-producer-chip${activeClass}"
+        onclick="setDetailedSalesTopProducer(${serializedKey})"
+      >
+        <span class="reports-producer-chip-name">${escapeHtml(row.producer)}</span>
+        <span class="reports-producer-chip-meta">Kupione: ${row.purchasedCount} | Braki: ${row.missingCount}</span>
+      </button>
+    `;
+  }).join('');
+}
+
+function renderDetailedSalesTopProducerComparisonSection(){
+  const allGroupRows = detailedSalesTopGroupSummaryRows;
+  const purchasedGroupRows = allGroupRows.filter(row => row.purchasedCount > 0);
+  const nonPurchasedGroupRows = allGroupRows.filter(row => row.purchasedCount === 0 && row.offerCount > 0);
+  const overviewGroupRows = allGroupRows;
+  const selectedGroupRow = allGroupRows.find(row => row.groupKey === detailedSalesTopSelectedGroupKey) || null;
+  const selectedProducerRow = detailedSalesTopProducerSummaryRows.find(row => row.producerKey === detailedSalesTopSelectedProducerKey) || null;
+  const purchasedRows = getDetailedSalesTopPurchasedRowsForSelectedProducer();
+  const missingRows = getDetailedSalesTopMissingRowsForSelectedProducer();
+
+  if(!allGroupRows.length){
+    return '';
+  }
+
+  const clientLabel = detailedSalesTopSummary
+    ? [detailedSalesTopSummary.customerCode, detailedSalesTopSummary.customerName].filter(Boolean).join(' - ')
+    : 'Wybrany klient';
+  const totalPurchasedCount = detailedSalesTopSummary?.purchasedCount || 0;
+  const totalOfferCount = detailedSalesTopSummary?.offerCount || 0;
+  const totalMissingCount = typeof detailedSalesTopSummary?.missingCount === 'number'
+    ? detailedSalesTopSummary.missingCount
+    : Math.max(0, totalOfferCount - totalPurchasedCount);
+  const totalCoveragePercent = getDetailedSalesTopCoveragePercent(
+    totalPurchasedCount,
+    totalOfferCount
+  );
+  const totalTone = getDetailedSalesTopCoverageTone(totalCoveragePercent);
+  const highlightSourceRows = allGroupRows;
+  const topOpportunityRow = [...highlightSourceRows].sort((a, b) => {
+    if(b.missingCount !== a.missingCount) return b.missingCount - a.missingCount;
+    return a.purchasedCount - b.purchasedCount;
+  })[0] || null;
+  const remainingGroupsCount = Math.max(0, allGroupRows.length - purchasedGroupRows.length);
+  const purchasedProducerCount = detailedSalesTopProducerSummaryRows.filter(row => row.purchasedCount > 0).length;
+  const missingOnlyProducerCount = detailedSalesTopProducerSummaryRows.filter(row => row.purchasedCount === 0 && row.missingCount > 0).length;
+  const overviewRowsHtml = overviewGroupRows.map(row => {
+    const coveragePercent = getDetailedSalesTopCoveragePercent(row.purchasedCount, row.offerCount);
+    const tone = getDetailedSalesTopCoverageTone(coveragePercent);
+    const isActive = row.groupKey === detailedSalesTopSelectedGroupKey;
+    const activeClass = isActive ? ' is-active' : '';
+    const isMissingOnly = row.purchasedCount === 0 && row.offerCount > 0;
+
+    return `
+      <button
+        type="button"
+        class="reports-overview-row is-${tone}${activeClass}"
+        onclick="setDetailedSalesTopGroup(${escapeAttr(JSON.stringify(row.groupKey))})"
+      >
+        <span class="reports-overview-row-main">
+          <span class="reports-overview-row-title">${escapeHtml(row.groupLabel)}</span>
+          <span class="reports-overview-row-copy reports-overview-row-copy--stats">
+            <span class="reports-mini-stat">
+              <strong>${formatNumber(row.purchasedCount)}</strong>
+              <em>kupione</em>
+            </span>
+            <span class="reports-mini-stat">
+              <strong>${formatNumber(row.offerCount)}</strong>
+              <em>w ofercie</em>
+            </span>
+            <span class="reports-mini-stat is-gap">
+              <strong>${formatNumber(row.missingCount)}</strong>
+              <em>braki</em>
+            </span>
+            ${isMissingOnly ? `<span class="reports-status-pill is-opportunity">Nie kupuje</span>` : ''}
+          </span>
+        </span>
+        <span class="reports-overview-row-side">
+          ${isActive ? `<span class="reports-active-pill">Wybrana kategoria</span>` : ''}
+          <span class="reports-tone-badge is-${tone}">${escapeHtml(getDetailedSalesTopCoverageLabel(coveragePercent))}</span>
+          <span class="reports-overview-row-percent">${escapeHtml(formatPercent(coveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 }))}</span>
+          <span class="reports-progress-track">
+            <span class="reports-progress-fill is-${tone}" style="width:${Math.max(0, Math.min(coveragePercent, 100))}%"></span>
+          </span>
+        </span>
+      </button>
+    `;
+  }).join('');
+  const producerRowsHtml = detailedSalesTopProducerSummaryRows.length
+    ? detailedSalesTopProducerSummaryRows.map(row => {
+      const producerCoveragePercent = getDetailedSalesTopCoveragePercent(row.purchasedCount, row.totalCount || (row.purchasedCount + row.missingCount));
+      const tone = getDetailedSalesTopCoverageTone(producerCoveragePercent);
+      const isActive = row.producerKey === detailedSalesTopSelectedProducerKey;
+      const activeClass = isActive ? ' is-active' : '';
+      const isMissingOnly = row.purchasedCount === 0 && row.missingCount > 0;
+      return `
+        <button
+          type="button"
+          class="reports-producer-row is-${tone}${activeClass}"
+          onclick="setDetailedSalesTopProducer(${escapeAttr(JSON.stringify(row.producerKey))})"
+        >
+          <span class="reports-producer-row-main">
+            <span class="reports-producer-row-title">${escapeHtml(row.producer)}</span>
+            <span class="reports-producer-row-copy">
+              <span class="reports-mini-stat">
+                <strong>${formatNumber(row.purchasedCount)}</strong>
+                <em>kupione</em>
+              </span>
+              <span class="reports-mini-stat is-gap">
+                <strong>${formatNumber(row.missingCount)}</strong>
+                <em>braki</em>
+              </span>
+              ${isMissingOnly ? `<span class="reports-status-pill is-opportunity">Nie kupuje</span>` : ''}
+            </span>
+          </span>
+          <span class="reports-producer-row-side">
+            ${isActive ? `<span class="reports-active-pill">Wybrany producent</span>` : ''}
+            <span class="reports-producer-row-percent">${escapeHtml(formatPercent(producerCoveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 }))}</span>
+          </span>
+        </button>
+      `;
+    }).join('')
+    : '';
+  const producersIntro = selectedGroupRow
+    ? `W tej kategorii w ofercie jest ${formatNumber(detailedSalesTopProducerSummaryRows.length)} producentów. Klient kupuje ${formatNumber(purchasedProducerCount)}, a ${formatNumber(missingOnlyProducerCount)} nie kupuje jeszcze wcale.`
+    : 'Wybierz kategorię, aby zobaczyć producentów kupowanych przez klienta.';
+  const selectedGroupCoveragePercent = selectedGroupRow
+    ? getDetailedSalesTopCoveragePercent(selectedGroupRow.purchasedCount, selectedGroupRow.offerCount)
+    : 0;
+  const selectedGroupTone = getDetailedSalesTopCoverageTone(selectedGroupCoveragePercent);
+  const selectedProducerCoveragePercent = selectedProducerRow
+    ? getDetailedSalesTopCoveragePercent(selectedProducerRow.purchasedCount, selectedProducerRow.totalCount || (selectedProducerRow.purchasedCount + selectedProducerRow.missingCount))
+    : 0;
+  const selectedProducerTone = getDetailedSalesTopCoverageTone(selectedProducerCoveragePercent);
+
+  return `
+    <div class="reports-subsection reports-dashboard-section">
+      <div class="reports-executive-hero is-${totalTone}">
+        <div class="reports-executive-copy">
+          <div class="reports-executive-kicker">Skrót klienta</div>
+          <div class="reports-executive-title">${escapeHtml(clientLabel)}</div>
+          <div class="reports-executive-text">
+            Klient kupuje ${formatNumber(totalPurchasedCount)} z ${formatNumber(totalOfferCount)} indeksów Top. Do domknięcia pozostaje ${formatNumber(totalMissingCount)} pozycji.
+          </div>
+          <div class="reports-executive-progress">
+            <span class="reports-tone-badge is-${totalTone}">${escapeHtml(getDetailedSalesTopCoverageLabel(totalCoveragePercent))}</span>
+            <span class="reports-executive-progress-value">${escapeHtml(formatPercent(totalCoveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 }))}</span>
+            <span class="reports-progress-track">
+              <span class="reports-progress-fill is-${totalTone}" style="width:${Math.max(0, Math.min(totalCoveragePercent, 100))}%"></span>
+            </span>
+          </div>
+        </div>
+        <div class="reports-executive-metrics">
+          <div class="reports-executive-metric">
+            <span class="reports-executive-metric-label">Kupowane kategorie</span>
+            <span class="reports-executive-metric-value">${formatNumber(purchasedGroupRows.length)} / ${formatNumber(allGroupRows.length)}</span>
+          </div>
+          <div class="reports-executive-metric">
+            <span class="reports-executive-metric-label">Kupione</span>
+            <span class="reports-executive-metric-value">${formatNumber(totalPurchasedCount)}</span>
+          </div>
+          <div class="reports-executive-metric">
+            <span class="reports-executive-metric-label">Niekupowane grupy</span>
+            <span class="reports-executive-metric-value">${formatNumber(nonPurchasedGroupRows.length)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reports-priority-panel is-${topOpportunityRow ? getDetailedSalesTopCoverageTone(getDetailedSalesTopCoveragePercent(topOpportunityRow.purchasedCount, topOpportunityRow.offerCount)) : 'low'}">
+        <div class="reports-priority-panel-copy">
+          <div class="reports-priority-panel-kicker">Największa szansa</div>
+          <div class="reports-priority-panel-title">${escapeHtml(topOpportunityRow?.groupLabel || 'Brak największej szansy do wskazania')}</div>
+          ${topOpportunityRow ? `
+            <div class="reports-priority-panel-stats">
+              <span class="reports-mini-stat">
+                <strong>${formatNumber(topOpportunityRow.purchasedCount)}</strong>
+                <em>kupione</em>
+              </span>
+              <span class="reports-mini-stat">
+                <strong>${formatNumber(topOpportunityRow.offerCount)}</strong>
+                <em>w ofercie</em>
+              </span>
+              <span class="reports-mini-stat is-gap">
+                <strong>${formatNumber(topOpportunityRow.missingCount)}</strong>
+                <em>braki</em>
+              </span>
+            </div>
+          ` : ''}
+          <div class="reports-priority-panel-text">
+            ${topOpportunityRow
+              ? 'To kategoria z największą liczbą brakujących indeksów w koszyku klienta.'
+              : 'Brak danych do wskazania priorytetu.'
+            }
+          </div>
+        </div>
+        <div class="reports-priority-panel-side">
+          <div class="reports-priority-panel-note">
+            ${purchasedGroupRows.length
+              ? `Klient kupuje ${formatNumber(purchasedGroupRows.length)} kategorii z rankingu. ${remainingGroupsCount ? `${formatNumber(remainingGroupsCount)} kategorii nadal nie kupuje.` : 'Klient ma aktywność we wszystkich kategoriach.'}`
+              : 'Klient nie kupuje jeszcze żadnej kategorii z rankingu Top Rumunia.'
+            }
+          </div>
+          ${topOpportunityRow ? `
+            <button
+              type="button"
+              class="btn-outline"
+              onclick="setDetailedSalesTopGroup(${escapeAttr(JSON.stringify(topOpportunityRow.groupKey))})"
+            >
+              Przejdź do tej kategorii
+            </button>
+          ` : ''}
+        </div>
+      </div>
+
+      <div class="reports-analysis-dual-panels">
+        <div class="reports-analysis-card reports-analysis-card--groups-panel">
+          <div class="reports-analysis-card-head">
+            <div>
+              <div class="reports-analysis-card-title">Kategorie z oferty Top</div>
+              <div class="reports-analysis-card-sub">Widzisz tu także grupy, których klient jeszcze nie kupuje. Kliknij kategorię, aby zejść do producentów i rekomendacji.</div>
+            </div>
+          </div>
+          <div class="reports-overview-list reports-overview-list--panel">
+            ${overviewRowsHtml}
+          </div>
+        </div>
+
+        <div class="reports-analysis-card reports-analysis-card--producers-panel">
+          <div class="reports-analysis-card-head reports-analysis-card-head--wide">
+            <div>
+              <div class="reports-analysis-card-title">${escapeHtml(selectedGroupRow ? `Producenci w kategorii: ${selectedGroupRow.groupLabel}` : 'Producenci w kategorii')}</div>
+              <div class="reports-analysis-card-sub">${escapeHtml(producersIntro)}</div>
+            </div>
+            ${selectedGroupRow ? `
+              <div class="reports-header-metrics">
+                <div class="reports-header-metric">
+                  <span class="reports-header-metric-label">W ofercie</span>
+                  <span class="reports-header-metric-value">${formatNumber(detailedSalesTopProducerSummaryRows.length)}</span>
+                </div>
+                <div class="reports-header-metric">
+                  <span class="reports-header-metric-label">Kupowani</span>
+                  <span class="reports-header-metric-value">${formatNumber(purchasedProducerCount)}</span>
+                </div>
+                <div class="reports-header-metric">
+                  <span class="reports-header-metric-label">Niekupowani</span>
+                  <span class="reports-header-metric-value">${formatNumber(missingOnlyProducerCount)}</span>
+                </div>
+                <div class="reports-header-metric is-${selectedGroupTone}">
+                  <span class="reports-header-metric-label">Udział</span>
+                  <span class="reports-header-metric-value">${escapeHtml(formatPercent(selectedGroupCoveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 }))}</span>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+          <div class="reports-producer-list reports-producer-list--panel">
+            ${producerRowsHtml || `<div class="reports-analysis-empty">Brak producentów do pokazania dla wybranej kategorii.</div>`}
+          </div>
+        </div>
+      </div>
+
+      <div class="reports-analysis-card reports-analysis-card--detail">
+        ${selectedProducerRow ? `
+          <div class="reports-analysis-card-head">
+            <div>
+              <div class="reports-analysis-card-title">${escapeHtml(selectedProducerRow.producer)}</div>
+              <div class="reports-analysis-card-sub">${escapeHtml(selectedGroupRow?.groupLabel || '')} | kupione ${formatNumber(selectedProducerRow.purchasedCount)} | braki ${formatNumber(selectedProducerRow.missingCount)}</div>
+            </div>
+            <div class="reports-tone-badge is-${selectedProducerTone}">${escapeHtml(formatPercent(selectedProducerCoveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 }))}</div>
+          </div>
+          <div class="reports-summary reports-summary--compact">
+            <div class="reports-summary-card">
+              <div class="reports-summary-title">Grupa</div>
+              <div class="reports-summary-meta">${escapeHtml(selectedGroupRow?.groupLabel || 'Wybierz grupę')}</div>
+            </div>
+            <div class="reports-summary-card">
+              <div class="reports-summary-title">Producent</div>
+              <div class="reports-summary-meta">${escapeHtml(selectedProducerRow.producer)}</div>
+            </div>
+            <div class="reports-summary-card">
+              <div class="reports-summary-title">Kupione produkty</div>
+              <div class="reports-summary-meta">${formatNumber(selectedProducerRow.purchasedCount)}</div>
+            </div>
+            <div class="reports-summary-card">
+              <div class="reports-summary-title">Brakujące produkty</div>
+              <div class="reports-summary-meta">${formatNumber(selectedProducerRow.missingCount)}</div>
+            </div>
+          </div>
+          <div class="reports-two-columns">
+            <div class="reports-column">
+              <h3 class="reports-table-title">Kupione produkty</h3>
+              ${renderDetailedSalesTopInfoToolbar(purchasedRows, {
+                emptyText: 'Brak kupionych produktów dla wybranego producenta.',
+                label: 'Widoczne'
+              })}
+              ${renderDetailedSalesTopRowsTable(purchasedRows, 'Brak kupionych produktów dla wybranego producenta.')}
+            </div>
+            <div class="reports-column">
+              <h3 class="reports-table-title">Brakujące produkty</h3>
+              ${renderDetailedSalesTopQuickSelectionToolbar(missingRows, {
+                scope: 'producer',
+                selectLabel: 'Zaznacz produkty producenta',
+                clearLabel: 'Odznacz produkty producenta'
+              })}
+              ${renderDetailedSalesTopRowsTable(missingRows, 'Brak brakujących produktów dla wybranego producenta.', { selectable: true })}
+            </div>
+          </div>
+        ` : `
+          <div class="reports-analysis-empty">
+            Wybierz producenta z listy po prawej, aby zobaczyć kupione produkty oraz listę rekomendacji dla tego producenta.
+          </div>
+        `}
+      </div>
+    </div>
+  `;
+}
+
 function renderClientComparisonContent(){
   const representatives = getClientReportRepresentatives();
   const customers = getClientReportCustomers();
@@ -2955,7 +5103,7 @@ function renderWeeklySalesContent(){
       <label class="reports-filter-card">
         <span class="reports-limit-title">Tydzień sprzedaży</span>
         <select onchange="setWeeklySalesWeek(this.value)" ${weeklySalesGeneratedRows.length || weeklySalesOnlyLastWeek250 ? '' : 'disabled'}>
-          <option value="">Ostatni tydzień</option>
+          <option value="" ${weeklySalesSelectedWeek === '' ? 'selected' : ''}>Ostatni tydzień</option>
           <option value="__all__" ${weeklySalesSelectedWeek === '__all__' ? 'selected' : ''}>Wszystkie tygodnie</option>
           ${weeks.map(week => `<option value="${escapeAttr(week)}" ${weeklySalesSelectedWeek === week ? 'selected' : ''}>${escapeHtml(week)}</option>`).join('')}
         </select>
@@ -3080,6 +5228,485 @@ function renderTopSuggestionsContent(){
   `;
 }
 
+function renderDetailedSalesGroupsFilter(groups, options = {}){
+  const disabled = Boolean(options.disabled);
+  const selectedGroups = getDetailedSalesSelectedGroups();
+  const isOpen = !disabled && detailedSalesGroupsDropdownOpen;
+  const disabledAttr = disabled ? 'disabled' : '';
+  const selectedCountLabel = selectedGroups.length
+    ? `${selectedGroups.length} wybrane`
+    : 'Wszystkie';
+
+  return `
+    <div class="reports-filter-card reports-filter-card--multi ${isOpen ? 'is-open' : ''}">
+      <span class="reports-limit-title">Grupa</span>
+      <button
+        type="button"
+        class="reports-multi-select-trigger"
+        onclick="toggleDetailedSalesGroupsDropdown()"
+        aria-expanded="${isOpen ? 'true' : 'false'}"
+        ${disabledAttr}
+      >
+        <span class="reports-multi-select-trigger-main">
+          <span class="reports-multi-select-summary">${escapeHtml(getDetailedSalesSelectedGroupsLabel())}</span>
+          <span class="reports-multi-select-meta">${escapeHtml(selectedCountLabel)}</span>
+        </span>
+        <span class="reports-multi-select-chevron" aria-hidden="true">${isOpen ? '▴' : '▾'}</span>
+      </button>
+      ${isOpen ? `
+        <div class="reports-multi-select-popover">
+          <div class="reports-multi-select-popover-head">
+            <div class="reports-multi-select-popover-title">Wybierz grupy</div>
+            <button type="button" class="reports-multi-select-action" onclick="clearDetailedSalesGroups()">Wszystkie</button>
+          </div>
+          <div class="reports-multi-select-list">
+            ${groups.length
+              ? groups.map(group => {
+                const serializedGroup = escapeAttr(JSON.stringify(group));
+                return `
+                  <label class="reports-multi-select-option">
+                    <input
+                      type="checkbox"
+                      value="${escapeAttr(group)}"
+                      onchange="toggleDetailedSalesGroupSelection(${serializedGroup}, this.checked)"
+                      ${selectedGroups.includes(group) ? 'checked' : ''}
+                    >
+                    <span>${escapeHtml(group)}</span>
+                  </label>
+                `;
+              }).join('')
+              : `<div class="reports-multi-select-empty">Brak grup do wyboru.</div>`
+            }
+          </div>
+          <div class="reports-multi-select-popover-foot">
+            <button type="button" class="reports-multi-select-done" onclick="closeDetailedSalesGroupsDropdown()">Gotowe</button>
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function renderDetailedSalesContent(){
+  const hasData = detailedSalesSourceRows.length > 0;
+
+  if(detailedSalesLoading && !hasData){
+    return `
+      <div class="reports-toolbar">
+        <div>
+          <div class="import-title">Sprzedaż szczegółowa</div>
+          <div class="import-sub">Pobieram raport per indeks przypisany do Twojego konta z Firebase.</div>
+        </div>
+        <div class="import-info">Status: ładowanie raportu</div>
+      </div>
+    `;
+  }
+
+  const customers = getDetailedSalesCustomers();
+  const groups = getDetailedSalesGroups();
+  const filteredRows = getFilteredDetailedSalesRows();
+  const activeCustomers = new Set(
+    filteredRows.map(row => `${row.customerCode}|||${row.customerName}`)
+  ).size;
+  const totalValue = filteredRows.reduce((sum, row) => sum + Number(row.value || 0), 0);
+  const customerLabel = detailedSalesSelectedCustomer ? 'wybrany klient' : 'wszyscy klienci';
+  const weeksScopeLabel = formatWeeksCountLabel(detailedSalesLoadedReportsCount || detailedSalesWeeksLimit);
+  const fileInfo = getDetailedSalesFileInfoHtml();
+  const rowsHtml = filteredRows.map((row, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${escapeHtml(row.reportLabel || '-')}</td>
+        <td>${escapeHtml(row.customerCode)}</td>
+        <td>${escapeHtml(row.customerName)}</td>
+        <td>${escapeHtml(row.index)}</td>
+        <td>${escapeHtml(row.name)}</td>
+        <td>${escapeHtml(row.groupName || '-')}</td>
+        <td>${formatNumber(row.value)}</td>
+      </tr>
+    `).join('');
+  const emptyMessage = detailedSalesErrorMessage
+    || (hasData ? 'Brak danych szczegółowych dla wybranych filtrów.' : 'Brak szczegółowego raportu sprzedaży dla Twojego konta.');
+  const topComparisonHtml = renderDetailedSalesTopComparisonContent();
+
+  return `
+    <div class="reports-toolbar">
+      <div>
+        <div class="import-title">Sprzedaż szczegółowa</div>
+        <div class="import-sub">Raport per indeks przypisany do Twojego konta w Firebase.</div>
+      </div>
+      <div class="import-info">${fileInfo}</div>
+    </div>
+
+    <div class="reports-filters">
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Klient</span>
+        <select onchange="setDetailedSalesCustomer(this.value)" ${hasData ? '' : 'disabled'}>
+          <option value="">Wszyscy klienci</option>
+          ${customers.map(customer => {
+            const value = `${customer.code}|||${customer.name}`;
+            const label = [customer.code, customer.name].filter(Boolean).join(' - ') || 'Bez nazwy klienta';
+            return `<option value="${escapeAttr(value)}" ${detailedSalesSelectedCustomer === value ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+          }).join('')}
+        </select>
+      </label>
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Ile tygodni pokazać</span>
+        <input
+          type="number"
+          min="1"
+          step="1"
+          value="${escapeAttr(detailedSalesWeeksLimit)}"
+          onchange="setDetailedSalesWeeksLimit(this.value)"
+          ${detailedSalesLoading ? 'disabled' : ''}
+        >
+      </label>
+      ${renderDetailedSalesGroupsFilter(groups, { disabled: !detailedSalesGeneratedRows.length })}
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Sortowanie sprzedaży</span>
+        <select onchange="setDetailedSalesSortOrder(this.value)" ${detailedSalesGeneratedRows.length ? '' : 'disabled'}>
+          <option value="sales-desc" ${detailedSalesSortOrder === 'sales-desc' ? 'selected' : ''}>Sprzedaż: od największej do najmniejszej</option>
+          <option value="sales-asc" ${detailedSalesSortOrder === 'sales-asc' ? 'selected' : ''}>Sprzedaż: od najmniejszej do największej</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="reports-summary">
+      <div class="reports-summary-card">
+        <div class="reports-summary-title">Zakres</div>
+        <div class="reports-summary-meta">${escapeHtml(`${customerLabel} | ${weeksScopeLabel}`)}</div>
+      </div>
+      <div class="reports-summary-card">
+        <div class="reports-summary-title">Pozycje</div>
+        <div class="reports-summary-meta">${filteredRows.length}</div>
+      </div>
+      <div class="reports-summary-card">
+        <div class="reports-summary-title">Klienci</div>
+        <div class="reports-summary-meta">${activeCustomers}</div>
+      </div>
+      <div class="reports-summary-card">
+        <div class="reports-summary-title">Suma sprzedaży</div>
+        <div class="reports-summary-meta">${formatNumber(totalValue)}</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            <th>Tydzień</th>
+            <th>Kod klienta</th>
+            <th>Nazwa klienta</th>
+            <th>INDEKS</th>
+            <th>NAZWA</th>
+            <th>Grupa</th>
+            <th>Sprzedaż</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml || `<tr><td colspan="8" class="reports-empty">${escapeHtml(emptyMessage)}</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+
+    ${topComparisonHtml}
+  `;
+}
+
+function renderDetailedSalesTopComparisonContent(){
+  const comparisonCustomers = getDetailedSalesCustomers();
+  const filteredPurchasedRows = getFilteredDetailedSalesTopRows(detailedSalesTopPurchasedRows, detailedSalesTopPurchasedFilters);
+  const filteredMissingRows = getFilteredDetailedSalesTopRows(detailedSalesTopMissingRows, detailedSalesTopMissingFilters);
+  const producerComparisonHtml = renderDetailedSalesTopProducerComparisonSection();
+  const fullComparisonHtml = renderDetailedSalesTopFullComparisonSection(filteredPurchasedRows, filteredMissingRows);
+  const customerPortfolioHtml = renderDetailedSalesTopCustomerPortfolioSection();
+  const sectionSwitchHtml = renderDetailedSalesTopSectionSwitch();
+  const exportToolbarHtml = renderDetailedSalesTopExportToolbar();
+  const hasComparisonCustomer = comparisonCustomers.some(customer => {
+    return `${customer.code}|||${customer.name}` === detailedSalesComparisonCustomer;
+  });
+  const comparisonFilterHtml = `
+    <div class="reports-filters">
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Klient do porównania</span>
+        <select onchange="setDetailedSalesComparisonCustomer(this.value)" ${comparisonCustomers.length ? '' : 'disabled'}>
+          <option value="">${comparisonCustomers.length ? 'Wybierz klienta do porównania' : 'Brak klientów w raporcie'}</option>
+          ${comparisonCustomers.map(customer => {
+            const value = `${customer.code}|||${customer.name}`;
+            const label = [customer.code, customer.name].filter(Boolean).join(' - ') || 'Bez nazwy klienta';
+            return `<option value="${escapeAttr(value)}" ${detailedSalesComparisonCustomer === value ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+          }).join('')}
+        </select>
+      </label>
+    </div>
+  `;
+
+  if(!hasComparisonCustomer){
+    return wrapDetailedSalesTopCompactContent(`
+      <div class="reports-toolbar">
+        <div>
+          <div class="import-title">Porównanie z Top Rumunia</div>
+          <div class="import-sub">Wybierz klienta w filtrze poniżej, aby porównać jego zakupy z rankingiem Top Rumunia.</div>
+        </div>
+      </div>
+      ${comparisonFilterHtml}
+      ${customerPortfolioHtml}
+    `);
+  }
+
+  if(detailedSalesTopComparisonLoading && !detailedSalesTopPurchasedRows.length && !detailedSalesTopMissingRows.length){
+    return wrapDetailedSalesTopCompactContent(`
+      <div class="reports-toolbar">
+        <div>
+          <div class="import-title">Porównanie z Top Rumunia</div>
+          <div class="import-sub">Analizuję kupione i brakujące indeksy klienta względem rankingu Top Rumunia.</div>
+        </div>
+        <div class="import-info">Status: ładowanie porównania</div>
+      </div>
+      ${comparisonFilterHtml}
+      ${customerPortfolioHtml}
+    `);
+  }
+
+  const summary = detailedSalesTopSummary
+    ? `
+      <div class="reports-summary">
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Klient</div>
+          <div class="reports-summary-meta">${escapeHtml([detailedSalesTopSummary.customerCode, detailedSalesTopSummary.customerName].filter(Boolean).join(' - ') || 'Wybrany klient')}</div>
+        </div>
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Zakres grupy</div>
+          <div class="reports-summary-meta">${escapeHtml(detailedSalesTopSummary.groupLabel)}</div>
+        </div>
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Kupione z Top</div>
+          <div class="reports-summary-meta">${detailedSalesTopSummary.purchasedCount}</div>
+        </div>
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Brakujące z Top</div>
+          <div class="reports-summary-meta">${detailedSalesTopSummary.missingCount} z ${detailedSalesTopSummary.offerCount}</div>
+        </div>
+      </div>
+    `
+    : '';
+
+  const topComparisonStatusHtml = detailedSalesTopComparisonLoading
+    ? '<div class="import-info">Status: odświeżam porównanie</div>'
+    : '';
+  const infoHtml = detailedSalesTopComparisonError
+    ? `<div class="reports-toolbar"><div><div class="import-title">Porównanie z Top Rumunia</div><div class="import-sub">${escapeHtml(detailedSalesTopComparisonError)}</div></div></div>`
+    : `
+      <div class="reports-toolbar">
+        <div>
+          <div class="import-title">Porównanie z Top Rumunia</div>
+          <div class="import-sub">Najpierw sprawdź skrót klienta, a potem przełącz się na pełną listę Top, jeśli chcesz zobaczyć wszystkie kupione i brakujące indeksy.</div>
+        </div>
+        ${topComparisonStatusHtml}
+      </div>
+    `;
+
+  return wrapDetailedSalesTopCompactContent(`
+    ${infoHtml}
+    ${comparisonFilterHtml}
+    ${customerPortfolioHtml}
+    ${detailedSalesTopSection === 'full' ? summary : ''}
+    ${sectionSwitchHtml}
+    ${exportToolbarHtml}
+    ${detailedSalesTopSection === 'full' ? fullComparisonHtml : producerComparisonHtml}
+  `);
+}
+
+function getDetailedSalesFileInfoHtml(){
+  if(detailedSalesImportFile){
+    return `Zakres: ${escapeHtml(formatWeeksCountLabel(detailedSalesLoadedReportsCount || detailedSalesWeeksLimit))}${detailedSalesAvailableReportsCount ? ` | dostępne: ${escapeHtml(formatWeeksCountLabel(detailedSalesAvailableReportsCount))}` : ''}<br>Ostatni plik: ${escapeHtml(detailedSalesImportFile)}<br>Aktualizacja: ${escapeHtml(formatInsightDate(detailedSalesUpdatedAt))}${detailedSalesLoading ? '<br>Status: odświeżam zakres raportu...' : ''}`;
+  }
+  return `Status: ${escapeHtml(detailedSalesErrorMessage || 'brak przypisanego pliku')}`;
+}
+
+function renderDetailedSalesTopComparisonStandaloneContent(){
+  const hasData = detailedSalesSourceRows.length > 0;
+  const groups = getDetailedSalesGroups();
+  const comparisonCustomers = getDetailedSalesCustomers();
+  const filteredPurchasedRows = getFilteredDetailedSalesTopRows(detailedSalesTopPurchasedRows, detailedSalesTopPurchasedFilters);
+  const filteredMissingRows = getFilteredDetailedSalesTopRows(detailedSalesTopMissingRows, detailedSalesTopMissingFilters);
+  const producerComparisonHtml = renderDetailedSalesTopProducerComparisonSection();
+  const fullComparisonHtml = renderDetailedSalesTopFullComparisonSection(filteredPurchasedRows, filteredMissingRows);
+  const customerPortfolioHtml = renderDetailedSalesTopCustomerPortfolioSection();
+  const sectionSwitchHtml = renderDetailedSalesTopSectionSwitch();
+  const exportToolbarHtml = renderDetailedSalesTopExportToolbar();
+  const hasComparisonCustomer = comparisonCustomers.some(customer => {
+    return `${customer.code}|||${customer.name}` === detailedSalesComparisonCustomer;
+  });
+  if(detailedSalesLoading && !hasData){
+    return wrapDetailedSalesTopCompactContent(`
+      <div class="reports-toolbar">
+        <div>
+          <div class="import-title">Potencjał klienta Top Rumunia</div>
+          <div class="import-sub">Pobieram raport per indeks przypisany do Twojego konta z Firebase.</div>
+        </div>
+        <div class="import-info">Status: ładowanie raportu</div>
+      </div>
+    `);
+  }
+
+  const filtersHtml = `
+    <div class="reports-filters">
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Ile tygodni pokazać</span>
+        <input
+          type="number"
+          min="1"
+          step="1"
+          value="${escapeAttr(detailedSalesWeeksLimit)}"
+          onchange="setDetailedSalesWeeksLimit(this.value)"
+          ${detailedSalesLoading ? 'disabled' : ''}
+        >
+      </label>
+      ${renderDetailedSalesGroupsFilter(groups, { disabled: !hasData })}
+      <label class="reports-filter-card">
+        <span class="reports-limit-title">Klient do porównania</span>
+        <select onchange="setDetailedSalesComparisonCustomer(this.value)" ${comparisonCustomers.length ? '' : 'disabled'}>
+          <option value="">${comparisonCustomers.length ? 'Wybierz klienta do porównania' : 'Brak klientów w raporcie'}</option>
+          ${comparisonCustomers.map(customer => {
+            const value = `${customer.code}|||${customer.name}`;
+            const label = [customer.code, customer.name].filter(Boolean).join(' - ') || 'Bez nazwy klienta';
+            return `<option value="${escapeAttr(value)}" ${detailedSalesComparisonCustomer === value ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+          }).join('')}
+        </select>
+      </label>
+    </div>
+  `;
+
+  if(!hasComparisonCustomer){
+    const emptyMessage = detailedSalesErrorMessage
+      || (hasData ? 'Wybierz klienta, aby porównać jego zakupy z rankingiem Top Rumunia.' : 'Brak szczegółowego raportu sprzedaży dla Twojego konta.');
+
+    return wrapDetailedSalesTopCompactContent(`
+      <div class="reports-toolbar">
+        <div>
+          <div class="import-title">Potencjał klienta Top Rumunia</div>
+          <div class="import-sub">Raport na wzór widoku admina, oparty o dane per indeks przypisane do Twojego konta.</div>
+        </div>
+      </div>
+      ${filtersHtml}
+      ${customerPortfolioHtml}
+      <div class="reports-toolbar">
+        <div>
+          <div class="import-title">Porównanie klienta z Top Rumunia</div>
+          <div class="import-sub">${escapeHtml(emptyMessage)}</div>
+        </div>
+      </div>
+    `);
+  }
+
+  const summary = detailedSalesTopSummary
+    ? `
+      <div class="reports-summary">
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Klient</div>
+          <div class="reports-summary-meta">${escapeHtml([detailedSalesTopSummary.customerCode, detailedSalesTopSummary.customerName].filter(Boolean).join(' - ') || 'Wybrany klient')}</div>
+        </div>
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Zakres grupy</div>
+          <div class="reports-summary-meta">${escapeHtml(detailedSalesTopSummary.groupLabel)}</div>
+        </div>
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Kupione z Top</div>
+          <div class="reports-summary-meta">${detailedSalesTopSummary.purchasedCount}</div>
+        </div>
+        <div class="reports-summary-card">
+          <div class="reports-summary-title">Brakujące z Top</div>
+          <div class="reports-summary-meta">${detailedSalesTopSummary.missingCount} z ${detailedSalesTopSummary.offerCount}</div>
+        </div>
+      </div>
+    `
+    : '';
+
+  const topComparisonStatusHtml = detailedSalesTopComparisonLoading
+    ? '<div class="import-info">Status: odświeżam porównanie</div>'
+    : '';
+  const infoHtml = detailedSalesTopComparisonError
+    ? `<div class="reports-toolbar"><div><div class="import-title">Porównanie klienta z Top Rumunia</div><div class="import-sub">${escapeHtml(detailedSalesTopComparisonError)}</div></div></div>`
+    : `
+      <div class="reports-toolbar">
+        <div>
+          <div class="import-title">Potencjał klienta Top Rumunia</div>
+          <div class="import-sub">Skrót klienta pokaże kategorie i producentów z największą szansą na wzrost. Pełna lista pokaże wszystkie indeksy z Top Rumunia.</div>
+        </div>
+        ${topComparisonStatusHtml}
+      </div>
+    `;
+
+  return wrapDetailedSalesTopCompactContent(`
+    ${infoHtml}
+    ${filtersHtml}
+    ${customerPortfolioHtml}
+    ${detailedSalesTopSection === 'full' ? summary : ''}
+    ${sectionSwitchHtml}
+    ${exportToolbarHtml}
+    ${detailedSalesTopSection === 'full' ? fullComparisonHtml : producerComparisonHtml}
+  `);
+}
+
+function renderReportsBanner(){
+  if(!reportsBannerActions) return;
+
+  if(isCurrentUserAdmin()){
+    reportsBannerActions.innerHTML = `
+      <div class="flag-pill">
+        <span class="flag-text">Raporty Sprzedaży</span>
+      </div>
+    `;
+    return;
+  }
+
+  const areButtonsDisabled = phReportsAutoLoading || detailedSalesLoading;
+
+  reportsBannerActions.innerHTML = `
+    <button
+      type="button"
+      class="flag-pill reports-banner-pill ${reportsMode === 'weekly-sales' ? 'is-active' : ''}"
+      onclick="setReportsMode('weekly-sales')"
+      ${areButtonsDisabled ? 'disabled' : ''}
+    >
+      <span class="flag-text">Sprzedaż tygodniowa</span>
+    </button>
+    <button
+      type="button"
+      class="flag-pill reports-banner-pill ${reportsMode === 'detailed-sales' ? 'is-active' : ''}"
+      onclick="setReportsMode('detailed-sales')"
+      ${areButtonsDisabled ? 'disabled' : ''}
+    >
+      <span class="flag-text">Sprzedaż szczegółowa</span>
+    </button>
+    <button
+      type="button"
+      class="flag-pill reports-banner-pill ${reportsMode === 'top-rumunia-comparison' ? 'is-active' : ''}"
+      onclick="setReportsMode('top-rumunia-comparison')"
+      ${areButtonsDisabled ? 'disabled' : ''}
+    >
+      <span class="flag-text">Potencjał klienta</span>
+    </button>
+  `;
+}
+
+function isReportsModeAllowed(mode, isAdminReports = isCurrentUserAdmin()){
+  const allowedModes = isAdminReports
+    ? ['top-sales', 'client-gap', 'weekly-sales', 'top-suggestions']
+    : ['weekly-sales', 'detailed-sales', 'top-rumunia-comparison'];
+  return allowedModes.includes(mode);
+}
+
+async function ensurePhReportModeDataLoaded(mode){
+  if(isCurrentUserAdmin()) return;
+  if(mode === 'detailed-sales' || mode === 'top-rumunia-comparison'){
+    await ensurePhDetailedSalesDataLoaded();
+    return;
+  }
+  await ensurePhWeeklySalesDataLoaded();
+}
+
 function renderReportsView(){
   if(!reportsContainer) return;
   const isAdminReports = isCurrentUserAdmin();
@@ -3087,14 +5714,17 @@ function renderReportsView(){
     'top-sales': renderTopSalesReportContent,
     'client-gap': renderClientComparisonContent,
     'weekly-sales': renderWeeklySalesContent,
+    'detailed-sales': renderDetailedSalesContent,
+    'top-rumunia-comparison': renderDetailedSalesTopComparisonStandaloneContent,
     'top-suggestions': renderTopSuggestionsContent
   };
-  if(!isAdminReports && reportsMode !== 'weekly-sales'){
-    reportsMode = 'weekly-sales';
+  const fallbackMode = isAdminReports ? 'top-sales' : 'weekly-sales';
+  if(!isReportsModeAllowed(reportsMode, isAdminReports)){
+    reportsMode = fallbackMode;
   }
-  const renderContent = isAdminReports
-    ? (contentByMode[reportsMode] || renderTopSalesReportContent)
-    : renderWeeklySalesContent;
+  const renderContent = contentByMode[reportsMode] || (isAdminReports ? renderTopSalesReportContent : renderWeeklySalesContent);
+
+  renderReportsBanner();
 
   reportsContainer.innerHTML = `
     <div class="reports-panel">
@@ -3126,12 +5756,14 @@ function openReportsView(){
   resetFilters();
   clearAllContentContainers();
   if(!isAdminReports){
-    reportsMode = 'weekly-sales';
+    if(!isReportsModeAllowed(reportsMode, false)){
+      reportsMode = 'weekly-sales';
+    }
     weeklySalesRepComparison = false;
   }
   renderReportsView();
   if(!isAdminReports){
-    void ensurePhWeeklySalesDataLoaded();
+    void ensurePhReportModeDataLoaded(reportsMode);
   }
 }
 
@@ -3175,14 +5807,588 @@ function setReportGroupLimit(groupId, value){
   renderReportsView();
 }
 
-function setReportsMode(mode){
-  if(!isCurrentUserAdmin() && mode !== 'weekly-sales'){
-    reportsMode = 'weekly-sales';
-    renderReportsView();
+async function setDetailedSalesCustomer(value){
+  detailedSalesSelectedCustomer = value;
+  generateDetailedSalesReport();
+  const availableGroups = new Set(getDetailedSalesGroups());
+  detailedSalesSelectedGroups = getDetailedSalesSelectedGroups().filter(group => availableGroups.has(group));
+  clearDetailedSalesTopComparisonResultState();
+  renderReportsView();
+  await generateDetailedSalesTopComparison();
+}
+
+async function setDetailedSalesGroups(nextGroups){
+  const availableGroups = new Set(getDetailedSalesGroups());
+  detailedSalesSelectedGroups = normalizeDetailedSalesSelectedGroups(nextGroups)
+    .filter(group => availableGroups.has(group));
+  clearDetailedSalesTopComparisonResultState();
+  renderReportsView();
+  await generateDetailedSalesTopComparison();
+}
+
+function toggleDetailedSalesGroupsDropdown(){
+  detailedSalesGroupsDropdownOpen = !detailedSalesGroupsDropdownOpen;
+  renderReportsView();
+}
+
+function closeDetailedSalesGroupsDropdown(){
+  if(!detailedSalesGroupsDropdownOpen) return;
+  detailedSalesGroupsDropdownOpen = false;
+  renderReportsView();
+}
+
+function handleDetailedSalesGroupsDropdownOutsideClick(event){
+  if(!detailedSalesGroupsDropdownOpen) return;
+  const target = event?.target;
+  if(target?.closest?.('.reports-filter-card--multi')){
     return;
   }
-  reportsMode = mode;
+  detailedSalesGroupsDropdownOpen = false;
   renderReportsView();
+}
+
+async function toggleDetailedSalesGroupSelection(value, checked){
+  const nextGroups = new Set(getDetailedSalesSelectedGroups());
+  if(checked){
+    nextGroups.add(String(value || '').trim());
+  }else{
+    nextGroups.delete(String(value || '').trim());
+  }
+  await setDetailedSalesGroups(Array.from(nextGroups));
+}
+
+async function clearDetailedSalesGroups(){
+  await setDetailedSalesGroups([]);
+}
+
+function setDetailedSalesTopTableFilter(type, key, value){
+  if(type === 'purchased'){
+    detailedSalesTopPurchasedFilters[key] = value;
+  }else{
+    detailedSalesTopMissingFilters[key] = value;
+  }
+  renderReportsView();
+}
+
+function setDetailedSalesTopSection(section){
+  detailedSalesTopSection = section === 'full' ? 'full' : 'summary';
+  renderReportsView();
+}
+
+function toggleDetailedSalesTopCustomerPortfolioExpanded(){
+  detailedSalesTopCustomerPortfolioExpanded = !detailedSalesTopCustomerPortfolioExpanded;
+  renderReportsView();
+}
+
+function setDetailedSalesTopCustomerSearch(value){
+  detailedSalesTopCustomerSearch = String(value || '');
+  renderReportsView();
+}
+
+function setDetailedSalesTopCustomerSort(value){
+  const allowedValues = new Set([
+    'purchased-desc',
+    'purchased-asc',
+    'coverage-desc',
+    'coverage-asc',
+    'groups-desc',
+    'sales-desc',
+    'missing-desc'
+  ]);
+  detailedSalesTopCustomerSort = allowedValues.has(value)
+    ? value
+    : 'purchased-desc';
+  renderReportsView();
+}
+
+function setDetailedSalesTopCustomerToneFilter(value){
+  detailedSalesTopCustomerToneFilter = ['high', 'medium', 'low'].includes(value)
+    ? value
+    : '';
+  renderReportsView();
+}
+
+function setDetailedSalesTopGroup(groupKey){
+  detailedSalesTopSelectedGroupKey = getDetailedSalesTopGroupKey(groupKey);
+  detailedSalesTopProducerSummaryRows = buildDetailedSalesTopProducerSummaryRows(
+    detailedSalesTopPurchasedRows,
+    detailedSalesTopMissingRows,
+    detailedSalesTopSelectedGroupKey
+  );
+  detailedSalesTopSelectedProducerKey = detailedSalesTopProducerSummaryRows[0]?.producerKey || '';
+  renderReportsView();
+}
+
+function setDetailedSalesTopProducer(producerKey){
+  detailedSalesTopSelectedProducerKey = String(producerKey || '').trim();
+  renderReportsView();
+}
+
+async function setDetailedSalesComparisonCustomer(value){
+  detailedSalesComparisonCustomer = value;
+  clearDetailedSalesTopComparisonResultState({ preserveCustomerSummaryRows: true });
+  renderReportsView();
+  await generateDetailedSalesTopComparison();
+}
+
+function setDetailedSalesSortOrder(value){
+  detailedSalesSortOrder = ['sales-desc', 'sales-asc'].includes(value)
+    ? value
+    : 'sales-desc';
+  renderReportsView();
+}
+
+async function setDetailedSalesWeeksLimit(value){
+  detailedSalesWeeksLimit = normalizeDetailedSalesWeeksLimit(value);
+  renderReportsView();
+  if(!isCurrentUserAdmin() && (reportsMode === 'detailed-sales' || reportsMode === 'top-rumunia-comparison')){
+    await ensurePhDetailedSalesDataLoaded();
+  }
+}
+
+async function setReportsMode(mode){
+  const isAdminReports = isCurrentUserAdmin();
+  reportsMode = isReportsModeAllowed(mode, isAdminReports)
+    ? mode
+    : (isAdminReports ? 'top-sales' : 'weekly-sales');
+  if(reportsMode === 'top-rumunia-comparison'){
+    detailedSalesTopSection = 'summary';
+  }
+  renderReportsView();
+  if(!isAdminReports){
+    await ensurePhReportModeDataLoaded(reportsMode);
+  }
+}
+
+function setDetailedSalesTopMissingSelectionByKey(rowKey, checked){
+  const normalizedKey = String(rowKey || '').trim();
+  if(!normalizedKey) return;
+  if(checked){
+    detailedSalesTopSelectedMissingKeys.add(normalizedKey);
+  }else{
+    detailedSalesTopSelectedMissingKeys.delete(normalizedKey);
+  }
+  renderReportsView();
+}
+
+function toggleDetailedSalesTopMissingSelectionByKey(rowKey){
+  const normalizedKey = String(rowKey || '').trim();
+  if(!normalizedKey) return;
+  if(detailedSalesTopSelectedMissingKeys.has(normalizedKey)){
+    detailedSalesTopSelectedMissingKeys.delete(normalizedKey);
+  }else{
+    detailedSalesTopSelectedMissingKeys.add(normalizedKey);
+  }
+  renderReportsView();
+}
+
+function selectVisibleDetailedSalesTopMissing(scope = 'filtered'){
+  const rows = getDetailedSalesTopVisibleMissingRows(scope);
+  rows.forEach(row => {
+    const rowKey = getDetailedSalesTopMissingRowKey(row);
+    if(rowKey){
+      detailedSalesTopSelectedMissingKeys.add(rowKey);
+    }
+  });
+  renderReportsView();
+}
+
+function clearVisibleDetailedSalesTopMissing(scope = 'filtered'){
+  const visibleKeys = new Set(
+    getDetailedSalesTopVisibleMissingRows(scope).map(getDetailedSalesTopMissingRowKey).filter(Boolean)
+  );
+  if(!visibleKeys.size) return;
+  detailedSalesTopSelectedMissingKeys = new Set(
+    Array.from(detailedSalesTopSelectedMissingKeys).filter(key => !visibleKeys.has(key))
+  );
+  renderReportsView();
+}
+
+function clearAllDetailedSalesTopMissing(){
+  if(!detailedSalesTopSelectedMissingKeys.size) return;
+  detailedSalesTopSelectedMissingKeys = new Set();
+  renderReportsView();
+}
+
+function exportDetailedSalesTopMissingCsv(){
+  const exportRows = getDetailedSalesTopMissingExportRows();
+  if(!exportRows.length) return;
+  const cols = ['INDEKS', 'NAZWA', 'SKROT_PRODUCENTA', 'Ranking', 'Grupa produktowa', 'Zdjęcie URL'];
+  let csv = '\uFEFF' + cols.join(',') + '\n';
+  exportRows.forEach(row => {
+    csv += cols
+      .map(col => `"${String(row[col] ?? '').replace(/"/g, '""')}"`)
+      .join(',') + '\n';
+  });
+  download(csv, `${getDetailedSalesTopRecommendationFileName()}.csv`, 'text/csv;charset=utf-8;');
+}
+
+function exportDetailedSalesTopMissingXls(){
+  const exportRows = getDetailedSalesTopMissingExportRows();
+  if(!exportRows.length) return;
+  const cols = ['INDEKS', 'NAZWA', 'SKROT_PRODUCENTA', 'Ranking', 'Grupa produktowa', 'Zdjęcie URL'];
+  const rows = [cols, ...exportRows.map(row => cols.map(col => row[col] ?? ''))];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'rekomendacje');
+  try{
+    const out = XLSX.write(wb, { bookType: 'xls', type: 'array' });
+    const blob = new Blob([out], { type: 'application/vnd.ms-excel' });
+    downloadBlob(blob, `${getDetailedSalesTopRecommendationFileName()}.xls`);
+  }catch(error){
+    console.error('Detailed sales Top XLS export error', error);
+    const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    downloadBlob(blob, `${getDetailedSalesTopRecommendationFileName()}.xlsx`);
+  }
+}
+
+async function createDetailedSalesTopRecommendationCatalog(){
+  const selectedRows = getSelectedDetailedSalesTopMissingRows();
+  if(!selectedRows.length) return;
+  selectedProducts = new Map();
+  selectedRows.forEach(row => {
+    const idx = normalizeIndexValue(row.INDEKS);
+    if(idx){
+      selectedProducts.set(idx, {
+        INDEKS: row.INDEKS,
+        NAZWA: row.NAZWA,
+        PRODUCENT: row.SKROT_PRODUCENTA,
+        GRUPA: row['Grupa produktowa'],
+        'KOD EAN': row['KOD EAN'] || ''
+      });
+    }
+  });
+  setFullData(Array.from(selectedProducts.values()), ['INDEKS', 'NAZWA', 'PRODUCENT', 'GRUPA', 'KOD EAN']);
+  activeContainer = reportsContainer;
+  currentImageBaseUrl = imageBaseUrlRumunia;
+  window.imageBaseUrl = currentImageBaseUrl;
+  currentCategorySlug = getDetailedSalesTopRecommendationFileName();
+  catalogOptionsOverride = {
+    groupByField: 'GRUPA',
+    sectionTitle: 'Grupa produktowa'
+  };
+  await createCatalog();
+}
+
+function normalizePdfReportText(value){
+  return String(value ?? '')
+    .replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/g, char => ({
+      'ą': 'a',
+      'ć': 'c',
+      'ę': 'e',
+      'ł': 'l',
+      'ń': 'n',
+      'ó': 'o',
+      'ś': 's',
+      'ź': 'z',
+      'ż': 'z',
+      'Ą': 'A',
+      'Ć': 'C',
+      'Ę': 'E',
+      'Ł': 'L',
+      'Ń': 'N',
+      'Ó': 'O',
+      'Ś': 'S',
+      'Ź': 'Z',
+      'Ż': 'Z'
+    }[char] || char))
+    .replace(/[–—]/g, '-')
+    .replace(/[„”]/g, '"')
+    .replace(/[’]/g, '\'')
+    .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getDetailedSalesRepresentativeSummaryFileName(representativeLabel){
+  const safePart = (value, fallback) => String(value || fallback)
+    .trim()
+    .replace(/[\\/:*?"<>|]+/g, ' ')
+    .replace(/\s+/g, ' ');
+  return `${safePart(representativeLabel, 'PH')} - raport PH Top Rumunia`;
+}
+
+async function exportDetailedSalesRepresentativeSummaryPdf(){
+  if(!window.jspdf || !detailedSalesSourceRows.length) return;
+
+  const [topOfferRows, representativeConfig, logoImage] = await Promise.all([
+    loadTopRumuniaOfferRows(),
+    getPersonalSalesConfig(auth?.currentUser?.uid).catch(() => null),
+    loadImageAsDataUrl(maspoLogoUrl).catch(() => null)
+  ]);
+  const scopedTopRows = dedupeReportRows(
+    (topOfferRows || []).filter(row => matchesDetailedSalesTopGroup(row.group, detailedSalesSelectedGroups))
+  ).sort((a, b) => {
+    if(a.ranking !== b.ranking) return a.ranking - b.ranking;
+    return String(a.name || '').localeCompare(String(b.name || ''), 'pl');
+  });
+  const customerRows = buildDetailedSalesTopCustomerSummaryRows(scopedTopRows);
+  if(!customerRows.length) return;
+
+  const meetingRows = buildDetailedSalesTopMeetingRecommendationRows(scopedTopRows);
+  const weeklySummary = buildWeeklySalesRepresentativePdfSummary();
+  const representativeLabel = String(
+    representativeConfig?.displayName
+    || weeklySummary.representativeLabel
+    || weeklySalesSelectedRepresentative
+    || 'Przedstawiciel handlowy'
+  ).trim();
+  const generatedAtLabel = new Intl.DateTimeFormat('pl-PL', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(new Date());
+  const topScopeLabel = `${formatWeeksCountLabel(detailedSalesLoadedReportsCount || detailedSalesWeeksLimit)} | ${getDetailedSalesSelectedGroupsLabel(3)}`;
+  const strongestRow = [...customerRows].sort((a, b) => b.coveragePercent - a.coveragePercent || b.purchasedCount - a.purchasedCount)[0] || null;
+  const biggestSalesRow = [...customerRows].sort((a, b) => b.salesValue - a.salesValue || b.purchasedCount - a.purchasedCount)[0] || null;
+  const potentialRow = [...customerRows].sort((a, b) => b.missingCount - a.missingCount || b.salesValue - a.salesValue)[0] || null;
+  const sortedCustomerRows = [...customerRows].sort((a, b) => {
+    if(b.salesValue !== a.salesValue) return b.salesValue - a.salesValue;
+    if(b.missingCount !== a.missingCount) return b.missingCount - a.missingCount;
+    return String(a.customerName || '').localeCompare(String(b.customerName || ''), 'pl');
+  });
+  const totalScopedSales = customerRows.reduce((sum, row) => sum + Number(row.salesValue || 0), 0);
+  const averageCoverage = customerRows.reduce((sum, row) => sum + Number(row.coveragePercent || 0), 0) / (customerRows.length || 1);
+  const activeTopCustomers = customerRows.filter(row => row.purchasedCount > 0).length;
+  const noTopCustomers = customerRows.filter(row => row.purchasedCount === 0).length;
+  const topMeetingRows = meetingRows.slice(0, 3);
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+  const pageW = pdf.internal.pageSize.getWidth();
+  const pageH = pdf.internal.pageSize.getHeight();
+  const margin = 34;
+  const contentW = pageW - (margin * 2);
+  const footerY = pageH - 18;
+  let y = margin;
+
+  const safeText = value => normalizePdfReportText(value);
+  const metricCardW = (contentW - 12) / 2;
+  const metricCardH = 58;
+
+  const drawWrappedText = (text, x, startY, width, lineHeight = 12) => {
+    const lines = pdf.splitTextToSize(safeText(text), width);
+    pdf.text(lines, x, startY);
+    return startY + (lines.length * lineHeight);
+  };
+
+  const startPage = () => {
+    if(pdf.getNumberOfPages() > 0 && y !== margin){
+      pdf.addPage();
+    }
+    y = margin;
+    if(logoImage?.dataUrl){
+      pdf.addImage(logoImage.dataUrl, logoImage.format, margin, y, 92, 28);
+    }
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(20);
+    pdf.setTextColor(15, 27, 45);
+    pdf.text(safeText('Raport PH - Top Rumunia'), margin + 104, y + 18);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(10);
+    pdf.setTextColor(90);
+    pdf.text(safeText(`${representativeLabel} | ${generatedAtLabel}`), margin + 104, y + 36);
+    pdf.setDrawColor(214, 222, 233);
+    pdf.setLineWidth(1);
+    pdf.line(margin, y + 50, pageW - margin, y + 50);
+    pdf.setTextColor(0);
+    y += 70;
+  };
+
+  const ensureSpace = height => {
+    if(y + height > pageH - 30){
+      startPage();
+    }
+  };
+
+  const drawMetricCard = (x, top, label, value, note = '') => {
+    pdf.setDrawColor(207, 221, 237);
+    pdf.setFillColor(248, 251, 255);
+    pdf.roundedRect(x, top, metricCardW, metricCardH, 10, 10, 'FD');
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(9);
+    pdf.setTextColor(88, 104, 129);
+    pdf.text(safeText(label), x + 12, top + 16);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(15);
+    pdf.setTextColor(15, 27, 45);
+    pdf.text(safeText(value), x + 12, top + 35);
+    if(note){
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(8);
+      pdf.setTextColor(95, 111, 137);
+      pdf.text(safeText(note), x + 12, top + 49);
+    }
+    pdf.setTextColor(0);
+  };
+
+  const drawSectionTitle = (title, subtitle = '') => {
+    ensureSpace(subtitle ? 36 : 24);
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(14);
+    pdf.setTextColor(15, 27, 45);
+    pdf.text(safeText(title), margin, y);
+    y += 14;
+    if(subtitle){
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(9);
+      pdf.setTextColor(95, 111, 137);
+      y = drawWrappedText(subtitle, margin, y, contentW, 11);
+    }
+    pdf.setTextColor(0);
+    y += 6;
+  };
+
+  const drawBulletLines = items => {
+    items.filter(Boolean).forEach(item => {
+      const bulletLines = pdf.splitTextToSize(safeText(item), contentW - 12);
+      ensureSpace((bulletLines.length * 12) + 6);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(10);
+      pdf.text('-', margin, y);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(10);
+      pdf.text(bulletLines, margin + 12, y);
+      y += (bulletLines.length * 12) + 2;
+    });
+  };
+
+  startPage();
+
+  drawSectionTitle('Szybki obraz PH', `Zakres Top: ${topScopeLabel}${weeklySummary.activeWeekLabel ? ` | Sprzedaz tygodniowa: ${weeklySummary.activeWeekLabel}` : ''}`);
+  drawMetricCard(margin, y, 'Klienci w raporcie', `${formatNumber(customerRows.length)}`, `${formatNumber(activeTopCustomers)} kupuje cos z Top`);
+  drawMetricCard(margin + metricCardW + 12, y, 'Suma sprzedazy w zakresie', `${formatNumber(totalScopedSales)}`, 'Sprzedaz z aktualnego zakresu grup');
+  y += metricCardH + 10;
+  drawMetricCard(margin, y, 'Sredni udzial Top', `${formatPercent(averageCoverage, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}`, `Klienci bez zakupow z Top: ${formatNumber(noTopCustomers)}`);
+  drawMetricCard(
+    margin + metricCardW + 12,
+    y,
+    'Sprzedaz tygodniowa',
+    `${formatNumber(weeklySummary.activeSalesTotal)}`,
+    weeklySummary.previousWeekLabel
+      ? `${weeklySummary.previousWeekLabel}: ${formatNumber(weeklySummary.previousSalesTotal)} | trend ${formatNumber(weeklySummary.trendValue)}`
+      : 'Brak poprzedniego tygodnia do porownania'
+  );
+  y += metricCardH + 18;
+
+  drawSectionTitle('Najwazniejsze informacje dla PH');
+  drawBulletLines([
+    strongestRow ? `Najwyzszy udzial Top ma klient ${getDetailedSalesTopCustomerLabel(strongestRow)} - ${formatPercent(strongestRow.coveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}.` : '',
+    biggestSalesRow ? `Najwyzsza sprzedaz w aktualnym zakresie jest u klienta ${getDetailedSalesTopCustomerLabel(biggestSalesRow)} - ${formatNumber(biggestSalesRow.salesValue)}.` : '',
+    potentialRow ? `Najwiekszy potencjal domkniecia oferty ma klient ${getDetailedSalesTopCustomerLabel(potentialRow)} - braki ${formatNumber(potentialRow.missingCount)}; najwieksza szansa: ${potentialRow.topOpportunityGroupLabel || 'brak wskazanej grupy'}.` : '',
+    weeklySummary.topCustomers.length ? `Najmocniejszy klient w sprzedazy tygodniowej: ${safeText(getDetailedSalesTopCustomerLabel(weeklySummary.topCustomers[0]))} - ${formatNumber(weeklySummary.topCustomers[0].salesValue)}.` : '',
+    topMeetingRows.length ? `Na najblizsze spotkania warto przygotowac przede wszystkim: ${topMeetingRows.map(row => `#${row.rankingLabel || row.ranking} ${safeText(row.name)}`).join(', ')}.` : ''
+  ]);
+
+  if(weeklySummary.topCustomers.length){
+    drawSectionTitle('Top klienci z raportu tygodniowego');
+    drawBulletLines(weeklySummary.topCustomers.map((row, index) => `${index + 1}. ${getDetailedSalesTopCustomerLabel(row)} - ${formatNumber(row.salesValue)}`));
+  }
+
+  drawSectionTitle('Skrot klientow', 'Kazdy blok pokazuje sprzedaz w zakresie, udzial oferty Top, liczbe kupowanych grup oraz rozbicie po wszystkich kategoriach.');
+  sortedCustomerRows.forEach(row => {
+    const breakdownLine = (Array.isArray(row.groupBreakdown) ? row.groupBreakdown : [])
+      .map(group => `${group.shortLabel} ${formatNumber(group.purchasedCount)}/${formatNumber(group.offerCount)} (${formatPercent(group.coveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 })})`)
+      .join(' | ');
+    const lineOne = `Sprzedaz w zakresie: ${formatNumber(row.salesValue)} | Kupione z Top: ${formatNumber(row.purchasedCount)}/${formatNumber(row.offerCount)} | Udzial: ${formatPercent(row.coveragePercent, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} | Kategorie: ${formatNumber(row.purchasedGroupCount)}/${formatNumber(row.totalGroupCount || row.purchasedGroupCount + row.missingOnlyGroupCount)}`;
+    const lineTwo = `Najwieksza szansa: ${row.topOpportunityGroupLabel || 'Brak wskazanej grupy'} | Braki w tej grupie: ${formatNumber(row.topOpportunityMissingCount)}`;
+    const lineOneLines = pdf.splitTextToSize(safeText(lineOne), contentW - 24);
+    const lineTwoLines = pdf.splitTextToSize(safeText(lineTwo), contentW - 24);
+    const breakdownLines = pdf.splitTextToSize(safeText(breakdownLine), contentW - 66);
+    const blockHeight = 36 + (lineOneLines.length * 11) + 4 + (lineTwoLines.length * 11) + 6 + (breakdownLines.length * 11) + 12;
+    ensureSpace(blockHeight + 10);
+
+    const blockTop = y;
+    pdf.setDrawColor(226, 232, 240);
+    pdf.setFillColor(255, 255, 255);
+    pdf.roundedRect(margin, blockTop, contentW, blockHeight, 10, 10, 'FD');
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(12);
+    pdf.setTextColor(15, 27, 45);
+    pdf.text(safeText(getDetailedSalesTopCustomerLabel(row)), margin + 12, blockTop + 18);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(9);
+    pdf.setTextColor(71, 85, 105);
+    let blockY = blockTop + 34;
+    pdf.text(lineOneLines, margin + 12, blockY);
+    blockY += lineOneLines.length * 11 + 4;
+    pdf.text(lineTwoLines, margin + 12, blockY);
+    blockY += lineTwoLines.length * 11 + 4;
+    pdf.setFont('helvetica', 'bold');
+    pdf.setTextColor(51, 65, 85);
+    pdf.text(safeText('Grupy:'), margin + 12, blockY);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(71, 85, 105);
+    pdf.text(breakdownLines, margin + 54, blockY);
+    pdf.setTextColor(0);
+    y = blockTop + blockHeight + 10;
+  });
+
+  drawSectionTitle('40 indeksow do rozmowy z klientami', 'Najwyzej rankingowe indeksy z calego portfela PH, ktorych nadal brakuje u najwiekszej liczby klientow.');
+  const tableColumns = {
+    ranking: margin,
+    index: margin + 44,
+    product: margin + 114,
+    group: margin + 360,
+    missing: margin + 452
+  };
+  const drawMeetingTableHeader = () => {
+    ensureSpace(24);
+    pdf.setFillColor(241, 245, 249);
+    pdf.rect(margin, y, contentW, 18, 'F');
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(8);
+    pdf.setTextColor(71, 85, 105);
+    pdf.text('Ranking', tableColumns.ranking + 4, y + 12);
+    pdf.text('Indeks', tableColumns.index + 4, y + 12);
+    pdf.text('Produkt / producent', tableColumns.product + 4, y + 12);
+    pdf.text('Grupa', tableColumns.group + 4, y + 12);
+    pdf.text('Brakuje u', tableColumns.missing + 4, y + 12);
+    pdf.setTextColor(0);
+    y += 24;
+  };
+
+  if(!meetingRows.length){
+    drawBulletLines(['Brak indeksow do wskazania w aktualnym zakresie raportu.']);
+  }else{
+    drawMeetingTableHeader();
+    meetingRows.forEach(row => {
+      const productText = `${row.name} | ${row.producer || 'Bez producenta'}`;
+      const productLines = pdf.splitTextToSize(safeText(productText), 230).slice(0, 2);
+      const rowHeight = Math.max(20, 8 + (productLines.length * 10));
+      if(y + rowHeight > pageH - 30){
+        startPage();
+        drawSectionTitle('40 indeksow do rozmowy z klientami', 'Kontynuacja listy produktow do spotkan z klientami.');
+        drawMeetingTableHeader();
+      }
+      pdf.setDrawColor(235, 241, 245);
+      pdf.line(margin, y + rowHeight, pageW - margin, y + rowHeight);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(8.5);
+      pdf.text(safeText(row.rankingLabel || row.ranking), tableColumns.ranking + 4, y + 10);
+      pdf.text(safeText(row.index), tableColumns.index + 4, y + 10);
+      pdf.text(productLines, tableColumns.product + 4, y + 10);
+      pdf.text(safeText(row.shortGroupLabel), tableColumns.group + 4, y + 10);
+      pdf.text(safeText(`${formatNumber(row.missingCustomers)}/${formatNumber(row.totalCustomers)}`), tableColumns.missing + 4, y + 10);
+      y += rowHeight + 4;
+    });
+  }
+
+  const totalPages = pdf.getNumberOfPages();
+  for(let page = 1; page <= totalPages; page += 1){
+    pdf.setPage(page);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(9);
+    pdf.setTextColor(120);
+    pdf.text(`Strona ${page} / ${totalPages}`, pageW - margin - 48, footerY);
+    pdf.setTextColor(0);
+  }
+
+  const blob = pdf.output('blob');
+  downloadBlob(blob, `${getDetailedSalesRepresentativeSummaryFileName(representativeLabel)}.pdf`);
 }
 
 async function importClientReportExcel(){
@@ -5201,20 +8407,12 @@ function isCurrentUserAdmin(){
   return Boolean(currentUserIsAdmin);
 }
 
-function toggleAdminPanel(email, options = {}){
+function toggleAdminPanel(email){
   const isAdminEmail = ADMIN_EMAILS.includes(String(email || '').toLowerCase());
-  const isAdminSession = localStorage.getItem('is_admin') === '1';
-  const isAdmin = isAdminEmail || (isAdminSession && isAdminEmail);
-  currentUserIsAdmin = isAdmin;
-  const preserveSession = Boolean(options.preserveSession);
-  if(adminPanelBtn) adminPanelBtn.classList.toggle('hidden', !isAdmin);
-  if(reportsCard) reportsCard.classList.toggle('hidden', !isAdmin);
-  if(isAdmin){
-    localStorage.setItem('is_admin', '1');
-  }else{
-    if(!preserveSession){
-      localStorage.removeItem('is_admin');
-    }
+  currentUserIsAdmin = isAdminEmail;
+  if(adminPanelBtn) adminPanelBtn.classList.toggle('hidden', !isAdminEmail);
+  if(reportsCard) reportsCard.classList.toggle('hidden', !isAdminEmail);
+  if(!isAdminEmail){
     if(reportsContainer) reportsContainer.innerHTML = '';
   }
 }
