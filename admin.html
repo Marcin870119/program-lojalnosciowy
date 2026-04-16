@@ -4,9 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>World Food – Panel admin</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260414-admin-v5-authfix">
 </head>
-<body>
+<body class="auth-booting">
+  <div id="auth-splash" class="auth-splash" aria-live="polite">
+    <div class="auth-splash-card">
+      <div class="auth-splash-spinner" aria-hidden="true"></div>
+      <div id="auth-splash-message" class="auth-splash-message">Sprawdzam uprawnienia...</div>
+    </div>
+  </div>
   <div id="admin-view">
     <header class="site-header site-header--admin">
       <div class="site-header-main">
@@ -54,12 +60,40 @@
           <div id="admin-sales-report-results" class="admin-import-results">
             <div class="admin-user-empty">Wybierz plik i uruchom podział na przedstawicieli.</div>
           </div>
+
+          <div class="admin-tool-divider"></div>
+
+          <div class="admin-panel-head admin-panel-head--compact">
+            <h2>Import sprzedaży per indeks</h2>
+            <div class="admin-panel-note">
+              Podzieli raport per indeks po kolumnie przedstawiciela handlowego i zapisze osobne pliki do
+              <strong>raporty - maspo/{przedstawiciel}/</strong>.
+            </div>
+          </div>
+          <div class="login-form">
+            <label class="login-label" for="admin-sales-index-file">Plik Excel raportu per indeks</label>
+            <input id="admin-sales-index-file" type="file" accept=".xlsx,.xls">
+            <button id="admin-sales-index-upload" class="btn-outline">Podziel per indeks i wyślij do Storage</button>
+          </div>
+          <div id="admin-sales-index-msg" class="admin-inline-msg"></div>
+          <div id="admin-sales-index-results" class="admin-import-results">
+            <div class="admin-user-empty">Wybierz plik per indeks i uruchom podział na przedstawicieli.</div>
+          </div>
         </div>
 
         <aside class="admin-panel admin-panel--side">
           <div class="admin-panel-head">
             <h2>Użytkownicy</h2>
             <div class="admin-panel-note">Lista kont zapisanych przez panel admina. Tutaj przypisujesz raport PH do użytkownika.</div>
+          </div>
+          <div class="admin-user-picker">
+            <label class="login-label" for="admin-user-picker">Wybierz użytkownika</label>
+            <div class="admin-user-picker-row">
+              <select id="admin-user-picker" class="admin-user-picker-select">
+                <option value="">Ładuję listę użytkowników...</option>
+              </select>
+              <div id="admin-user-count" class="admin-user-count"></div>
+            </div>
           </div>
           <div id="admin-user-list" class="admin-user-list">
             <div class="admin-user-empty">Ładuję listę użytkowników...</div>
@@ -74,6 +108,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="admin.js"></script>
+  <script src="admin.js?v=20260414-admin-v5-authfix"></script>
 </body>
 </html>
