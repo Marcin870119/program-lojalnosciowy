@@ -34,6 +34,12 @@ const jsonUrlNapojeUkraina =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/NAPOJE%20-%20UKRAINA%20RANKING.json';
 const jsonUrlPrzyprawyUkraina =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Przyprawy%20i%20dodatki%20-%20ukraina%20ranking.json';
+const ukrainaDodatkiDoPotrawSource = {
+  name: 'Ukraina - Dodatki do potraw',
+  type: 'json',
+  // URL uzupelnimy po wrzuceniu pliku z baza danych dla tego kafelka.
+  url: ''
+};
 const jsonUrlMarion =
   'https://raw.githubusercontent.com/Marcin870119/program-lojalnosciowy/main/Baza%20danych%20-%20Marion.json';
 const pdfUrl =
@@ -132,6 +138,7 @@ const ukrainaKawyContainer = document.getElementById('ukraina-kawy-herbaty-conte
 const ukrainaPuszkiContainer = document.getElementById('ukraina-puszki-sloiki-content');
 const ukrainaNapojeContainer = document.getElementById('ukraina-napoje-content');
 const ukrainaPrzyprawyContainer = document.getElementById('ukraina-przyprawy-proszek-content');
+const ukrainaDodatkiContainer = document.getElementById('ukraina-dodatki-do-potraw-content');
 const reportsCard = document.getElementById('reports-card');
 
 var fullData = [];
@@ -250,6 +257,7 @@ let isLoading = false;
 const IMAGE_PLACEHOLDER_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
 const IMAGE_EXTENSION_CACHE_KEY = 'wf-image-extension-cache-v1';
 const MAX_IMAGE_EXTENSION_CACHE_ENTRIES = 3000;
+const SUPPORTED_IMAGE_EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg'];
 const imageExtensionCache = createImageExtensionCache();
 let lazyImageObserver = null;
 
@@ -543,6 +551,7 @@ function resetAppState(){
   if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
   if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
   if(ukrainaPrzyprawyContainer) ukrainaPrzyprawyContainer.innerHTML = '';
+  if(ukrainaDodatkiContainer) ukrainaDodatkiContainer.innerHTML = '';
 
   document.querySelectorAll('.grid .card').forEach(c => c.classList.remove('active'));
 
@@ -576,11 +585,27 @@ function clearAllContentContainers(){
   if(ukrainaPuszkiContainer) ukrainaPuszkiContainer.innerHTML = '';
   if(ukrainaNapojeContainer) ukrainaNapojeContainer.innerHTML = '';
   if(ukrainaPrzyprawyContainer) ukrainaPrzyprawyContainer.innerHTML = '';
+  if(ukrainaDodatkiContainer) ukrainaDodatkiContainer.innerHTML = '';
 }
 
 function setImageBase(base){
   currentImageBaseUrl = base;
   window.imageBaseUrl = currentImageBaseUrl;
+}
+
+function isConfiguredDataSource(source){
+  return Boolean(String(source?.url || '').trim());
+}
+
+async function loadDataSourceRows(source){
+  if(!isConfiguredDataSource(source)){
+    throw new Error('Brak pliku źródłowego dla tej kategorii.');
+  }
+  if(source.type === 'xlsx'){
+    return loadXlsxAsJson(source.url);
+  }
+  const res = await fetch(source.url);
+  return res.json();
 }
 
 function prepareCategoryView(container, name, slug){
@@ -2008,6 +2033,23 @@ if(ukrainaPrzyprawyCard){
     prepareCategoryView(ukrainaPrzyprawyContainer, 'Przyprawy_Ukraina', 'przyprawy_ukraina');
     const res = await fetch(jsonUrlPrzyprawyUkraina);
     setFullData(await res.json());
+    isLoading = false;
+    render();
+  });
+}
+
+// KLIK KAFELKA "DODATKI DO POTRAW" - UKRAINA
+const ukrainaDodatkiCard = document.getElementById('ukraina-dodatki-do-potraw');
+if(ukrainaDodatkiCard){
+  ukrainaDodatkiCard.addEventListener('click', async () => {
+    if(!isConfiguredDataSource(ukrainaDodatkiDoPotrawSource)){
+      alert('Kafelek "Dodatki do potraw" jest już dodany. Czeka jeszcze na plik źródłowy.');
+      return;
+    }
+    setActiveCard('ukraina-dodatki-do-potraw');
+    setImageBase(imageBaseUrlUkraina);
+    prepareCategoryView(ukrainaDodatkiContainer, 'Dodatki_do_potraw_Ukraina', 'dodatki_do_potraw_ukraina');
+    setFullData(await loadDataSourceRows(ukrainaDodatkiDoPotrawSource));
     isLoading = false;
     render();
   });
@@ -7569,11 +7611,12 @@ async function loadListingData(){
     { name: 'Ukraina - Napoje', type: 'json', url: jsonUrlNapojeUkraina },
     { name: 'Ukraina - Przyprawy', type: 'json', url: jsonUrlPrzyprawyUkraina }
   ];
+  if(isConfiguredDataSource(ukrainaDodatkiDoPotrawSource)) sources.push(ukrainaDodatkiDoPotrawSource);
 
   const results = [];
   for(const src of sources){
     try{
-      const data = src.type === 'xlsx' ? await loadXlsxAsJson(src.url) : await (await fetch(src.url)).json();
+      const data = await loadDataSourceRows(src);
       results.push({ ...src, data });
     }catch(e){
       console.error('Listing load error', src.name, e);
@@ -7793,15 +7836,35 @@ async function loadImageAsDataUrl(url){
     const res = await fetch(url);
     if(!res.ok) return null;
     const blob = await res.blob();
-    const dataUrl = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-    const type = blob.type || '';
-    const format = type.includes('png') ? 'PNG' : 'JPEG';
-    return { dataUrl, format };
+    const objectUrl = URL.createObjectURL(blob);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    try{
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = objectUrl;
+      });
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || img.width || 1;
+      canvas.height = img.naturalHeight || img.height || 1;
+      const ctx = canvas.getContext('2d');
+      const type = String(blob.type || '').toLowerCase();
+      const useJpeg = type.includes('jpg') || type.includes('jpeg');
+      if(useJpeg){
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }else{
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx.drawImage(img, 0, 0);
+      return {
+        dataUrl: useJpeg ? canvas.toDataURL('image/jpeg', 0.92) : canvas.toDataURL('image/png'),
+        format: useJpeg ? 'JPEG' : 'PNG'
+      };
+    }finally{
+      URL.revokeObjectURL(objectUrl);
+    }
   }catch(e){
     return null;
   }
@@ -7811,10 +7874,10 @@ async function loadImageAsDataUrl(url){
 function buildListingImageUrl(source, indexValue, row){
   const idx = String(indexValue ?? '').replace(/\D/g, '');
   if(!idx) return '';
-  if(String(source).toLowerCase().includes('ukraina')){
-    return `${imageBaseUrlUkraina}${encodeURIComponent(idx)}.png?alt=media`;
-  }
-  return `${imageBaseUrlRumunia}${encodeURIComponent(idx)}.png?alt=media`;
+  const isUkraina = String(source).toLowerCase().includes('ukraina');
+  const base = isUkraina ? imageBaseUrlUkraina : imageBaseUrlRumunia;
+  const ext = isUkraina ? 'png' : 'webp';
+  return buildImageUrl(idx, ext, base);
 }
 
 async function loadMarionDatabase(){
@@ -7928,15 +7991,14 @@ async function loadImportDane(){
     { name: 'Ukraina - Napoje', type: 'json', url: jsonUrlNapojeUkraina },
     { name: 'Ukraina - Przyprawy', type: 'json', url: jsonUrlPrzyprawyUkraina }
   ];
+  if(isConfiguredDataSource(ukrainaDodatkiDoPotrawSource)) sources.push(ukrainaDodatkiDoPotrawSource);
 
   const allRows = [];
   const columns = ['INDEKS', 'NAZWA', 'RANKING', 'GRUPA', 'PRODUCENT', 'KOD EAN'];
 
   for(const src of sources){
     try{
-      const data = src.type === 'xlsx'
-        ? await loadXlsxAsJson(src.url)
-        : await (await fetch(src.url)).json();
+      const data = await loadDataSourceRows(src);
       (data || []).forEach(row => {
         const item = {
           INDEKS: String(getValueByVariants(row, ['indeks', 'index', 'id', 'numer katalogowy', 'sku number']) || '').trim(),
@@ -8534,7 +8596,9 @@ function getBarcodeDataUrl(normalized){
 
 function buildImageUrl(index, ext, baseUrl){
   const base = baseUrl || currentImageBaseUrl;
-  return `${base}${encodeURIComponent(index)}.${ext}?alt=media`;
+  const normalizedIndex = normalizeIndexValue(index) || String(index ?? '').trim();
+  const normalizedExt = getNormalizedImageExt(ext) || getDefaultImageExtForBase(base);
+  return `${base}${encodeURIComponent(normalizedIndex)}.${normalizedExt}?alt=media`;
 }
 
 function createImageExtensionCache(){
@@ -8545,7 +8609,7 @@ function createImageExtensionCache(){
     const parsed = JSON.parse(raw);
     if(!parsed || typeof parsed !== 'object') return new Map();
     return new Map(
-      Object.entries(parsed).filter(([key, value]) => key && (value === 'png' || value === 'jpg'))
+      Object.entries(parsed).filter(([key, value]) => key && SUPPORTED_IMAGE_EXTENSIONS.includes(value))
     );
   }catch(e){
     console.warn('Image cache restore failed', e);
@@ -8570,13 +8634,27 @@ function getImageCacheKey(index, baseUrl){
   return `${base}|${normalizedIndex}`;
 }
 
+function getNormalizedImageExt(value){
+  const normalized = String(value || '').trim().toLowerCase();
+  return SUPPORTED_IMAGE_EXTENSIONS.includes(normalized) ? normalized : '';
+}
+
+function getDefaultImageExtForBase(baseUrl){
+  return String(baseUrl || currentImageBaseUrl || '').includes('Ukraina%2F') ? 'png' : 'webp';
+}
+
+function getImageCandidateExts(index, baseUrl){
+  const preferred = getPreferredImageExt(index, baseUrl);
+  return [preferred, ...SUPPORTED_IMAGE_EXTENSIONS.filter(ext => ext !== preferred)];
+}
+
 function getPreferredImageExt(index, baseUrl){
   const key = getImageCacheKey(index, baseUrl);
-  return (key && imageExtensionCache.get(key)) || 'png';
+  return (key && imageExtensionCache.get(key)) || getDefaultImageExtForBase(baseUrl);
 }
 
 function rememberImageExt(index, baseUrl, ext){
-  const normalizedExt = ext === 'jpg' ? 'jpg' : 'png';
+  const normalizedExt = getNormalizedImageExt(ext) || getDefaultImageExtForBase(baseUrl);
   const key = getImageCacheKey(index, baseUrl);
   if(!key) return;
   if(imageExtensionCache.has(key)) imageExtensionCache.delete(key);
@@ -8609,7 +8687,8 @@ function buildProductImageTag(index, baseUrl, className, options = {}){
   const base = baseUrl || currentImageBaseUrl;
   const ext = getPreferredImageExt(index, base);
   const src = buildImageUrl(index, ext, base);
-  const attrs = `data-index="${escapeAttr(index)}" data-base="${escapeAttr(base)}" data-tried="${ext}"${options.attrs ? ` ${options.attrs}` : ''}`;
+  const extOrder = getImageCandidateExts(index, base).join(',');
+  const attrs = `data-index="${escapeAttr(index)}" data-base="${escapeAttr(base)}" data-tried="${ext}" data-ext-order="${escapeAttr(extOrder)}"${options.attrs ? ` ${options.attrs}` : ''}`;
   return buildDeferredImageTag(src, className, {
     ...options,
     attrs,
@@ -8661,7 +8740,7 @@ function handleDeferredImageLoad(img){
 
   const index = img.getAttribute('data-index');
   const base = img.getAttribute('data-base') || currentImageBaseUrl;
-  const tried = img.getAttribute('data-tried') || 'png';
+  const tried = img.getAttribute('data-tried') || getDefaultImageExtForBase(base);
   if(!index) return;
 
   rememberImageExt(index, base, tried);
@@ -8677,7 +8756,9 @@ function preparePopupImage(img){
   const index = img.getAttribute('data-index');
   const base = img.getAttribute('data-base') || currentImageBaseUrl;
   const ext = getPreferredImageExt(index, base);
+  const extOrder = getImageCandidateExts(index, base).join(',');
   img.setAttribute('data-tried', ext);
+  img.setAttribute('data-ext-order', extOrder);
   img.setAttribute('data-src', buildImageUrl(index, ext, base));
   loadDeferredImage(img);
 }
@@ -8687,14 +8768,22 @@ function imageFallback(img){
   const base = img.getAttribute('data-base') || currentImageBaseUrl;
   const tried = img.getAttribute('data-tried');
   const pop = img.closest('.img-hover')?.querySelector('.index-img-large');
-  if(tried === 'png'){
-    const nextUrl = buildImageUrl(index, 'jpg', base);
-    img.setAttribute('data-tried', 'jpg');
+  const extOrder = String(img.getAttribute('data-ext-order') || getImageCandidateExts(index, base).join(','))
+    .split(',')
+    .map(getNormalizedImageExt)
+    .filter(Boolean);
+  const triedIndex = extOrder.indexOf(tried);
+  const nextExt = triedIndex === -1 ? (extOrder[0] || '') : (extOrder[triedIndex + 1] || '');
+  if(nextExt){
+    const nextUrl = buildImageUrl(index, nextExt, base);
+    img.setAttribute('data-tried', nextExt);
+    img.setAttribute('data-ext-order', extOrder.join(','));
     img.setAttribute('data-src', nextUrl);
     img.setAttribute('data-state', 'fallback');
     img.src = nextUrl;
     if(pop){
-      pop.setAttribute('data-tried', 'jpg');
+      pop.setAttribute('data-tried', nextExt);
+      pop.setAttribute('data-ext-order', extOrder.join(','));
       pop.setAttribute('data-src', nextUrl);
       if(pop.getAttribute('src')){
         pop.setAttribute('data-state', 'fallback');
