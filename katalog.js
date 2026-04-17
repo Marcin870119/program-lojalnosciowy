@@ -36,6 +36,7 @@
   }
 
   const imageCache = new Map();
+  const PRODUCT_IMAGE_EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg'];
 
   async function loadImageAsJpeg(url, maxDim){
     if(imageCache.has(url)) return imageCache.get(url);
@@ -81,13 +82,24 @@
 
   async function getProductImage(index, baseOverride){
     const base = baseOverride || window.imageBaseUrl || '';
-    const png = `${base}${encodeURIComponent(index)}.png?alt=media`;
-    const jpg = `${base}${encodeURIComponent(index)}.jpg?alt=media`;
-    try{
-      return await loadImageAsJpeg(png, 900);
-    }catch(_){
-      return await loadImageAsJpeg(jpg, 900);
+    const normalizedIndex = String(index ?? '').trim();
+    const preferredExt = typeof window.getPreferredImageExt === 'function'
+      ? window.getPreferredImageExt(normalizedIndex, base)
+      : (String(base).includes('Ukraina%2F') ? 'png' : 'webp');
+    const extOrder = [preferredExt, ...PRODUCT_IMAGE_EXTENSIONS.filter(ext => ext !== preferredExt)];
+    for(const ext of extOrder){
+      const url = `${base}${encodeURIComponent(normalizedIndex)}.${ext}?alt=media`;
+      try{
+        const imageData = await loadImageAsJpeg(url, 900);
+        if(typeof window.rememberImageExt === 'function'){
+          window.rememberImageExt(normalizedIndex, base, ext);
+        }
+        return imageData;
+      }catch(_){
+        // Try the next supported extension.
+      }
     }
+    throw new Error('Image not found');
   }
 
   const watermarkUrl =
