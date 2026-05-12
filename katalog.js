@@ -85,8 +85,41 @@
     const normalizedIndex = String(index ?? '').trim();
     const preferredExt = typeof window.getPreferredImageExt === 'function'
       ? window.getPreferredImageExt(normalizedIndex, base)
-      : (String(base).includes('Ukraina%2F') ? 'png' : 'webp');
+      : (String(base).startsWith('gs://') ? 'webp' : (String(base).toLowerCase().includes('ukraina') ? 'png' : 'webp'));
     const extOrder = [preferredExt, ...PRODUCT_IMAGE_EXTENSIONS.filter(ext => ext !== preferredExt)];
+
+    if(
+      String(base).startsWith('gs://')
+      && typeof window.resolvePrivateImageSource === 'function'
+    ){
+      for(const ext of extOrder){
+        try{
+          const resolved = await window.resolvePrivateImageSource(normalizedIndex, base, ext);
+          if(!resolved?.objectUrl) continue;
+          const imageData = await loadImageAsJpeg(resolved.objectUrl, 900);
+          if(typeof window.rememberImageExt === 'function'){
+            window.rememberImageExt(normalizedIndex, base, resolved.ext || ext);
+          }
+          return imageData;
+        }catch(_){
+          // Try the next supported extension or resolver path.
+        }
+      }
+    }
+
+    if(
+      String(base).startsWith('gs://')
+      && typeof window.resolveImageAssetUrl === 'function'
+    ){
+      try{
+        const resolvedUrl = await window.resolveImageAssetUrl(normalizedIndex, base);
+        if(resolvedUrl){
+          return loadImageAsJpeg(resolvedUrl, 900);
+        }
+      }catch(_){
+        // Fall through to direct extension probing below.
+      }
+    }
     for(const ext of extOrder){
       const url = `${base}${encodeURIComponent(normalizedIndex)}.${ext}?alt=media`;
       try{
@@ -100,43 +133,6 @@
       }
     }
     throw new Error('Image not found');
-  }
-
-  const watermarkUrl =
-    'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2Fmaspo%20logo.png?alt=media&token=8fe33ebe-04d2-42cb-acb0-10379dbd7e11';
-
-  async function loadImageAsPng(url){
-    if(imageCache.has(url)) return imageCache.get(url);
-    const pending = (async () => {
-      const res = await fetch(url);
-      if(!res.ok) throw new Error('Image not found');
-      const blob = await res.blob();
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      const objectUrl = URL.createObjectURL(blob);
-      try{
-        const loadedImg = await new Promise((resolve, reject) => {
-          img.onload = () => resolve(img);
-          img.onerror = reject;
-          img.src = objectUrl;
-        });
-        const canvas = document.createElement('canvas');
-        canvas.width = loadedImg.naturalWidth;
-        canvas.height = loadedImg.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(loadedImg, 0, 0);
-        const png = canvas.toDataURL('image/png');
-        return { dataUrl: png, width: canvas.width, height: canvas.height };
-      }finally{
-        URL.revokeObjectURL(objectUrl);
-      }
-    })().catch(error => {
-      imageCache.delete(url);
-      throw error;
-    });
-    imageCache.set(url, pending);
-    return pending;
   }
 
   window.createCatalogPdf = async function(products, options = {}){
@@ -170,7 +166,6 @@
     const groupByField = options.groupByField || '';
 
     const hasCover = !!options.coverDataUrl;
-    const watermarkPromise = loadImageAsPng(watermarkUrl).catch(() => null);
     const groupedSections = groupByField
       ? products.reduce((acc, product) => {
           const groupName = normalizeCatalogPdfText(
@@ -191,31 +186,19 @@
 
     const preloadTasks = [];
     const seenProductImages = new Set();
-    const seenBadges = new Set();
 
     products.forEach(product => {
       const indexVal = String(getValueByVariants(product, ['indeks', 'index', 'id']) || product[indexKey] || '').trim();
       if(indexVal){
-        const sourceHint = String(product.__country || product.__source || product[countryKey] || '').toLowerCase();
-        const baseOverride = sourceHint.includes('ukraina')
-          ? (window.imageBaseUrlUkraina || window.imageBaseUrl || '')
-          : (window.imageBaseUrlRumunia || window.imageBaseUrl || '');
+        const baseOverride = getCatalogImageBase(product, countryKey);
         const cacheKey = `${baseOverride}::${indexVal}`;
         if(!seenProductImages.has(cacheKey)){
           seenProductImages.add(cacheKey);
           preloadTasks.push(getProductImage(indexVal, baseOverride).catch(() => null));
         }
       }
-
-      const countryVal = String(product[countryKey] || 'Rumunia').trim().toLowerCase();
-      const badgeUrl = getCountryBadgeUrl(countryVal);
-      if(badgeUrl && !seenBadges.has(badgeUrl)){
-        seenBadges.add(badgeUrl);
-        preloadTasks.push(loadImageAsJpeg(badgeUrl).catch(() => null));
-      }
     });
 
-    preloadTasks.push(watermarkPromise);
     await Promise.all(preloadTasks);
 
     if(hasCover){
@@ -282,27 +265,14 @@
         const nameLines = pdf.splitTextToSize(name, cardW - 20).slice(0, 2);
         pdf.text(nameLines, x + 10, y + 20);
 
-        const countryVal = String(p[countryKey] || 'Rumunia').trim().toLowerCase();
-        const badgeUrl = getCountryBadgeUrl(countryVal);
-        if(badgeUrl){
-          try{
-            const badge = await loadImageAsJpeg(badgeUrl);
-            const bw = 68;
-            const bh = 44;
-            const bx = x + 4;
-            const by = y + cardH - bh - 36;
-            pdf.addImage(badge.dataUrl, 'JPEG', bx, by, bw, bh, undefined, 'FAST');
-          }catch(_){}
-        }
+        const countryVal = getCatalogCountryValue(p, countryKey);
+        drawCountryBadge(pdf, countryVal, x + 4, y + cardH - 80, 68, 44);
 
         const indexVal = String(getValueByVariants(p, ['indeks', 'index', 'id']) || p[indexKey] || '').trim();
         let imgData = null;
         if(indexVal){
           try{
-            const sourceHint = String(p.__country || p.__source || p[countryKey] || '').toLowerCase();
-            const baseOverride = sourceHint.includes('ukraina')
-              ? (window.imageBaseUrlUkraina || window.imageBaseUrl || '')
-              : (window.imageBaseUrlRumunia || window.imageBaseUrl || '');
+            const baseOverride = getCatalogImageBase(p, countryKey);
             imgData = await getProductImage(indexVal, baseOverride);
           }catch(_){}
         }
@@ -317,19 +287,7 @@
         const iy = y + 40 + (maxH - ih) / 2;
         pdf.addImage(imgData.dataUrl, 'JPEG', ix, iy, iw, ih, undefined, 'FAST');
 
-        // small logo near each image
-        try{
-          const wm = await watermarkPromise;
-          if(wm){
-            const wmW = 48;
-            const wmH = (wm.height / wm.width) * wmW;
-            const wmX = x + cardW - wmW - 20;
-            const wmY = y + cardH - 94;
-            pdf.setGState(new pdf.GState({ opacity: 0.5 }));
-            pdf.addImage(wm.dataUrl, 'PNG', wmX, wmY, wmW, wmH, undefined, 'FAST');
-            pdf.setGState(new pdf.GState({ opacity: 1 }));
-          }
-        }catch(_){}
+        drawCatalogBrandMark(pdf, x + cardW - 86, y + cardH - 124, 66, 22);
         }
 
       // price from excel
@@ -486,13 +444,117 @@
   }
 
 
-  function getCountryBadgeUrl(country){
-    if(country.includes('rumunia')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FRumunia.png?alt=media';
-    if(country.includes('ukraina')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FUkraina.png?alt=media';
-    if(country.includes('litwa')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FLitwa.png?alt=media';
-    if(country.includes('bulgaria')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FBulgaria.png?alt=media';
-    if(country.includes('polska')) return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FPolska.png?alt=media';
-    return 'https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FRumunia.png?alt=media';
+  function getCatalogCountryValue(product, countryKey){
+    const candidates = [
+      countryKey ? product?.[countryKey] : '',
+      product?.__country,
+      product?.__source,
+      window.imageBaseUrl || ''
+    ];
+
+    for(const candidate of candidates){
+      const normalized = String(candidate || '').trim().toLowerCase();
+      if(normalized.includes('ukraina')) return 'ukraina';
+      if(normalized.includes('rumunia')) return 'rumunia';
+      if(normalized.includes('marka wlasna') || normalized.includes('marka_wlasna')) return 'marka_wlasna';
+      if(normalized.includes('litwa')) return 'litwa';
+      if(normalized.includes('bulgaria')) return 'bulgaria';
+      if(normalized.includes('polska')) return 'polska';
+    }
+
+    return 'rumunia';
+  }
+
+  function getCatalogImageBase(product, countryKey){
+    const countryKeyValue = getCatalogCountryValue(product, countryKey);
+    if(countryKeyValue === 'ukraina'){
+      return window.imageBaseUrlUkraina || window.imageBaseUrl || '';
+    }
+    if(countryKeyValue === 'marka_wlasna'){
+      return window.imageBaseUrlMarkaWlasna || window.imageBaseUrl || '';
+    }
+    if(countryKeyValue === 'rumunia'){
+      return window.imageBaseUrlRumunia || window.imageBaseUrl || '';
+    }
+    return window.imageBaseUrl || window.imageBaseUrlRumunia || '';
+  }
+
+  function drawCatalogBrandMark(pdf, x, y, width, height){
+    pdf.setDrawColor(198, 210, 226);
+    pdf.setFillColor(248, 250, 252);
+    pdf.roundedRect(x, y, width, height, 8, 8, 'FD');
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(9);
+    pdf.setTextColor(22, 138, 63);
+    pdf.text('WORLD FOOD', x + 8, y + 14);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(6.5);
+    pdf.setTextColor(107, 114, 128);
+    pdf.text('Maspo', x + 8, y + 20);
+    pdf.setTextColor(0);
+  }
+
+  function drawCountryBadge(pdf, country, x, y, width, height){
+    const countryKey = String(country || 'rumunia').trim().toLowerCase();
+    pdf.setDrawColor(209, 213, 219);
+    pdf.setFillColor(255, 255, 255);
+    pdf.roundedRect(x, y, width, height, 8, 8, 'FD');
+
+    const flagX = x + 6;
+    const flagY = y + 6;
+    const flagW = width - 12;
+    const flagH = 18;
+
+    if(countryKey === 'rumunia'){
+      pdf.setFillColor(0, 43, 127);
+      pdf.rect(flagX, flagY, flagW / 3, flagH, 'F');
+      pdf.setFillColor(252, 209, 22);
+      pdf.rect(flagX + (flagW / 3), flagY, flagW / 3, flagH, 'F');
+      pdf.setFillColor(206, 17, 38);
+      pdf.rect(flagX + ((flagW / 3) * 2), flagY, flagW / 3, flagH, 'F');
+    }else if(countryKey === 'ukraina'){
+      pdf.setFillColor(0, 91, 187);
+      pdf.rect(flagX, flagY, flagW, flagH / 2, 'F');
+      pdf.setFillColor(255, 213, 0);
+      pdf.rect(flagX, flagY + (flagH / 2), flagW, flagH / 2, 'F');
+    }else if(countryKey === 'litwa'){
+      pdf.setFillColor(253, 185, 19);
+      pdf.rect(flagX, flagY, flagW, flagH / 3, 'F');
+      pdf.setFillColor(0, 106, 68);
+      pdf.rect(flagX, flagY + (flagH / 3), flagW, flagH / 3, 'F');
+      pdf.setFillColor(193, 39, 45);
+      pdf.rect(flagX, flagY + ((flagH / 3) * 2), flagW, flagH / 3, 'F');
+    }else if(countryKey === 'bulgaria'){
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(flagX, flagY, flagW, flagH / 3, 'F');
+      pdf.setFillColor(0, 150, 110);
+      pdf.rect(flagX, flagY + (flagH / 3), flagW, flagH / 3, 'F');
+      pdf.setFillColor(214, 38, 18);
+      pdf.rect(flagX, flagY + ((flagH / 3) * 2), flagW, flagH / 3, 'F');
+    }else if(countryKey === 'marka_wlasna'){
+      pdf.setFillColor(240, 253, 244);
+      pdf.rect(flagX, flagY, flagW, flagH, 'F');
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(8);
+      pdf.setTextColor(22, 138, 63);
+      pdf.text('MARKA', flagX + 6, flagY + 8);
+      pdf.text('WLASNA', flagX + 6, flagY + 16);
+      pdf.setTextColor(0);
+    }else if(countryKey === 'polska'){
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(flagX, flagY, flagW, flagH / 2, 'F');
+      pdf.setFillColor(220, 20, 60);
+      pdf.rect(flagX, flagY + (flagH / 2), flagW, flagH / 2, 'F');
+    }else{
+      pdf.setFillColor(229, 231, 235);
+      pdf.rect(flagX, flagY, flagW, flagH, 'F');
+    }
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(8);
+    pdf.setTextColor(51, 65, 85);
+    pdf.text(countryKey.charAt(0).toUpperCase() + countryKey.slice(1), x + 8, y + height - 8);
+    pdf.setTextColor(0);
   }
 
   function formatPriceParts(priceText){
