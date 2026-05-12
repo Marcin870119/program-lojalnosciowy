@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>World Food – Oferta</title>
 
-  <link rel="stylesheet" href="style.css?v=2026-04-14-13-producer-offer-coverage">
+  <link rel="stylesheet" href="style.css?v=2026-05-12-order-card-spacing-v1">
 </head>
 
 <body class="auth-booting">
@@ -55,19 +55,23 @@
           </div>
           <div class="color-hint">Kolor dotyczy tylko cyfry ceny.</div>
         </div>
-        <input id="catalog-excel" type="file" accept=".xlsx,.xls">
-        <div class="catalog-columns">
-          <div>
-            <label class="login-label" for="catalog-index-col">Kolumna indeksu</label>
-            <select id="catalog-index-col">
-              <option value="auto">Auto</option>
-            </select>
-          </div>
-          <div>
-            <label class="login-label" for="catalog-price-col">Kolumna ceny</label>
-            <select id="catalog-price-col">
-              <option value="auto">Auto</option>
-            </select>
+        <div id="catalog-admin-price-tools">
+          <label class="login-label" for="catalog-excel">Zaimportuj plik z cenami</label>
+          <input id="catalog-excel" type="file" accept=".xlsx,.xls">
+          <div class="color-hint">Możesz wgrać plik Excel (.xlsx lub .xls) z indeksami i cenami do katalogu.</div>
+          <div class="catalog-columns">
+            <div>
+              <label class="login-label" for="catalog-index-col">Kolumna indeksu</label>
+              <select id="catalog-index-col">
+                <option value="auto">Auto</option>
+              </select>
+            </div>
+            <div>
+              <label class="login-label" for="catalog-price-col">Kolumna ceny</label>
+              <select id="catalog-price-col">
+                <option value="auto">Auto</option>
+              </select>
+            </div>
           </div>
         </div>
         <button id="catalog-save-btn">Zapisz katalog PDF</button>
@@ -179,7 +183,9 @@
     <nav class="main-nav" aria-label="Nawigacja główna">
       <div class="nav-primary">
         <button id="world-food-btn" class="nav-main-btn active" aria-controls="world-food-subnav" aria-expanded="true">World Food</button>
+        <button id="marka-wlasna-btn" class="nav-main-btn" aria-controls="marka-wlasna">Marka Własna</button>
         <button id="sales-reports-btn" class="nav-main-btn">Raporty Sprzedaży</button>
+        <button id="tasks-btn" class="nav-main-btn" aria-controls="tasks">Zadania</button>
       </div>
       <div id="world-food-subnav" class="nav-secondary">
         <button class="tab active" data-tab="rumunia">Rumunia</button>
@@ -188,6 +194,7 @@
         <button class="tab" data-tab="bulgaria">Bułgaria</button>
         <button class="tab" data-tab="listing">Listing</button>
       </div>
+      <div id="reports-subnav" class="nav-secondary hidden" aria-hidden="true"></div>
     </nav>
   </header>
 
@@ -312,6 +319,15 @@
         <h3>Przyprawy<br>i dodatki w proszku</h3>
         <p>Kliknij aby zobaczyć ranking</p>
       </div>
+      <div class="card" id="ukraina-dodatki-do-potraw">
+        <img class="card-corner-icon" src="https://firebasestorage.googleapis.com/v0/b/pdf-creator-f7a8b.firebasestorage.app/o/CREATOR%20BASIC%2FSPICES.png?alt=media&token=7ae1c0fc-cdbb-48d4-8192-f4df21222530" alt="">
+        <h3>Dodatki<br>do potraw</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
+      <div class="card" id="ukraina-top-ukraina">
+        <h3>Top Ukraina</h3>
+        <p>Kliknij aby zobaczyć ranking</p>
+      </div>
     </div>
     <div id="ukraina-slodycze-content"></div>
     <div id="ukraina-mieso-wedliny-content"></div>
@@ -319,7 +335,10 @@
     <div id="ukraina-puszki-sloiki-content"></div>
     <div id="ukraina-napoje-content"></div>
     <div id="ukraina-przyprawy-proszek-content"></div>
+    <div id="ukraina-dodatki-do-potraw-content"></div>
+    <div id="ukraina-top-ukraina-content"></div>
   </section>
+  <section id="marka-wlasna" class="tab-content hidden"></section>
   <section id="litwa" class="tab-content hidden"></section>
   <section id="bulgaria" class="tab-content hidden"></section>
   <section id="listing" class="tab-content hidden">
@@ -347,7 +366,7 @@
       </div>
       <div id="listing-camera" class="listing-camera"></div>
       <div class="table-wrap">
-        <table>
+        <table class="listing-table">
           <thead>
             <tr id="listing-head"></tr>
           </thead>
@@ -357,16 +376,22 @@
     </div>
   </section>
   <section id="reports-sales" class="tab-content hidden">
-    <div class="country-banner">
-      <div id="reports-banner-actions" class="reports-banner-actions">
-        <div class="flag-pill">
+    <div class="country-banner country-banner--reports">
+      <div class="reports-banner-actions">
+        <div class="flag-pill reports-header-pill">
+          <span class="reports-header-icon" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
           <span class="flag-text">Raporty Sprzedaży</span>
         </div>
       </div>
-      <div class="flag-stripe"></div>
+      <div class="flag-stripe reports-stripe" aria-hidden="true"></div>
     </div>
     <div id="reports-content"></div>
   </section>
+  <section id="tasks" class="tab-content hidden"></section>
 
   </main>
 </div>
@@ -375,11 +400,18 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-functions-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.2.6/dist/quagga.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.2.6/dist/quagga.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="katalog.js"></script>
-<script src="script.js?v=2026-04-14-20-top-rumunia-category-rollup-fix"></script>
+<script src="katalog.js?v=2026-04-18-ukraina-catalog-images-v3"></script>
+<script src="sprzedaztygodniowa.js?v=2026-04-18-restore-v5"></script>
+<script src="adminsprzedazpertydzien.js?v=2026-04-18-admin-weekly-v3"></script>
+<script src="sprzedazszczegolowa.js?v=2026-04-18-restore-v3"></script>
+<script src="marka-wlasna.js?v=2026-04-20-marka-wlasna-dynamic-v4"></script>
+<script src="script.js?v=2026-05-12-order-card-spacing-v1"></script>
+<script src="quick-order-links.js?v=2026-05-12-order-card-spacing-v1"></script>
+<script src="reports-ai-assistant.js?v=2026-04-19-client-ai-v1"></script>
 </body>
 </html>
